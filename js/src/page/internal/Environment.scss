@@ -1,0 +1,10 @@
+@import 'styles/common.scss';
+
+.Environment {
+  @include page;
+
+  .environmentCard {
+    white-space: pre;
+  }
+} /* .Environment */
+

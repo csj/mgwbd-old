@@ -1,0 +1,61 @@
+@import 'styles/common.scss';
+
+$min_item_height: 40px;
+$border_overhang: 4px;
+
+.Sidenav {
+  background: $color_primary_light;
+  min-height: 600px;
+  padding-top: 16px;
+  width: 180px;
+  min-width: 180px;
+
+  &.collapse {
+    width: 0px;
+    min-width: 0px;
+  }
+
+  .item {
+    color: white;
+    display: block;
+    font-family: $font_family_sans_serif;
+    padding: 8px;
+    margin: $border_overhang 0;
+    background-color: initial;
+    min-height: $min_item_height;
+    position: relative;
+
+    &:after {
+      position: absolute;
+      border-left: $min_item_height / 2 solid $color_primary_light;
+      border-top: $min_item_height / 2 solid transparent;
+      border-bottom: $min_item_height / 2 solid transparent;
+      content: '';
+      top: 0;
+      right: 0;
+      opacity: 0;
+    }
+
+    &.selected {
+      background-color: $color_secondary;
+      margin: $border_overhang (-$border_overhang) $border_overhang 0;
+
+      &:after {
+        right: -$min_item_height / 2;
+        border-left: $min_item_height / 2 solid $color_secondary;
+        border-top: $min_item_height / 2 solid transparent;
+        border-bottom: $min_item_height / 2 solid transparent;
+        opacity: 1;
+      }
+    }
+
+    &:hover {
+      background-color: $color_highlight;
+
+      &:after {
+        border-left: $min_item_height / 2 solid $color_highlight;
+      }
+    }
+  }
+}
+

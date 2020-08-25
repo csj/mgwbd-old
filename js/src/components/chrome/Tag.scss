@@ -1,0 +1,27 @@
+@import 'styles/common.scss';
+
+
+.Tag {
+  display: inline-block;
+  background: $color_primary;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-weight: bold;
+  font-family: $font_family_sans_serif;
+  font-size: $font_size_body;
+
+  &.sizesmall {
+    font-size: $font_size_body - 4px;
+    font-weight: initial;
+  }
+
+  &.sizelarge {
+    font-size: $font_size_body + 4px;
+  }
+
+  .lightText {
+    color: white;
+  }
+
+} /* .Tag */
+

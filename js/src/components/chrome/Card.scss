@@ -1,0 +1,84 @@
+@import 'styles/common.scss';
+
+.Card {
+
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 0;
+
+  &:hover .shadow {
+    opacity: 1;
+  }
+
+  .shadow {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+  }
+
+  .card {
+    display: flex;
+
+    &.horizontal {
+      flex-direction: row;
+    }
+
+    &.vertical {
+      flex-direction: column;
+    }
+  }
+
+  .noImg {
+    border: 2px solid $color_secondary;
+  }
+
+  .padded {
+    padding: $spacing_paragraph;
+
+    &.children {
+      padding-top: 0;
+    }
+  }
+
+  .children {
+    overflow: clip;
+  }
+
+  .content {
+    width: 100%;
+  }
+
+  .header {
+    font-weight: bold;
+    font-family: $font_family_sans_serif;
+
+    &:not(:last-child) {
+      margin-bottom: $spacing_paragraph;
+    }
+  }
+
+  .text {
+  }
+
+  .img {
+    height: 160px;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .horizontal .img {
+    width: 160px;
+    height: 100%;
+  }
+
+  ._buttons {
+    text-align: right;
+  }
+}

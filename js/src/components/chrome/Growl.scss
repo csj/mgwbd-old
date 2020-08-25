@@ -1,0 +1,8 @@
+@import 'styles/common.scss';
+
+.p-growl {
+  &.el {
+    top: $topnav_height + 20px;
+  }
+} /* .p-growl */
+

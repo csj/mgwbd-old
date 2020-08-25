@@ -1,0 +1,49 @@
+@import 'styles/common.scss';
+
+body {
+  background-color: $color_primary;
+}
+
+.App {
+
+  * {
+    transition: 250ms;
+
+    &:after, &:before {
+      transition: 250ms;
+    }
+
+    .noAnimate {
+      transition: initial;
+
+      &:after, &:before {
+        transition: 250ms;
+      }
+    }
+
+    /* Selectors blacklisted from transition as it interferes with their use. */
+    .p-resizable-column,
+    .p-column-resizer-helper,
+    .p-dialog-enter-done {
+      transition: 0ms;
+    }
+  }
+
+  ._AppBackdrop {
+    display: flex;
+    background-color: white;
+  }
+
+  ._AppContent {
+    flex-grow: 1;
+    border-left: 4px solid $color_secondary;
+    border-right: 4px solid $color_secondary;
+    padding: 0 2em;
+  }
+
+  ._AppContent > * {
+    margin-bottom: 2em;
+    margin-top: 2em;
+  }
+}
+

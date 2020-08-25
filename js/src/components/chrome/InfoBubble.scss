@@ -1,0 +1,38 @@
+@import 'styles/common.scss';
+
+
+$_target_size: 32px;
+
+
+.InfoBubble {
+  display: inline-block;
+  position: relative;
+  height: 1em;
+  width: 1em;
+  margin: 0 8px;
+
+  button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    min-width: $_target_size;
+    min-height: $_target_size;
+  }
+
+  i {
+    font-size: 24px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+} /* .InfoBubble */
+
+
+.InfoBubble-tooltip {
+  max-width: 400px;
+} /* .InfoBubble-tooltip */
+

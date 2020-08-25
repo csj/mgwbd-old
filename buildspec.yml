@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+  pre_build:
+    commands:
+      - printenv
+      - chmod +x scripts/set_eb_env_vars.sh
+      - scripts/set_eb_env_vars.sh CB_ENV_VARIABLE $CB_ENV_VARIABLE
+      - scripts/set_eb_env_vars.sh CB_ENV_PARAMETER $CB_ENV_PARAMETER
+      - scripts/set_eb_env_vars.sh CODEBUILD_BUILD_ID $CODEBUILD_BUILD_ID
+      - scripts/set_eb_env_vars.sh CODEBUILD_BUILD_URL $CODEBUILD_BUILD_URL
+      - scripts/set_eb_env_vars.sh CODEBUILD_RESOLVED_SOURCE_VERSION $CODEBUILD_RESOLVED_SOURCE_VERSION
+     #- npm test --prefix js
+     #- python py/setup.py pytest
+      - pip install -r py/requirements.txt
+      - pytest py
+  build:
+    commands:
+      - npm install --prefix js
+      - npm run build --prefix js
+      - cp -r js/build/static py
+      - cp js/build/index.html py/static
+      - cp js/build/favicon.ico py/static
+
+artifacts:
+  base-directory: py
+  files:
+    - '**/*'
+

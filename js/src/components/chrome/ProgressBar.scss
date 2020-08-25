@@ -1,0 +1,33 @@
+@import 'styles/common.scss';
+
+
+.ProgressBar {
+  .stats {
+    &>* {
+      display: inline-block;
+      margin: 0 4px;
+    }
+    margin-bottom: 8px;
+  }
+
+  .bar {
+    background-color: #cccccc;
+    height: 16px;
+    width: 80%;
+    margin: 0 auto;
+
+    &>* {
+      height: 100%;
+      display: inline-block;
+    }
+
+    .done {
+      background-color: $color_secondary;
+    }
+
+    .pending {
+      background-color: $color_highlight;
+    }
+  }
+} /* .ProgressBar */
+

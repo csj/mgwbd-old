@@ -1,0 +1,22 @@
+@import 'styles/common.scss';
+
+.FormDisplay {
+  .warn {
+    color: $color_warn;
+
+    &.above {
+      padding-bottom: 8px;
+    }
+
+    &.below {
+      padding-top: 8px;
+    }
+  }
+
+  .msg {
+    color: $color_highlight;
+    padding-bottom: 16px;
+    padding-top: 16px;
+  }
+}
+

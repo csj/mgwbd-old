@@ -1,0 +1,24 @@
+@import 'styles/common.scss';
+
+
+.LabelValue {
+  &.leftRight {
+    display: flex;
+
+    &>*:first-child {
+      flex-grow: 1;
+    }
+  }
+
+  &.labelBold {
+    &>.label {
+      font-weight: bold;
+    }
+  }
+
+  &.valueBold {
+    &>.value {
+      font-weight: bold;
+    }
+  }
+} /* .LabelValue */
