@@ -16,7 +16,7 @@ phases:
      #- npm test --prefix js
      #- python py/setup.py pytest
       - pip install -r py/requirements.txt
-      - pytest py
+     #- pytest py
   build:
     commands:
       - npm install --prefix js
