@@ -39,7 +39,6 @@ class Environment extends React.Component {
         {JSON.stringify(data, undefined, 2)}
       </Card>
     );
-    return JSON.stringify(data, undefined, 2);
   }
 
   render() {

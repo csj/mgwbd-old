@@ -1,5 +1,4 @@
-// Color palette: https://coolors.co/094685-03bc96-d5b331-3279a5-d0005d
-
+@import 'styles/media.scss';
 
 
 $color_1: #d73859ff;  // "brick red"
@@ -56,7 +55,10 @@ $topnav_height: 48px;
   }
 
   .section {
-    margin: $spacing_section 0;
+    margin: $spacing_section/2 0;
+    @include desktop {
+      margin: $spacing_section 0;
+    }
 
     &:first-child {
       margin-top: 0;

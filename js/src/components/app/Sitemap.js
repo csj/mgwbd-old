@@ -1,6 +1,8 @@
+import Dandelions from 'games/Dandelions';
 import Default from 'page/Default';
 import Environment from 'page/internal/Environment';
 import GamesList from 'page/GamesList';
+import GamePlay from 'page/GamePlay';
 import Icons from 'page/internal/Icons';
 
 
@@ -12,11 +14,11 @@ const NAV_LINKS = Object.freeze([
     sidenavVisible: false,
     children: [
       {
-        label: 'Game1',
-        path: '/games/game1',
-        component: Default,
+        label: 'Dandelions',
+        path: '/games/dandelions',
+        component: GamePlay,
         componentProps: {
-          content: 'Game 1!',
+          game: Dandelions,
         },
       },
     ],

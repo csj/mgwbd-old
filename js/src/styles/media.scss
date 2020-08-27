@@ -1,15 +1,25 @@
 
+
+$desktop_width: 600px;
+
+
 .desktop {
   display: none;
 }
 
-@media only screen and (min-width: 601px) {
+@media only screen and (min-width: #{$desktop_width}) {
   .desktop {
     display: block;
   }
 
   .mobile {
     display: none;
+  }
+}
+
+@mixin desktop {
+  @media screen and (min-width: #{$desktop_width}) {
+    @content;
   }
 }
 

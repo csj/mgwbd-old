@@ -1,7 +1,11 @@
 import './GamesList.scss';
 import Card from 'components/chrome/Card';
 import React from 'react';
-import game1img from 'images/sequencium-preview.jpg';
+import dandelionsPreviewImg from 'images/dandelions-preview.png';
+import neighborsPreviewImg from 'images/neighbors-preview.png';
+import propheciesPreviewImg from 'images/prophecies-preview.png';
+import sequenciumPreviewImg from 'images/sequencium-preview.png';
+import { NavLink } from 'react-router-dom';
 
 
 const GAMES = [
@@ -9,25 +13,25 @@ const GAMES = [
     name: 'Dandelions',
     path: '/games/dandelions',
     tagline: 'This is a great tagline for game 1',
-    image: game1img,
+    image: dandelionsPreviewImg,
   },
   {
     name: 'Sequencium',
     path: '/games/sequencium',
     tagline: 'This is a great tagline for game 2',
-    image: game1img,
+    image: sequenciumPreviewImg,
   },
   {
     name: 'Prophecies',
     path: '/games/prophecies',
     tagline: 'This is a great tagline for game 3',
-    image: game1img,
+    image: propheciesPreviewImg,
   },
   {
     name: 'Neighbors',
     path: '/games/neighbors',
     tagline: 'This is a great tagline for game 4',
-    image: game1img,
+    image: neighborsPreviewImg,
   },
 ];
 
@@ -35,15 +39,13 @@ const GAMES = [
 class GamesList extends React.Component {
   renderGameCard(game) {
     return (
-      <div className='p-col-12 p-md-6' key={game.name}>
-        <div
-            className='gameCardWrapper'
-            onClick={_ => document.location = game.path}>
+      <div className='p-col-12 p-md-6 p-lg-4' key={game.name}>
+        <NavLink to={game.path} className='gameCardWrapper'>
           <Card
               img={game.image}
               header={game.name}
               text={game.tagline} />
-        </div>
+        </NavLink>
       </div>
     );
   }
@@ -51,7 +53,7 @@ class GamesList extends React.Component {
   render() {
     return (
       <div className='GamesList page'>
-        <div className='title'>
+        <div className='subtitle'>
           Games List
         </div>
         <p>

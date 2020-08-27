@@ -4,6 +4,15 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
 
+/**
+ * Displays an icon which, when clicked, brings up a dialog.
+ *
+ * Props:
+ *   className
+ *   icon
+ *   header
+ *   content
+ */
 class InfoDialog extends React.Component {
   constructor() {
     super();
@@ -17,7 +26,7 @@ class InfoDialog extends React.Component {
   render() {
     return (
       <div className={`InfoDialog ${this.props.className}`}>
-        <i className='pi pi-info-circle' />
+        <i className={`pi ${this.props.icon || 'pi-info-circle'}`} />
         <Button
             className='target'
             label=''

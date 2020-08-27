@@ -43,6 +43,11 @@ $_target_size: 32px;
   display: flex;
   flex-direction: column;
 
+  .p-dialog-header {
+    background: white;
+    padding: 4px 16px;
+  }
+
   .p-dialog-title,
   .p-dialog-titlebar-icons {
     font-family: $font_family_sans_serif;
