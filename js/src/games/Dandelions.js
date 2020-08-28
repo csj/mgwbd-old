@@ -8,11 +8,16 @@ import React from 'react';
  *   compass: {
  *     directions: ['N', 'E', ...],
  *   },
- *   grid: {
- *     ???
- *   },
+ *   grid: [
+ *     [null, 'F', 'S', 'S', 'S'],
+ *     [null, null, null, null, null],
+ *     [null, null, null, null, null],
+ *     [null, null, null, null, null],
+ *     [null, null, null, null, null],
+ *   ],
  *   lastMove: {
- *     ???
+ *     compass: ...
+ *     grid: ...
  *   },
  *   playerTurn: 1, // 1 or 2
  * }
@@ -24,6 +29,12 @@ const SquareStates = Object.freeze({
   NULL: null,
   FLWR: 'F',
   SEED: 'S',
+});
+
+
+const Move = Object.freeze({
+  grid: (row, col) => ({grid: {row, col}}),
+  compass: d => ({compass: d}),
 });
 
 
@@ -69,13 +80,6 @@ class Dandelions extends Game {
     return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
   }
 
-  onChooseMove(gameState, move) {
-    // TODO for now, just allow the move and update the game state.
-    console.log(gameState);
-    console.log(move);
-
-  }
-
   renderCanvas(gameState) {
     return (
       <DandelionsCanvas
@@ -87,6 +91,7 @@ class Dandelions extends Game {
 }
 
 
+Dandelions.Move = Move;
 Dandelions.SquareStates = SquareStates;
 
 

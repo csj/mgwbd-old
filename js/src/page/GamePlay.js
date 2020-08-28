@@ -1,6 +1,7 @@
 import './GamePlay.scss';
 import { Button } from 'primereact/button';
 import InfoDialog from 'components/chrome/InfoDialog';
+import GameManager from 'games/GameManager';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
 import PlayerManager from 'players/PlayerManager';
@@ -11,26 +12,39 @@ class GamePlay extends React.Component {
 
   constructor(props) {
     super();
-    this.game = new props.game();
+    let game = new props.game();
+    game.setMoveHandler(this.onMove.bind(this));
     this.playerManager = new PlayerManager.Factory().create();
+    this.gameManager = new GameManager.Factory().create();
+    this.gameManager.setGame(game);
+    this.gameManager.setGameStateChangeHandler(
+        this.onGameStateChange.bind(this));
     this.state = {
-      gameState: this.game.getBlankGameState(),
+      gameState: this.gameManager.getGameState(),
     };
   }
 
   onNewGame() {
-    let playerNames = this.game.getDefaultPlayerNames();
+    let playerNames = this.gameManager.getGame().getDefaultPlayerNames();
     this.playerManager.resetPlayers();
     this.playerManager.createLocalHumanPlayer(playerNames[0]);
     this.playerManager.createLocalHumanPlayer(playerNames[1]);
-    this.setState({gameState: this.game.getNewGameState()});
+    this.gameManager.startGame();
+  }
+
+  onMove(gameState, action) {
+    this.gameManager.onAction(action);
+  }
+
+  onGameStateChange(gameState) {
+    this.setState({gameState});
   }
 
   renderInstructions() {
     return (
       <InfoDialog
           header='Instructions'
-          content={this.game.renderInstructions()} />
+          content={this.gameManager.getGame().renderInstructions()} />
     );
   }
 
@@ -44,14 +58,14 @@ class GamePlay extends React.Component {
   }
 
   renderGameCanvas() {
-    return this.game.renderCanvas(this.state.gameState);
+    return this.gameManager.getGame().renderCanvas(this.state.gameState);
   }
 
   render() {
     return (
       <div className='GamePlay page'>
         <div className='section subtitle'>
-          {this.game.getDisplayName()}
+          {this.gameManager.getGame().getDisplayName()}
         </div>
         <div className='section'>
           <div className='gameMenu'>

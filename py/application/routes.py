@@ -3,6 +3,7 @@ import os
 from flask import Blueprint, jsonify, redirect, render_template, request
 from flask_cors import cross_origin
 from werkzeug.exceptions import BadRequest
+from application.games import gamePlayer
 
 
 MAIN_GROUP = 'main'
@@ -25,6 +26,15 @@ def landing(path=''):
 def static_redirect():
   scheme = 'http' if 'localhost:' in request.host else 'https'
   return redirect(scheme + '://' + request.host + '/static' + request.path)
+
+@main_blueprint.route('/gameplay/action', methods=['POST'])
+@cross_origin()
+def gameplay_action():
+  result = gamePlayer.action(
+      request.json['gameType'],
+      request.json['gameState'],
+      request.json['action'])
+  return jsonify(result)
 
 # TODO make this admin-protected
 @main_blueprint.route('/admin/internal/environment')

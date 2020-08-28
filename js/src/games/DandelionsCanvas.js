@@ -20,6 +20,10 @@ class DandelionsCanvas extends React.Component {
     };
   }
 
+  componentWillReceiveProps(props) {
+    this.setState({ compassHover: null, squareHover: { row: null, col: null }});
+  }
+
   onChooseMove(move) {
     this.props.onChooseMove(this.props.gameState, move);
   }
@@ -57,7 +61,9 @@ class DandelionsCanvas extends React.Component {
           onMouseOver={() => this.setState({squareHover: selection})}
           onMouseOut={() =>
               this.setState({squareHover: {row: null, col: null}})}
-          onClick={() => isClickable && this.onChooseMove({grid: selection})} />
+          onClick={() => 
+              isClickable &&
+              this.onChooseMove(Dandelions.Move.grid(rowIndex, colIndex))} />
     );
   }
 
@@ -71,11 +77,11 @@ class DandelionsCanvas extends React.Component {
     );
   }
 
-  renderCompassPoint(direction, isHighlighted) {
+  renderCompassPoint(keyPrefix, direction, isHighlighted) {
     let url = isHighlighted ?
         dandelionsWindNorthHighlighted : dandelionsWindNorth;
     return (
-      <div key={direction} className='compassOverlay'>
+      <div key={`${keyPrefix} ${direction}`} className='compassOverlay'>
         <div
             className={`compassPoint dir${direction}`}
             style={{backgroundImage: `url(${url})`}} />
@@ -98,7 +104,8 @@ class DandelionsCanvas extends React.Component {
             className='touchTarget'
             onMouseOver={() => this.setState({compassHover: direction})}
             onMouseOut={() => this.setState({compassHover: null})}
-            onClick={() => this.onChooseMove({compass: direction})} />
+            onClick={() =>
+                this.onChooseMove(Dandelions.Move.compass(direction))} />
       </div>
     );
   }
@@ -108,16 +115,22 @@ class DandelionsCanvas extends React.Component {
     let highlightLastTurn = null;
     let highlightHover = null;
     if (gameState.lastMove && gameState.lastMove.compass) {
-      highlightLastTurn = this.renderCompassPoint(gameState.lastMove.compass, true);
+      let compass = gameState.lastMove.compass;
+      console.log(compass);
+      let direction = compass.directions.length && compass.directions[0];
+      if (direction) {
+        highlightLastTurn = this.renderCompassPoint('last', direction, true);
+      }
     }
     if (this.state.compassHover !== null) {
-      highlightHover = this.renderCompassPoint(this.state.compassHover, true);
+      highlightHover = this.renderCompassPoint(
+          'hover', this.state.compassHover, true);
     }
     return (
       <div className='compass'>
         <div className='compassOverlay'
             style={{backgroundImage: `url(${dandelionsCompass})`}} />
-        {directions.map(d => this.renderCompassPoint(d, false))}
+        {directions.map(d => this.renderCompassPoint('used', d, false))}
         {highlightLastTurn}
         {highlightHover}
         <div className='compassOverlay touchTargetHolder'>

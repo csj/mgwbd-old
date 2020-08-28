@@ -30,8 +30,13 @@ class Game {
   }
 
   onChooseMove(gameState, move) {
-    // Consider creating a game manager to orchestrate this.
-    console.log(move);
+    if (this.moveHandler) {
+      this.moveHandler(gameState, move);
+    }
+  }
+
+  setMoveHandler(fn) {
+    this.moveHandler = fn;
   }
 
   renderCanvas(gameState) {
