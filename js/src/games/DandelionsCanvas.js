@@ -21,8 +21,7 @@ class DandelionsCanvas extends React.Component {
   }
 
   onChooseMove(move) {
-    // TODO emit this back to the game manager
-    console.log(move);
+    this.props.onChooseMove(this.props.gameState, move);
   }
 
   getSquareImg(squareState, isHighlighted) {
@@ -48,19 +47,17 @@ class DandelionsCanvas extends React.Component {
       highlight = true;
     }
     let url = this.getSquareImg(data, highlight);
+    let selection = {row: rowIndex, col: colIndex};
 
     return (
       <div 
-            className={`square ${isClickable ? 'clickable' : ''}`}
+          className={`square ${isClickable ? 'clickable' : ''}`}
           key={`r${rowIndex}c${colIndex}`}
           style={{backgroundImage: `url(${url})`}}
-          onMouseOver={(e) =>
-              this.setState({squareHover: {row: rowIndex, col: colIndex}})}
-          onMouseOut={(e) =>
+          onMouseOver={() => this.setState({squareHover: selection})}
+          onMouseOut={() =>
               this.setState({squareHover: {row: null, col: null}})}
-          onClick={() =>
-              isClickable && // this.onChooseMove
-              console.log(`clicked on row ${rowIndex}, col ${colIndex}`)} />
+          onClick={() => isClickable && this.onChooseMove({grid: selection})} />
     );
   }
 

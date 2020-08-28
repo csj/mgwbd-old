@@ -36,28 +36,32 @@ class Dandelions extends Game {
     return 'Dandelions';
   }
 
+  getDefaultPlayerNames() {
+    return [ 'Dandelions', 'Wind', ];
+  }
+
   getBlankGameState() {
     let sq = SquareStates;
     return {
-      compass: { directions: ['W', 'SE'] },
+      compass: { directions: [] },
       grid: [
         [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-        [sq.NULL, sq.NULL, sq.NULL, sq.FLWR, sq.NULL],
-        [sq.SEED, sq.SEED, sq.FLWR, sq.NULL, sq.SEED],
-        [sq.NULL, sq.NULL, sq.NULL, sq.SEED, sq.NULL],
-        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.SEED],
+        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
+        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
+        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
+        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
       ],
       lastMove: {
-        compass: 'SE',
+        compass: null,
         grid: [
           [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
           [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.SEED],
-          [sq.NULL, sq.NULL, sq.NULL, sq.SEED, sq.NULL],
-          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.SEED],
+          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
+          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
+          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
         ],
       },
-      playerTurn: null,
+      activePlayer: null,
     };
   }
 
@@ -65,11 +69,19 @@ class Dandelions extends Game {
     return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
   }
 
+  onChooseMove(gameState, move) {
+    // TODO for now, just allow the move and update the game state.
+    console.log(gameState);
+    console.log(move);
+
+  }
+
   renderCanvas(gameState) {
     return (
       <DandelionsCanvas
           gameState={gameState}
-          gameSettings={{}} />
+          gameSettings={{}}
+          onChooseMove={this.onChooseMove.bind(this)} />
     );
   }
 }

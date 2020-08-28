@@ -2,6 +2,7 @@
 
 .DandelionsCanvas {
   display: flex;
+  flex-direction: row-reverse;
 
   .compass {
     flex-basis: 33%;
@@ -73,6 +74,7 @@
       display: flex;
 
       .square {
+        background: white;
         border: 1px solid black;
         flex: 1 1;
         margin: 2px;

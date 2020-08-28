@@ -8,7 +8,11 @@ class Game {
   getDisplayName() {
   }
 
-  getInstructionsJsx() {
+  getDefaultPlayerNames() {
+    return [ 'Player 1', 'Player 2', ];
+  }
+
+  renderInstructions() {
     return (
       <div>Instructions</div>
     );
@@ -16,6 +20,18 @@ class Game {
 
   getBlankGameState() {
     return {};
+  }
+
+  getNewGameState() {
+    return Object.assign(
+        {},
+        this.getBlankGameState(),
+        {activePlayer: 1});
+  }
+
+  onChooseMove(gameState, move) {
+    // Consider creating a game manager to orchestrate this.
+    console.log(move);
   }
 
   renderCanvas(gameState) {

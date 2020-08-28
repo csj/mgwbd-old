@@ -1,0 +1,54 @@
+@import 'styles/common.scss';
+
+
+.PlayerArea {
+
+  .playersHolder {
+    display: flex;
+  }
+
+  .gradientHolder {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  .gradient {
+    position: relative;
+    height: 400px;
+    top: -400px;
+    z-index: 0;
+  }
+
+  .player {
+    display: flex;
+    flex-grow: 1;
+
+    &.player2 {
+      flex-direction: row-reverse;
+      img {
+        transform: scaleX(-1);
+      }
+    }
+
+    &.active {
+      transform-origin: bottom left;
+      transform: scaleX(1.5) scaleY(1.5);
+
+      &.player2 {
+        transform-origin: bottom right;
+      }
+    }
+
+    .name {
+      font-weight: bold;
+      padding: 8px;
+    }
+
+    img {
+      height: 60px;
+      width: 60px;
+    }
+  }
+} /* .PlayerArea */
+
