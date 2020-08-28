@@ -1,5 +1,5 @@
 import Dandelions from 'games/Dandelions';
-import Default from 'page/Default';
+// import Default from 'page/Default';
 import Environment from 'page/internal/Environment';
 import GamesList from 'page/GamesList';
 import GamePlay from 'page/GamePlay';

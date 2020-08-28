@@ -1,8 +1,97 @@
 @import 'styles/common.scss';
 
 .DandelionsCanvas {
-  .square {
-    border: 1px solid black;
+  display: flex;
+
+  .compass {
+    flex-basis: 33%;
+    position: relative;
+  }
+
+  .compassOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    &, & > * {
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .dirN { transform: rotate(0deg); }
+    .dirNE { transform: rotate(45deg); }
+    .dirE { transform: rotate(90deg); }
+    .dirSE { transform: rotate(135deg); }
+    .dirS { transform: rotate(180deg); }
+    .dirSW { transform: rotate(225deg); }
+    .dirW { transform: rotate(270deg); }
+    .dirNW { transform: rotate(315deg); }
+
+    .compassPoint {
+      width: 100%;
+      height: 100%;
+    }
+
+    &.touchTargetHolder {
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 18%;
+      display: flex;
+      align-items: center;
+      transform: rotate(90deg);
+
+      .touchTargetHolderInner {
+        position: absolute;
+        width: 100%;
+        margin: auto;
+      }
+
+      .touchTarget {
+        border-radius: 50%;
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        left: -210%;
+        width: 150%;
+
+        &:before {
+          content: '';
+          float: left;
+          padding-top: 100%;
+        }
+      }
+    }
+  }
+
+  .grid {
+    flex-basis: 67%;
+    z-index: 1;
+
+    .row {
+      display: flex;
+
+      .square {
+        border: 1px solid black;
+        flex: 1 1;
+        margin: 2px;
+
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &:after {
+          content: '';
+          display: block;
+          padding-top: 100%;
+        }
+
+        &.clickable {
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
 

@@ -5,9 +5,10 @@ import React from 'react';
 
 class GamePlay extends React.Component {
 
-  constructor() {
+  constructor(props) {
     super();
-    this.state = {};
+    this.game = new props.game();
+    this.gameState = this.game.getBlankGameState();
   }
 
   renderInstructions() {
@@ -28,11 +29,10 @@ class GamePlay extends React.Component {
   }
 
   renderGameCanvas() {
-    return this.game.renderCanvas(this.state.gameState);
+    return this.game.renderCanvas(this.gameState);
   }
 
   render() {
-    this.game = new this.props.game();
     return (
       <div className='GamePlay page'>
         <div className='section subtitle'>

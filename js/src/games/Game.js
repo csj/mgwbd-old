@@ -14,6 +14,10 @@ class Game {
     );
   }
 
+  getBlankGameState() {
+    return {};
+  }
+
   renderCanvas(gameState) {
     return null;
   }
