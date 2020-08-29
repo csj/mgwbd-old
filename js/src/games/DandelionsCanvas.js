@@ -15,13 +15,8 @@ class DandelionsCanvas extends React.Component {
   constructor() {
     super();
     this.state = {
-      compassHover: null,
-      squareHover: { row: null, col: null },
+      hover: {}, // { grid: { row: 1, col: 1} } or { compass: 'N' }
     };
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({ compassHover: null, squareHover: { row: null, col: null }});
   }
 
   onChooseMove(move) {
@@ -39,14 +34,17 @@ class DandelionsCanvas extends React.Component {
 
   renderGridSquare(data, rowIndex, colIndex) {
     let highlight = false;
-    let isClickable = data !== Dandelions.SquareStates.FLWR;
+    let isClickable = (
+        data !== Dandelions.SquareStates.FLWR &&
+        this.props.gameState.activePlayer === 1);
     if (this.props.gameState.lastMove.grid[rowIndex][colIndex] != null) {
       data = this.props.gameState.lastMove.grid[rowIndex][colIndex];
       highlight = true;
     }
     if (isClickable &&
-        this.state.squareHover.row === rowIndex &&
-        this.state.squareHover.col === colIndex) {
+        this.state.hover.grid &&
+        this.state.hover.grid.row === rowIndex &&
+        this.state.hover.grid.col === colIndex) {
       data = Dandelions.SquareStates.FLWR;
       highlight = true;
     }
@@ -58,9 +56,8 @@ class DandelionsCanvas extends React.Component {
           className={`square ${isClickable ? 'clickable' : ''}`}
           key={`r${rowIndex}c${colIndex}`}
           style={{backgroundImage: `url(${url})`}}
-          onMouseOver={() => this.setState({squareHover: selection})}
-          onMouseOut={() =>
-              this.setState({squareHover: {row: null, col: null}})}
+          onMouseOver={() => this.setState({hover: {grid: selection}})}
+          onMouseOut={() => this.setState({hover: {}})}
           onClick={() => 
               isClickable &&
               this.onChooseMove(Dandelions.Move.grid(rowIndex, colIndex))} />
@@ -81,7 +78,7 @@ class DandelionsCanvas extends React.Component {
     let url = isHighlighted ?
         dandelionsWindNorthHighlighted : dandelionsWindNorth;
     return (
-      <div key={`${keyPrefix} ${direction}`} className='compassOverlay'>
+      <div key={`${keyPrefix} ${direction}`} className={'compassOverlay ' + keyPrefix}>
         <div
             className={`compassPoint dir${direction}`}
             style={{backgroundImage: `url(${url})`}} />
@@ -90,9 +87,8 @@ class DandelionsCanvas extends React.Component {
   }
 
   renderCompassTouchTarget(direction) {
-    // TODO render these only if it's the wind's turn and gameplay is active
-
-    if (this.props.gameState.compass.directions.indexOf(direction) !== -1) {
+    if (this.props.gameState.compass.directions.indexOf(direction) >= 0 ||
+        this.props.gameState.activePlayer !== 2) {
       return null;
     }
 
@@ -102,8 +98,8 @@ class DandelionsCanvas extends React.Component {
           className={`touchTargetHolderInner dir${direction}`}>
         <div
             className='touchTarget'
-            onMouseOver={() => this.setState({compassHover: direction})}
-            onMouseOut={() => this.setState({compassHover: null})}
+            onMouseOver={() => this.setState({hover: {compass: direction}})}
+            onMouseOut={() => this.setState({hover: {}})}
             onClick={() =>
                 this.onChooseMove(Dandelions.Move.compass(direction))} />
       </div>
@@ -116,15 +112,14 @@ class DandelionsCanvas extends React.Component {
     let highlightHover = null;
     if (gameState.lastMove && gameState.lastMove.compass) {
       let compass = gameState.lastMove.compass;
-      console.log(compass);
       let direction = compass.directions.length && compass.directions[0];
       if (direction) {
         highlightLastTurn = this.renderCompassPoint('last', direction, true);
       }
     }
-    if (this.state.compassHover !== null) {
+    if (this.state.hover.compass) {
       highlightHover = this.renderCompassPoint(
-          'hover', this.state.compassHover, true);
+          'hover', this.state.hover.compass, true);
     }
     return (
       <div className='compass'>
@@ -141,9 +136,12 @@ class DandelionsCanvas extends React.Component {
     )
   }
 
+  /**
+   * props:
+   *   gameState: Object
+   *   gameSettings: Object
+   */
   render() {
-    // this.props.gameState
-    // this.props.gameSettings
     return (
       <div className='DandelionsCanvas'>
         {this.renderCompass(this.props.gameState)}

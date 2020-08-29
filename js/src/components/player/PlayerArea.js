@@ -3,12 +3,21 @@ import React from 'react';
 
 
 class PlayerArea extends React.Component {
-  renderPlayer(player, index, extraClasses) {
+
+  renderPlayer(index) {
+    let player = this.props.players[index];
+    let playerNumber = index + 1;
+    let extraClasses = '';
+    if (this.props.activePlayer === playerNumber) {
+      extraClasses += ' active';
+    }
     return (
-      <div className={`player player${index} ${extraClasses}`}>
+      <div
+          key={playerNumber}
+          className={`player player${playerNumber} ${extraClasses}`}>
         <img
             src={player.getAvatar()}
-            alt={`Player {$index} avatar`}
+            alt={`Player {$playerNumber} avatar`}
             style={{filter: `hue-rotate(${player.getHueShift()}deg)`}} />
         <div className='name'>{player.getName()}</div>
       </div>
@@ -23,18 +32,12 @@ class PlayerArea extends React.Component {
     else if (this.props.players.length === 2) {
       content = (
         <div className='playersHolder'>
-          {this.renderPlayer(
-              this.props.players[0],
-              1,
-              this.props.activePlayer === 1 ? 'active' : '')}
-          {this.renderPlayer(
-              this.props.players[1],
-              2,
-              this.props.activePlayer === 2 ? 'active' : '')}
+          {this.props.players.map((p, i) => this.renderPlayer(i))}
         </div>
       );
     } else {
       content = 'Don\'t know how to render this yet!';
+      // But it's probably not too hard to do later.
     }
     return (
       <div className='PlayerArea'>

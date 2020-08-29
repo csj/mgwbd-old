@@ -4,7 +4,6 @@ import InfoDialog from 'components/chrome/InfoDialog';
 import GameManager from 'games/GameManager';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
-import PlayerManager from 'players/PlayerManager';
 import React from 'react';
 
 
@@ -14,21 +13,26 @@ class GamePlay extends React.Component {
     super();
     let game = new props.game();
     game.setMoveHandler(this.onMove.bind(this));
-    this.playerManager = new PlayerManager.Factory().create();
     this.gameManager = new GameManager.Factory().create();
     this.gameManager.setGame(game);
     this.gameManager.setGameStateChangeHandler(
         this.onGameStateChange.bind(this));
+    this.gameManager.setGamePhaseChangeHandler(
+        this.onGamePhaseChange.bind(this));
+    this.gameManager.setMessageHandler(this.onGameMessage.bind(this));
     this.state = {
       gameState: this.gameManager.getGameState(),
+      gamePhase: this.gameManager.getGamePhase(),
+      messages: [],
     };
   }
 
   onNewGame() {
     let playerNames = this.gameManager.getGame().getDefaultPlayerNames();
-    this.playerManager.resetPlayers();
-    this.playerManager.createLocalHumanPlayer(playerNames[0]);
-    this.playerManager.createLocalHumanPlayer(playerNames[1]);
+    let playerManager = this.gameManager.getPlayerManager();
+    playerManager.resetPlayers();
+    playerManager.createLocalHumanPlayer(playerNames[0]);
+    playerManager.createLocalHumanPlayer(playerNames[1]);
     this.gameManager.startGame();
   }
 
@@ -38,6 +42,14 @@ class GamePlay extends React.Component {
 
   onGameStateChange(gameState) {
     this.setState({gameState});
+  }
+
+  onGamePhaseChange(gamePhase) {
+    this.setState({gamePhase});
+  }
+
+  onGameMessage(msg) {
+    this.setState({messages: this.state.messages.concat(msg)});
   }
 
   renderInstructions() {
@@ -53,7 +65,7 @@ class GamePlay extends React.Component {
       <InfoDialog
           header='Settings'
           icon='pi-cog'
-          content={'Coming soon.'} />
+          content={'Settings go here'} />
     );
   }
 
@@ -87,10 +99,11 @@ class GamePlay extends React.Component {
           </div>
         </div>
         <PlayerArea
-            players={this.playerManager.getPlayers()}
+            players={this.gameManager.getPlayerManager().getPlayers()}
             activePlayer={this.state.gameState.activePlayer} />
         <div className='section log'>
-          Game log area
+          {this.state.messages.map(
+              (m, i) => <div key={i} className='message'>{m}</div>)}
         </div>
       </div>
     );

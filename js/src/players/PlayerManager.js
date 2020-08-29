@@ -19,6 +19,11 @@ class PlayerManager {
   getPlayers() {
     return this.players;
   }
+
+  getPlayer(index) {
+    // Gets player by Player Number, which is different from array index by one.
+    return this.players[index - 1];
+  }
 }
 
 

@@ -26,7 +26,7 @@ class Topnav extends React.Component {
           className={className + ' nav'}
           target='_blank'
           rel='noopener noreferrer'
-          onClick={e => e /*this.setState({sidebarVisible: false})*/}>
+          onClick={e => this.setState({sidebarVisible: false})}>
         {label}
       </a>
       );
@@ -37,7 +37,7 @@ class Topnav extends React.Component {
           to={path}
           className={className + ' nav'}
           activeClassName='selected'
-          onClick={e => e /*this.setState({sidebarVisible: false})*/}>
+          onClick={e => this.setState({sidebarVisible: false})}>
         {label}
       </NavLink>
     );

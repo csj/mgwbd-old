@@ -9,4 +9,17 @@
   .gameMenu {
     padding-bottom: 16px;
   }
+
+  .gameCanvas {
+    overflow: hidden;
+  }
+
+  .log {
+    .message {
+      display: none;
+      &:last-child {
+        display: block;
+      }
+    }
+  }
 } /* .GamePlay */

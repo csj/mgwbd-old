@@ -22,7 +22,8 @@ from .game import Game
         [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
       ],
     },
-    activePlayer: null,  # 1 or 2
+    activePlayer: None,  # 1 or 2
+    gameEnd: None,  # {win: 1} or {win: 2}
   }
 
   Example game actions:
@@ -51,6 +52,23 @@ blankLastMove = {
 
  
 class Dandelions(Game):
+
+  def gameEndCondition(self, gameState):
+    grid = gameState['grid']
+    allSquaresFilled = True
+    for row in range(len(grid)):
+      for col in range(len(grid[0])):
+        if grid[row][col] == sq['NULL']:
+          allSquaresFilled = False
+
+    if allSquaresFilled:
+      return { 'win': 1 }
+
+    if len(gameState['compass']['directions']) == 7:
+      return { 'win': 2 }
+    return None
+
+
   def actionGrid(self, gameState, action):
     row = action['grid']['row']
     col = action['grid']['col']
@@ -61,7 +79,9 @@ class Dandelions(Game):
     newGameState['grid'][row][col] = sq['FLWR']
     newGameState['lastMove'] = copy.deepcopy(blankLastMove)
     newGameState['lastMove']['grid'][row][col] = sq['FLWR']
-    return self.nextPlayerTurn(newGameState)
+    self.checkGameEndCondition(newGameState)
+    self.nextPlayerTurn(newGameState)
+    return newGameState
 
   def blowSeed(self, grid, direction, row, col):
     while row >= 0 and col >= 0 and row < len(grid) and col < len(grid[0]):
@@ -91,7 +111,9 @@ class Dandelions(Game):
     newGameState['lastMove']['compass']['directions'].append(direction)
     newGameState['lastMove']['grid'] = self.gridDiff(
         gameState['grid'], newGameState['grid'])
-    return self.nextPlayerTurn(newGameState)
+    self.checkGameEndCondition(newGameState)
+    self.nextPlayerTurn(newGameState)
+    return newGameState
 
   def action(self, gameState, action):
     if not gameState['activePlayer']:

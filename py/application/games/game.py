@@ -3,8 +3,13 @@
 class Game():
   def nextPlayerTurn(self, gameState):
     # By default, assumes two players alternating
-    gameState['activePlayer'] = gameState['activePlayer'] % 2 + 1
-    return gameState
+    if gameState['gameEnd']:
+      gameState['activePlayer'] = None
+    else:
+      gameState['activePlayer'] = gameState['activePlayer'] % 2 + 1
+
+  def checkGameEndCondition(self, gameState):
+    gameState['gameEnd'] = self.gameEndCondition(gameState)
 
   def gridDiff(self, oldGrid, newGrid):
     if len(oldGrid) != len(newGrid) or not len(oldGrid):
@@ -20,6 +25,9 @@ class Game():
         diffRow.append(None if oldVal == newVal else newVal)
       diffGrid.append(diffRow)
     return diffGrid
+
+  def gameEndCondition(self, gameState):
+    return None
 
   def action(self, gameState, action):
     return gameState
