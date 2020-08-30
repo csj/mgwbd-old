@@ -1,0 +1,115 @@
+@import 'styles/common.scss';
+
+
+.SequenciumCanvas {
+
+  .grid {
+    flex-basis: 67%;
+    z-index: 1;
+
+    .row {
+      display: flex;
+
+      .square {
+        border: 1px solid black;
+        flex: 1 1;
+        margin: 2px;
+        position: relative;
+        user-select: none;
+
+        &.player1 {
+          color: red;
+          .linkLine {
+            background: red;
+          }
+        }
+
+        &.player2{
+          color: blue;
+          .linkLine {
+            background: blue;
+          }
+        }
+
+        &.lastMove {
+          /* background: #00eeee60; */
+          background: radial-gradient(#fff, #00eeee40);
+        }
+
+        .touchable {
+          cursor: pointer;
+          &:hover {
+            background: #eeee0040;
+          }
+        }
+
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &:after {
+          content: '';
+          display: block;
+          padding-top: 100%;
+        }
+
+        &.clickable {
+          cursor: pointer;
+        }
+
+        .squareOverlay {
+          font-size: 24px;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .touchable {
+          z-index: 3;
+        }
+
+        .linkLineHolder {
+          @include noAnimate;
+          transform: rotate(45deg);
+          visibility: hidden;
+          z-index: 2;
+
+          .linkLine {
+            @include noAnimate;
+            position: relative;
+            width: 4px;
+            border-radius: 2px;
+            height: calc(60% + 6px);
+            bottom: calc(50% + 3px);
+          }
+
+          &.NE, &.SE, &.SW, &.NW {
+            .linkLine {
+              height: calc(85% + 6px);
+              bottom: calc(71% + 3px);
+            }
+          }
+
+          &.N, &.NE, &.E, &.SE, &.S, &.SW, &.W, &.NW {
+            visibility: visible;
+          }
+
+          &.N  { transform: rotate(  0deg); }
+          &.NE { transform: rotate( 45deg); }
+          &.E  { transform: rotate( 90deg); }
+          &.SE { transform: rotate(135deg); }
+          &.S  { transform: rotate(180deg); }
+          &.SW { transform: rotate(225deg); }
+          &.W  { transform: rotate(270deg); }
+          &.NW { transform: rotate(315deg); }
+        }
+      } /* .square */
+    } /* .row */
+  } /* .grid */
+} /* .SequenciumCanvas */
+

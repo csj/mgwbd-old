@@ -83,6 +83,34 @@ $topnav_height: 48px;
 
 }
 
+
+// Animations
+@mixin noAnimate {
+  transition: initial;
+  &:after, &:before {
+    transition: 250ms;
+  }
+}
+* {
+  transition: 250ms;
+
+  &:after, &:before {
+    transition: 250ms;
+  }
+
+  .noAnimate {
+    @include noAnimate;
+  }
+
+  /* Selectors blacklisted from transition as it interferes with their use. */
+  .p-resizable-column,
+  .p-column-resizer-helper,
+  .p-dialog-enter-done {
+    transition: 0ms;
+  }
+}
+
+
 // Basic content/section layout
 
 .content .section {

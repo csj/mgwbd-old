@@ -1,9 +1,11 @@
 from .dandelions import Dandelions
+from .sequencium import Sequencium
 from werkzeug.exceptions import BadRequest
 
 
 _GAME_MAP = {
   'dandelions': Dandelions,
+  'sequencium': Sequencium,
 }
 
 

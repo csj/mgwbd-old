@@ -96,8 +96,12 @@ class GameManager {
     this.setGameState(gameState);
     if (gameState.gameEnd) {
       this.setGamePhase(Phase.POST_GAME);
-      // For now we assume there is a winning player, but future games may have
-      // other outcomes.
+      if (gameState.gameEnd.tie) {
+        this.sendMessage("Incredible, it's a tie! How about another?");
+        return;
+      }
+      console.log(gameState.gameEnd);
+      console.log(this.getPlayerManager());
       let winningPlayerName =
           this.getPlayerManager().getPlayer(gameState.gameEnd.win).getName();
       this.sendMessage(

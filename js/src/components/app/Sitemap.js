@@ -1,4 +1,5 @@
 import Dandelions from 'games/Dandelions';
+import Sequencium from 'games/Sequencium';
 // import Default from 'page/Default';
 import Environment from 'page/internal/Environment';
 import GamesList from 'page/GamesList';
@@ -19,6 +20,14 @@ const NAV_LINKS = Object.freeze([
         component: GamePlay,
         componentProps: {
           game: Dandelions,
+        },
+      },
+      {
+        label: 'Sequencium',
+        path: '/games/sequencium',
+        component: GamePlay,
+        componentProps: {
+          game: Sequencium,
         },
       },
     ],

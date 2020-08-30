@@ -68,7 +68,6 @@ class Dandelions(Game):
       return { 'win': 2 }
     return None
 
-
   def actionGrid(self, gameState, action):
     row = action['grid']['row']
     col = action['grid']['col']

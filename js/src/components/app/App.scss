@@ -7,29 +7,6 @@ body {
 
 .App {
 
-  * {
-    transition: 250ms;
-
-    &:after, &:before {
-      transition: 250ms;
-    }
-
-    .noAnimate {
-      transition: initial;
-
-      &:after, &:before {
-        transition: 250ms;
-      }
-    }
-
-    /* Selectors blacklisted from transition as it interferes with their use. */
-    .p-resizable-column,
-    .p-column-resizer-helper,
-    .p-dialog-enter-done {
-      transition: 0ms;
-    }
-  }
-
   ._AppBackdrop {
     display: flex;
     background-color: white;

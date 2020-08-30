@@ -70,7 +70,9 @@ class GamePlay extends React.Component {
   }
 
   renderGameCanvas() {
-    return this.gameManager.getGame().renderCanvas(this.state.gameState);
+    return this.gameManager.getGame().renderCanvas(
+        this.state.gameState,
+        this.gameManager.getPlayerManager());
   }
 
   render() {
