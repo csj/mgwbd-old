@@ -1,5 +1,5 @@
-import Dandelions from 'games/Dandelions';
-import Sequencium from 'games/Sequencium';
+import Dandelions from 'games/dandelions/Dandelions';
+import Sequencium from 'games/sequencium/Sequencium';
 // import Default from 'page/Default';
 import Environment from 'page/internal/Environment';
 import GamesList from 'page/GamesList';

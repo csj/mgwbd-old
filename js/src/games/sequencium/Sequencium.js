@@ -1,5 +1,5 @@
 import SequenciumCanvas from './SequenciumCanvas';
-import Game from './Game';
+import Game from 'games/Game';
 import React from 'react';
 
 /**
@@ -51,14 +51,6 @@ class Sequencium extends Game {
         [null, null, null, Sq(2, 3, 'SE'), null, null],
         [null, null, null, null, Sq(2, 2, 'SE'), null],
         [null, null, null, null, null, Sq(2, 1, null)],
-        /*
-        [Sq(1, 1, null), Sq(1, 2, 'W'), Sq(1, 2, 'W'), Sq(1, 2, 'W'), Sq(1, 2, 'W'), Sq(1, 2, 'W')],
-        [Sq(1, 1, null), Sq(1, 2, 'W'), Sq(1, 2, 'W'), Sq(1, 3, 'W'), Sq(1, 2, 'W'), Sq(1, 2, 'W')],
-        [Sq(1, 1, null), Sq(1, 2, 'W'), Sq(1, 2, 'W'), Sq(1, 2, 'W'), null, null],
-        [Sq(2, 1, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, null)],
-        [Sq(2, 1, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, null)],
-        [Sq(2, 1, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 2, 'E'), Sq(2, 1, null)],
-        */
       ],
       lastMove: {
         // row: 3, col: 3,
@@ -74,13 +66,11 @@ class Sequencium extends Game {
           gameSettings={{
             playerHues: playerManager.getPlayers().map(p => p.getHueShift()),
           }}
+          createMove={Move}
           onChooseMove={this.onChooseMove.bind(this)} />
     );
   }
 }
-
-
-Sequencium.Move = Move;
 
 
 export default Sequencium;

@@ -1,5 +1,4 @@
 import './SequenciumCanvas.scss';
-import Sequencium from './Sequencium';
 import React from 'react';
 
 
@@ -17,8 +16,10 @@ class SequenciumCanvas extends React.Component {
   }
 
   onMouseUp(rowTo, colTo) {
-    let rowFrom = this.state.mouseDown.row || rowTo;
-    let colFrom = this.state.mouseDown.col || colTo;
+    let rowFrom = this.state.mouseDown.row === undefined ?
+        rowTo : this.state.mouseDown.row;
+    let colFrom = this.state.mouseDown.col === undefined ?
+        colTo : this.state.mouseDown.col;
     if (rowFrom - rowTo < -1 || rowFrom - rowTo > 1 ||
         colFrom - colTo < -1 || colFrom - colTo > 1 ||
         !this.validTo[rowTo][colTo] ||
@@ -31,8 +32,8 @@ class SequenciumCanvas extends React.Component {
       colFrom = this.validTo[rowTo][colTo].fromCol;
     }
     this.setState({mouseDown: {}});
-    this.onChooseMove(Sequencium.Move(
-      this.props.gameState.activePlayer, rowFrom, colFrom, rowTo, colTo));
+    this.onChooseMove(this.props.createMove(
+        this.props.gameState.activePlayer, rowFrom, colFrom, rowTo, colTo));
   }
 
   calculateValidMoves(activePlayer, grid) {

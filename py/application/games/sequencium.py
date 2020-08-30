@@ -65,13 +65,13 @@ class Sequencium(Game):
       for c in range(len(grid[0])):
         if grid[r][c]:
           continue
-        for r2 in range(-1, 2):
-          for c2 in range(-1, 2):
-            if (r + r2 < 0 or r + r2 >= len(grid) or
-                c + c2 < 0 or c + c2 >= len(grid[0])):
+        for dr in range(-1, 2):
+          for dc in range(-1, 2):
+            if (r + dr < 0 or r + dr >= len(grid) or
+                c + dc < 0 or c + dc >= len(grid[0])):
               continue
-            if (grid[r + r2][c + c2] and
-                grid[r + r2][c + c2]['playerNumber'] == oppPlayer):
+            if (grid[r + dr][c + dc] and
+                grid[r + dr][c + dc]['playerNumber'] == oppPlayer):
               return True
     return False
 
@@ -98,7 +98,7 @@ class Sequencium(Game):
         'playerNumber': playerNumber, 'value': value, 'from': direction}
     newGameState['lastMove'] = {'row': rowTo, 'col': colTo}
     self.checkGameEndCondition(newGameState)
-    if self.opposingPlayerHasAvailableMove(playerNumber, grid):
+    if self.opposingPlayerHasAvailableMove(playerNumber, newGameState['grid']):
       self.nextPlayerTurn(newGameState)
     return newGameState
 

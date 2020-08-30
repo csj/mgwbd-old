@@ -1,13 +1,13 @@
 import './DandelionsCanvas.scss';
-import Dandelions from './Dandelions';
-import dandelionsCompass from 'images/dandelions-compass.png';
-import dandelionsWindNorth from 'images/dandelions-wind-north-1.png';
-import dandelionsWindNorthHighlighted from 'images/dandelions-wind-north-highlighted.png';
+import React from 'react';
+import dandelionsCompass from './images/dandelions-compass.png';
+import dandelionsWindNorth from './images/dandelions-wind-north-1.png';
+import dandelionsWindNorthHighlighted from './images/dandelions-wind-north-highlighted.png';
 import gamePieceAsterisk from 'images/game-piece-asterisk.png';
 import gamePieceAsteriskHighlighted from 'images/game-piece-asterisk-highlighted.png';
 import gamePieceDot from 'images/game-piece-dot.png';
 import gamePieceDotHighlighted from 'images/game-piece-dot-highlighted.png';
-import React from 'react';
+import { SquareStates, AllDirections } from './Constants.js';
 
 
 class DandelionsCanvas extends React.Component {
@@ -24,10 +24,10 @@ class DandelionsCanvas extends React.Component {
   }
 
   getSquareImg(squareState, isHighlighted) {
-    if (squareState === Dandelions.SquareStates.SEED) {
+    if (squareState === SquareStates.SEED) {
       return isHighlighted ? gamePieceDotHighlighted : gamePieceDot;
     }
-    if (squareState === Dandelions.SquareStates.FLWR) {
+    if (squareState === SquareStates.FLWR) {
       return isHighlighted ? gamePieceAsteriskHighlighted : gamePieceAsterisk;
     }
   }
@@ -35,7 +35,7 @@ class DandelionsCanvas extends React.Component {
   renderGridSquare(data, rowIndex, colIndex) {
     let highlight = false;
     let isClickable = (
-        data !== Dandelions.SquareStates.FLWR &&
+        data !== SquareStates.FLWR &&
         this.props.gameState.activePlayer === 1);
     if (this.props.gameState.lastMove.grid[rowIndex][colIndex] != null) {
       data = this.props.gameState.lastMove.grid[rowIndex][colIndex];
@@ -45,7 +45,7 @@ class DandelionsCanvas extends React.Component {
         this.state.hover.grid &&
         this.state.hover.grid.row === rowIndex &&
         this.state.hover.grid.col === colIndex) {
-      data = Dandelions.SquareStates.FLWR;
+      data = SquareStates.FLWR;
       highlight = true;
     }
     let url = this.getSquareImg(data, highlight);
@@ -60,7 +60,8 @@ class DandelionsCanvas extends React.Component {
           onMouseOut={() => this.setState({hover: {}})}
           onClick={() => 
               isClickable &&
-              this.onChooseMove(Dandelions.Move.grid(rowIndex, colIndex))} />
+              this.onChooseMove(
+                  this.props.createMove.grid(rowIndex, colIndex))} />
     );
   }
 
@@ -101,7 +102,7 @@ class DandelionsCanvas extends React.Component {
             onMouseOver={() => this.setState({hover: {compass: direction}})}
             onMouseOut={() => this.setState({hover: {}})}
             onClick={() =>
-                this.onChooseMove(Dandelions.Move.compass(direction))} />
+                this.onChooseMove(this.props.createMove.compass(direction))} />
       </div>
     );
   }
@@ -129,7 +130,7 @@ class DandelionsCanvas extends React.Component {
         {highlightLastTurn}
         {highlightHover}
         <div className='compassOverlay touchTargetHolder'>
-          {Dandelions.getAllDirections().map(
+          {AllDirections.map(
               d => this.renderCompassTouchTarget(d))}
         </div>
       </div>

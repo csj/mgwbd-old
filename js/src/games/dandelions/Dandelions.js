@@ -1,6 +1,7 @@
 import DandelionsCanvas from './DandelionsCanvas';
-import Game from './Game';
+import Game from 'games/Game';
 import React from 'react';
+import { SquareStates, AllDirections } from './Constants.js';
 
 /**
  * Game State looks like this:
@@ -22,14 +23,6 @@ import React from 'react';
  *   playerTurn: 1, // 1 or 2
  * }
  */
-
-
-/** Square states. */
-const SquareStates = Object.freeze({
-  NULL: null,
-  FLWR: 'F',
-  SEED: 'S',
-});
 
 
 const Move = Object.freeze({
@@ -76,23 +69,16 @@ class Dandelions extends Game {
     };
   }
 
-  static getAllDirections() {
-    return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  }
-
   renderCanvas(gameState) {
     return (
       <DandelionsCanvas
           gameState={gameState}
           gameSettings={{}}
+          createMove={Move}
           onChooseMove={this.onChooseMove.bind(this)} />
     );
   }
 }
-
-
-Dandelions.Move = Move;
-Dandelions.SquareStates = SquareStates;
 
 
 export default Dandelions;
