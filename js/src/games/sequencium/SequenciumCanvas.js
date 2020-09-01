@@ -7,7 +7,7 @@ class SequenciumCanvas extends React.Component {
   constructor() {
     super();
     this.state = {
-      mouseDown: {}, // { row: 1, col: 1}
+      moveFrom: {}, // { row: 1, col: 1}
     };
   }
 
@@ -16,22 +16,26 @@ class SequenciumCanvas extends React.Component {
   }
 
   onMouseUp(rowTo, colTo) {
-    let rowFrom = this.state.mouseDown.row === undefined ?
-        rowTo : this.state.mouseDown.row;
-    let colFrom = this.state.mouseDown.col === undefined ?
-        colTo : this.state.mouseDown.col;
+    if (rowTo === undefined || colTo === undefined) {
+      this.setState({moveFrom: {}});
+      return;
+    }
+    let rowFrom = this.state.moveFrom.row === undefined ?
+        rowTo : this.state.moveFrom.row;
+    let colFrom = this.state.moveFrom.col === undefined ?
+        colTo : this.state.moveFrom.col;
     if (rowFrom - rowTo < -1 || rowFrom - rowTo > 1 ||
         colFrom - colTo < -1 || colFrom - colTo > 1 ||
         !this.validTo[rowTo][colTo] ||
         this.props.gameState.grid[rowTo][colTo] !== null) {
-      this.setState({mouseDown: {}});
+      this.setState({moveFrom: {}});
       return;
     }
     if (rowTo === rowFrom && colTo === colFrom) {
       rowFrom = this.validTo[rowTo][colTo].fromRow;
       colFrom = this.validTo[rowTo][colTo].fromCol;
     }
-    this.setState({mouseDown: {}});
+    this.setState({moveFrom: {}});
     this.onChooseMove(this.props.createMove(
         this.props.gameState.activePlayer, rowFrom, colFrom, rowTo, colTo));
   }
@@ -100,11 +104,24 @@ class SequenciumCanvas extends React.Component {
         </div>
         <div
             className={`squareOverlay ${touchable ? 'touchable' : ''}`}
-            style={{backgroundImage: `url(${0})`}}
+            data-row={rowIndex}
+            data-col={colIndex}
             onMouseDown={() =>
-                this.setState({mouseDown: {row: rowIndex, col: colIndex}})}
-            onMouseUp={() => this.onMouseUp(rowIndex, colIndex)}>
-        </div>
+                this.setState({moveFrom: {row: rowIndex, col: colIndex}})}
+            onMouseUp={() => this.onMouseUp(rowIndex, colIndex)}
+            onTouchStart={() =>
+                this.setState({moveFrom: {row: rowIndex, col: colIndex}})}
+            onTouchEnd={e => {
+                let endTouch = e.changedTouches[e.changedTouches.length - 1];
+                let el = document.elementFromPoint(
+                    endTouch.pageX, endTouch.pageY);
+                if ('row' in el.dataset && 'col' in el.dataset) {
+                  this.onMouseUp(
+                      parseInt(el.dataset.row, 10),
+                      parseInt(el.dataset.col, 10));
+                }
+              }
+            } />
       </div>
     );
   }
