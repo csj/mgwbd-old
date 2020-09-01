@@ -1,7 +1,7 @@
 import DandelionsCanvas from './DandelionsCanvas';
 import Game from 'games/Game';
 import React from 'react';
-import { SquareStates, AllDirections } from './Constants.js';
+import { SquareStates } from './Constants.js';
 
 /**
  * Game State looks like this:

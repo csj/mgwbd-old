@@ -21,7 +21,8 @@ $font_size_body: 18px;
 $font_size_button: 16px;
 $font_size_small: 12px;
 
-$font_family_sans_serif: 'Lexend Deca', sans-serif;
+$font_family_title: MWBD;
+$font_family_game_number: MWBD;
 $font_family_sans_serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen-Sans', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif;
 $font_family_serif: Georgia, 'Times New Roman', serif;
 $font_family_monospace: monospace;
@@ -37,19 +38,19 @@ $topnav_height: 48px;
 	font-size: $font_size_body;
 
   .title {
-    font-family: $font_family_sans_serif;
+    font-family: $font_family_title;
     font-size: $font_size_title;
     color: $color_primary;
   }
 
   .subtitle {
-    font-family: $font_family_sans_serif;
+    font-family: $font_family_title;
     font-size: $font_size_subtitle;
     color: $color_primary;
   }
 
   .subsubtitle {
-    font-family: $font_family_sans_serif;
+    font-family: $font_family_title;
     font-size: $font_size_subsubtitle;
     color: $color_primary;
   }

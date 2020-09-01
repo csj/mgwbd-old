@@ -13,6 +13,8 @@
       .square {
         border: 1px solid black;
         flex: 1 1;
+        font-family: $font_family_game_number;
+        font-size: 32px;
         margin: 2px;
         position: relative;
         user-select: none;
@@ -58,7 +60,6 @@
         }
 
         .squareOverlay {
-          font-size: 24px;
           position: absolute;
           top: 0;
           bottom: 0;

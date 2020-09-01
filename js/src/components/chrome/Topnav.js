@@ -1,7 +1,7 @@
 import 'components/chrome/Topnav.scss';
 import React from 'react';
 import { Button } from 'primereact/button';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Sidebar } from 'primereact/sidebar';
 import { withRouter } from 'react-router';
 import Sitemap from 'components/app/Sitemap';
@@ -52,19 +52,26 @@ class Topnav extends React.Component {
     return filtered;
   }
 
+  renderTitle(content) {
+    return (
+      <div className='title'>
+        <NavLink to='/' className='nav'>
+          {content}
+        </NavLink>
+      </div>
+    );
+  }
+
   render() {
     let links = this.filter(this.props.links || []);
     return (
       <div className='Topnav sticky'>
         <div className='left'>
-          <Link to='/'>
-            {/* <img /> */}
-          </Link>
-          <div className='title'>
-            <NavLink to='/' className='nav'>
-              {this.props.children}
-            </NavLink>
-          </div>
+          <NavLink to='/'>
+            {this.props.logo ?
+                <img src={this.props.logo} className='logo' alt='logo' /> : ''}
+          </NavLink>
+          {this.props.children ? this.renderTitle(this.props.children) : null}
         </div>
         <div className='right'>
           <div className='desktop'>

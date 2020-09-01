@@ -2,9 +2,11 @@ import './App.scss';
 import 'primeflex/primeflex.scss';
 import 'primeicons/primeicons.css';
 import 'primereact/resources/primereact.min.css';
-import 'styles/theme.scss';
+import 'styles/fonts.scss';
 import 'styles/media.scss';
 import 'styles/page.scss';
+import 'styles/theme.scss';
+import logo from 'images/logo-white-small.png';
 import Footer from 'components/chrome/Footer';
 import Landing from 'page/Landing';
 import React from 'react';
@@ -57,8 +59,7 @@ class App extends React.Component {
           <ScrollToTop>
             <RedirectElement />
             <GrowlElement />
-            <Topnav links={topnavItems}>
-              MWBD - Games
+            <Topnav links={topnavItems} logo={logo}>
             </Topnav>
             <div className='_AppBackdrop'>
               <Sidenav />
