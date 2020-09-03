@@ -1,4 +1,5 @@
 import DandelionsCanvas from './DandelionsCanvas';
+import DandelionsInstructions from './DandelionsInstructions';
 import Game from 'games/Game';
 import React from 'react';
 import { SquareStates } from './Constants.js';
@@ -67,6 +68,10 @@ class Dandelions extends Game {
       },
       activePlayer: null,
     };
+  }
+
+  renderInstructions() {
+    return <DandelionsInstructions />;
   }
 
   renderCanvas(gameState) {

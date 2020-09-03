@@ -9,14 +9,20 @@ import { Dialog } from 'primereact/dialog';
  *
  * Props:
  *   className
+ *   dialogClassName
  *   icon
  *   header
  *   content
+ *   open - whether to render as initially visible
  */
 class InfoDialog extends React.Component {
   constructor() {
     super();
     this.state = {visible: false};
+  }
+
+  componentDidMount() {
+    this.setState({visible: this.props.open});
   }
 
   show() {
@@ -36,7 +42,7 @@ class InfoDialog extends React.Component {
               className: 'InfoDialog-tooltip',
             }} />
         <Dialog
-            className='InfoDialog-element'
+            className={`InfoDialog-element ${this.props.dialogClassName}`}
             dismissableMask
             blockScroll
             baseZIndex={9999}

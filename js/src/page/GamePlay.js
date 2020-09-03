@@ -1,6 +1,7 @@
 import './GamePlay.scss';
 import { Button } from 'primereact/button';
 import InfoDialog from 'components/chrome/InfoDialog';
+import GameInstructionsDialog from 'components/game/GameInstructions';
 import GameManager from 'games/GameManager';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
@@ -54,8 +55,9 @@ class GamePlay extends React.Component {
 
   renderInstructions() {
     return (
-      <InfoDialog
-          header='Instructions'
+      <GameInstructionsDialog
+          open={true}
+          header='Play Instructions'
           content={this.gameManager.getGame().renderInstructions()} />
     );
   }

@@ -1,0 +1,22 @@
+@import 'styles/common.scss';
+
+
+.GameInstructions {
+} /* .GameInstructions */
+
+.GameInstructionsDialog-dialogElement {
+  max-width: 800px;
+
+  h2 {
+    font-family: $font_family_title;
+    color: $color_1;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  @include desktop {
+    max-height: 80%;
+  }
+} /* .GameInstructionsDialog-dialogElement */
