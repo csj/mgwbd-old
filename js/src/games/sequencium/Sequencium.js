@@ -1,4 +1,5 @@
 import SequenciumCanvas from './SequenciumCanvas';
+import SequenciumInstructions from './SequenciumInstructions';
 import Game from 'games/Game';
 import React from 'react';
 
@@ -59,12 +60,17 @@ class Sequencium extends Game {
     };
   }
 
+  renderInstructions() {
+    return <SequenciumInstructions />;
+  }
+
   renderCanvas(gameState, playerManager) {
     return (
       <SequenciumCanvas
           gameState={gameState}
           gameSettings={{
-            playerHues: playerManager.getPlayers().map(p => p.getHueShift()),
+            playerStyleClasses:
+                playerManager.getPlayers().map(p => p.getPlayerStyleClass()),
           }}
           createMove={Move}
           onChooseMove={this.onChooseMove.bind(this)} />

@@ -1,19 +1,35 @@
 import LocalHumanPlayer from 'players/LocalHumanPlayer';
 
 
+const PlayerStyleClasses = [
+  'playerStyleA',
+  'playerStyleB',
+  'playerStyleC',
+  'playerStyleD',
+  'playerStyleE',
+];
+
+
 class PlayerManager {
   constructor() {
-    this.players = [];
+    this.resetPlayers();
+  }
+
+  chooseRandomPlayerStyle() {
+    let count = this.availableStyles.length;
+    let index = Math.floor(Math.random() * count);
+    return this.availableStyles.splice(index, 1)[0];
   }
 
   createLocalHumanPlayer(name) {
     let player = new LocalHumanPlayer(name);
-    player.setHueShift(Math.floor(Math.random()*360));
+    player.setPlayerStyleClass(this.chooseRandomPlayerStyle());
     this.players.push(player);
   }
 
   resetPlayers() {
     this.players = [];
+    this.availableStyles = [...PlayerStyleClasses];
   }
 
   getPlayers() {

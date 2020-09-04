@@ -17,12 +17,12 @@ class Player {
     return 'Player';
   }
 
-  setHueShift(hueShift) {
-    this.hueShift = hueShift;
+  setPlayerStyleClass(playerStyleClass) {
+    this.playerStyleClass = playerStyleClass;
   }
 
-  getHueShift() {
-    return this.hueShift;
+  getPlayerStyleClass() {
+    return this.playerStyleClass;
   }
 }
 

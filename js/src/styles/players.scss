@@ -1,0 +1,49 @@
+@import 'styles/common.scss';
+@use 'sass:selector';
+
+
+$_playerColorDefault: #888888;
+// https://coolors.co/ff595e-e0a500-8ac926-1982c4-6a4c93
+$_playerColorA: #ff595e;  // red
+$_playerColorB: #e0a500;  // yellow
+$_playerColorC: #8ac926;  // green
+$_playerColorD: #1982c4;  // blue
+$_playerColorE: #6a4c93;  // purple
+
+
+@mixin playerStyles($selector, $property, $value: 'COLOR') {
+  #{$selector} {
+    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorDefault));
+  }
+
+  @at-root #{selector-append(&, '.playerStyleA')} #{$selector} {
+    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorA));
+  }
+
+  @at-root #{selector-append(&, '.playerStyleB')} #{$selector} {
+    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorB));
+  }
+
+  @at-root #{selector-append(&, '.playerStyleC')} #{$selector} {
+    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorC));
+  }
+
+  @at-root #{selector-append(&, '.playerStyleD')} #{$selector} {
+    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorD));
+  }
+
+  @at-root #{selector-append(&, '.playerStyleE')} #{$selector} {
+    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorE));
+  }
+}
+
+
+@function str-replace($string, $search, $replace: '') {
+  $index: str-index($string, $search);
+  
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+  
+  @return $string;
+}

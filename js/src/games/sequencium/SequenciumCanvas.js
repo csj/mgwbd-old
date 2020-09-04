@@ -70,40 +70,36 @@ class SequenciumCanvas extends React.Component {
   }
 
   getPlayerStyle(playerNumber) {
-    if (!playerNumber) {
-      return null;
-    }
-    let hue = this.props.gameSettings.playerHues[playerNumber];
-    if (hue) {
-      return {
-        color: 'red',
-        filter: `hue-rotate(${hue}deg)`,
-      };
-    }
-    return null;
+    return this.props.gameSettings.playerStyleClasses[playerNumber - 1];
   }
 
   renderGridSquare(data, rowIndex, colIndex) {
-    let touchable =
-      this.validFrom[rowIndex][colIndex] || this.validTo[rowIndex][colIndex];
     let isLastMove =
       this.props.gameState.lastMove.row === rowIndex &&
       this.props.gameState.lastMove.col === colIndex;
+    let playerNumber= data && data.playerNumber;
+    let touchable =
+      this.validFrom[rowIndex][colIndex] || this.validTo[rowIndex][colIndex];
+    let active =
+        this.state.moveFrom.row === rowIndex &&
+        this.state.moveFrom.col === colIndex;
+    let playerStyleClass =
+        this.getPlayerStyle(playerNumber || this.props.gameState.activePlayer);
+
+    let outerClassName = `square ${playerStyleClass} `;
+    if (playerNumber) {
+      outerClassName += `player${playerNumber}`;
+    }
     return (
-      <div key={`r${rowIndex}c${colIndex}`}
-          className={`
-              square
-              player${data && data.playerNumber}
-              ${isLastMove ? 'lastMove' : ''}`}
-          style={/* TODO this.getPlayerStyle(data && data.playerNumber) */null}>
-        <div className='squareOverlay'>
+      <div key={`r${rowIndex}c${colIndex}`} className={outerClassName}>
+        <div className={`squareOverlay ${isLastMove ? 'lastMove' : ''}`}>
           {(data && data.value) || ''}
         </div>
         <div className={`squareOverlay linkLineHolder ${data && data.from}`}>
           <div className='linkLine' />
         </div>
         <div
-            className={`squareOverlay ${touchable ? 'touchable' : ''}`}
+            className={`squareOverlay ${active ? 'active' : ''} ${touchable ? 'touchable' : ''}`}
             data-row={rowIndex}
             data-col={colIndex}
             onMouseDown={() =>

@@ -1,4 +1,5 @@
 @import 'styles/common.scss';
+@import 'styles/players.scss';
 
 
 .SequenciumCanvas {
@@ -11,6 +12,9 @@
       display: flex;
 
       .square {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
         border: 1px solid black;
         flex: 1 1;
         font-family: $font_family_game_number;
@@ -19,35 +23,14 @@
         position: relative;
         user-select: none;
 
-        &.player1 {
-          color: red;
-          .linkLine {
-            background: red;
-          }
-        }
-
-        &.player2{
-          color: blue;
-          .linkLine {
-            background: blue;
-          }
-        }
-
-        &.lastMove {
-          /* background: #00eeee60; */
-          background: radial-gradient(#fff, #00eeee40);
-        }
+        @include playerStyles('*', 'color');
+        @include playerStyles('.linkLine', 'background-color', 'COLOR');
+        @include playerStyles('.touchable:hover', 'background', 'COLOR40');
+        @include playerStyles('.lastMove', 'background', 'radial-gradient(#fff, COLOR40)');
 
         .touchable {
           cursor: pointer;
-          &:hover {
-            background: #eeee0040;
-          }
         }
-
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
 
         &:after {
           content: '';
@@ -78,7 +61,6 @@
           @include noAnimate;
           transform: rotate(45deg);
           visibility: hidden;
-          z-index: 2;
 
           .linkLine {
             @include noAnimate;

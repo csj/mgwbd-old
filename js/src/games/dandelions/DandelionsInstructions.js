@@ -129,10 +129,10 @@ problem!)
 `;
 
 
-class DandelionInstructions extends React.Component {
+class DandelionsInstructions extends React.Component {
   render() {
     return (
-      <div className='DandelionInstructions'>
+      <div className='DandelionsInstructions'>
         <ReactMarkdown source={content} />
       </div>
     );
@@ -140,4 +140,4 @@ class DandelionInstructions extends React.Component {
 }
 
 
-export default DandelionInstructions;
+export default DandelionsInstructions;

@@ -14,11 +14,12 @@ class PlayerArea extends React.Component {
     return (
       <div
           key={playerNumber}
-          className={`player player${playerNumber} ${extraClasses}`}>
+          className={`
+              player player${playerNumber} ${player.getPlayerStyleClass()}
+              ${extraClasses}`}>
         <img
             src={player.getAvatar()}
-            alt={`Player {$playerNumber} avatar`}
-            style={{filter: `hue-rotate(${player.getHueShift()}deg)`}} />
+            alt={`Player {$playerNumber} avatar`} />
         <div className='name'>{player.getName()}</div>
       </div>
     );
