@@ -1,4 +1,5 @@
 @import 'styles/common.scss';
+@import 'styles/players.scss';
 
 
 .PlayerArea {
@@ -24,6 +25,8 @@
     display: flex;
     flex-grow: 1;
 
+    @include playerStyles('*', 'color');
+
     &.player2 {
       flex-direction: row-reverse;
       img {
@@ -41,6 +44,7 @@
     }
 
     .name {
+      font-family: MWBD;
       font-weight: bold;
       padding: 8px;
     }

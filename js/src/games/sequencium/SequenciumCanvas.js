@@ -1,4 +1,5 @@
 import './SequenciumCanvas.scss';
+import grid66 from 'images/grid-6-6.png';
 import React from 'react';
 
 
@@ -85,8 +86,10 @@ class SequenciumCanvas extends React.Component {
         this.state.moveFrom.col === colIndex;
     let playerStyleClass =
         this.getPlayerStyle(playerNumber || this.props.gameState.activePlayer);
+    let designStyleClass =
+        this.props.gameSettings.handDrawnGrid ? null : 'squareOutline';
 
-    let outerClassName = `square ${playerStyleClass} `;
+    let outerClassName = `square ${playerStyleClass} ${designStyleClass} `;
     if (playerNumber) {
       outerClassName += `player${playerNumber}`;
     }
@@ -140,9 +143,11 @@ class SequenciumCanvas extends React.Component {
   render() {
     this.calculateValidMoves(
         this.props.gameState.activePlayer, this.props.gameState.grid);
+    let gridBgUrl = this.props.gameSettings.handDrawnGrid ? grid66 : null;
     return (
       <div className='SequenciumCanvas'>
-        <div className='grid'>
+        <div className='grid'
+            style={{backgroundImage: `url(${gridBgUrl})`}}>
           {this.props.gameState.grid.map(this.renderGridRow, this)}
         </div>
       </div>

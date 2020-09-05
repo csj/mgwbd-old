@@ -1,8 +1,8 @@
 import './GamePlay.scss';
 import { Button } from 'primereact/button';
-import InfoDialog from 'components/chrome/InfoDialog';
-import GameInstructionsDialog from 'components/game/GameInstructions';
+import GameInstructionsDialog from 'components/game/GameInstructionsDialog';
 import GameManager from 'games/GameManager';
+import GameSettingsDialog from 'components/game/GameSettingsDialog';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
 import React from 'react';
@@ -20,9 +20,12 @@ class GamePlay extends React.Component {
         this.onGameStateChange.bind(this));
     this.gameManager.setGamePhaseChangeHandler(
         this.onGamePhaseChange.bind(this));
+    this.gameManager.setGameSettingsChangeHandler(
+        this.onGameSettingsChange.bind(this));
     this.gameManager.setMessageHandler(this.onGameMessage.bind(this));
     this.state = {
       gameState: this.gameManager.getGameState(),
+      gameSettings: this.gameManager.getGameSettings(),
       gamePhase: this.gameManager.getGamePhase(),
       messages: [],
     };
@@ -49,31 +52,37 @@ class GamePlay extends React.Component {
     this.setState({gamePhase});
   }
 
+  onGameSettingsChange(gameSettings) {
+    this.setState({gameSettings});
+  }
+
   onGameMessage(msg) {
     this.setState({messages: this.state.messages.concat(msg)});
   }
 
   renderInstructions() {
+    /* open={true} */
     return (
       <GameInstructionsDialog
-          open={true}
-          header='Play Instructions'
           content={this.gameManager.getGame().renderInstructions()} />
     );
   }
 
   renderSettings() {
     return (
-      <InfoDialog
-          header='Settings'
-          icon='pi-cog'
-          content={'Settings go here'} />
+      <GameSettingsDialog
+          settingsConfig={this.gameManager.getGame().getSettingsConfig()}
+          settings={this.state.gameSettings}
+          onSettingsChange={
+            settings => this.gameManager.setGameSettings(settings)
+          } />
     );
   }
 
   renderGameCanvas() {
     return this.gameManager.getGame().renderCanvas(
         this.state.gameState,
+        this.state.gameSettings,
         this.gameManager.getPlayerManager());
   }
 

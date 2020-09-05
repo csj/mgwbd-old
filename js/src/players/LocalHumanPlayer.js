@@ -1,5 +1,4 @@
 import Player from 'players/Player';
-import face1 from 'images/face1.png';
 import faceA from 'images/faceA.png';
 import faceB from 'images/faceB.png';
 import faceC from 'images/faceC.png';

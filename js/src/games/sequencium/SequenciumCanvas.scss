@@ -5,7 +5,11 @@
 .SequenciumCanvas {
 
   .grid {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     flex-basis: 67%;
+    touch-action: none;
     z-index: 1;
 
     .row {
@@ -15,7 +19,6 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        border: 1px solid black;
         flex: 1 1;
         font-family: $font_family_game_number;
         font-size: 32px;
@@ -25,8 +28,12 @@
 
         @include playerStyles('*', 'color');
         @include playerStyles('.linkLine', 'background-color', 'COLOR');
-        @include playerStyles('.touchable:hover', 'background', 'COLOR40');
-        @include playerStyles('.lastMove', 'background', 'radial-gradient(#fff, COLOR40)');
+        @include playerStyles('.touchable:hover', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
+        @include playerStyles('.lastMove', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
+
+        &.squareOutline {
+          border: 1px solid black;
+        }
 
         .touchable {
           cursor: pointer;

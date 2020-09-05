@@ -29,6 +29,10 @@ class Game {
         {activePlayer: 1});
   }
 
+  getSettingsConfig() {
+    return [];
+  }
+
   onChooseMove(gameState, move) {
     if (this.moveHandler) {
       this.moveHandler(gameState, move);
@@ -39,7 +43,7 @@ class Game {
     this.moveHandler = fn;
   }
 
-  renderCanvas(gameState) {
+  renderCanvas(gameState, gameSettings) {
     return null;
   }
 }

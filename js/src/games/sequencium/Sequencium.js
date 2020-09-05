@@ -32,6 +32,15 @@ import React from 'react';
 const Move = (playerNumber, rowFrom, colFrom, rowTo, colTo) => ({
     playerNumber, rowFrom, colFrom, rowTo, colTo});
 const Sq = (playerNumber, value, from) => ({playerNumber, value, from});
+const Settings = [
+  {
+    canonicalName: 'handDrawnGrid',
+    displayName: 'Hand-drawn grid',
+    description: 'Displays the game grid as a drawing.',
+    values: [true, false],
+    defaultValue: true,
+  },
+];
 
 
 class Sequencium extends Game {
@@ -60,18 +69,23 @@ class Sequencium extends Game {
     };
   }
 
+  getSettingsConfig() {
+    return Settings;
+  }
+
   renderInstructions() {
     return <SequenciumInstructions />;
   }
 
-  renderCanvas(gameState, playerManager) {
+  renderCanvas(gameState, gameSettings, playerManager) {
+    gameSettings = Object.assign({}, gameSettings, {
+      playerStyleClasses:
+          playerManager.getPlayers().map(p => p.getPlayerStyleClass()),
+    });
     return (
       <SequenciumCanvas
           gameState={gameState}
-          gameSettings={{
-            playerStyleClasses:
-                playerManager.getPlayers().map(p => p.getPlayerStyleClass()),
-          }}
+          gameSettings={gameSettings}
           createMove={Move}
           onChooseMove={this.onChooseMove.bind(this)} />
     );

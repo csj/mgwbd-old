@@ -10,8 +10,10 @@ import { Dialog } from 'primereact/dialog';
  * Props:
  *   className
  *   dialogClassName
+ *   dialogRef
  *   icon
  *   header
+ *   footer
  *   content
  *   open - whether to render as initially visible
  */
@@ -43,12 +45,14 @@ class InfoDialog extends React.Component {
             }} />
         <Dialog
             className={`InfoDialog-element ${this.props.dialogClassName}`}
+            ref={this.props.dialogRef}
             dismissableMask
             blockScroll
             baseZIndex={9999}
             appendTo={document.body}
             visible={this.state.visible}
             header={this.props.header || 'Information'}
+            footer={this.props.footer}
             onHide={() => this.setState({visible: false})}>
           <div onClick={e => e.stopPropagation()}>
             {this.state.visible ? this.props.content : ''}

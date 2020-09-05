@@ -7,7 +7,7 @@ class PlayerArea extends React.Component {
   renderPlayer(index) {
     let player = this.props.players[index];
     let playerNumber = index + 1;
-    let extraClasses = '';
+    let extraClasses = player.getPlayerStyleClass();
     if (this.props.activePlayer === playerNumber) {
       extraClasses += ' active';
     }

@@ -15,12 +15,19 @@ class GameManager {
     this.playerManager = new PlayerManager.Factory().create();
     this.game = null;
     this.gameState = {};
+    this.gameSettings = {};
     this.gamePhase = Phase.PRE_GAME;
   }
 
   setGame(game) {
     this.game = game;
     this.gameState = game.getBlankGameState();
+    this.gameSettings = game.getSettingsConfig()
+        .reduce(
+            (result, item) => {
+              result[item.canonicalName] = item.defaultValue;
+              return result;
+            }, {});
   }
 
   setGameStateChangeHandler(fn) {
@@ -45,6 +52,17 @@ class GameManager {
     }
   }
 
+  setGameSettingsChangeHandler(fn) {
+    this.gameSettingsChangeHandler = fn;
+  }
+
+  setGameSettings(gameSettings) {
+    this.gameSettings = gameSettings;
+    if (this.gameSettingsChangeHandler) {
+      this.gameSettingsChangeHandler(this.gameSettings);
+    }
+  }
+
   setMessageHandler(fn) {
     this.messageHandler = fn;
   }
@@ -61,6 +79,10 @@ class GameManager {
 
   getGameState() {
     return this.gameState;
+  }
+
+  getGameSettings() {
+    return this.gameSettings;
   }
 
   getGamePhase() {
@@ -100,8 +122,6 @@ class GameManager {
         this.sendMessage("Incredible, it's a tie! How about another?");
         return;
       }
-      console.log(gameState.gameEnd);
-      console.log(this.getPlayerManager());
       let winningPlayerName =
           this.getPlayerManager().getPlayer(gameState.gameEnd.win).getName();
       this.sendMessage(
