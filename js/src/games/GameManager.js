@@ -45,10 +45,13 @@ class GameManager {
     this.gamePhaseChangeHandler = fn;
   }
 
-  setGamePhase(gamePhase) {
+  setGamePhase(gamePhase, msg) {
     this.gamePhase = gamePhase;
     if (this.gamePhaseChangeHandler) {
       this.gamePhaseChangeHandler(this.gamePhase);
+    }
+    if (msg) {
+      this.sendMessage(msg);
     }
   }
 

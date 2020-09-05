@@ -12,8 +12,22 @@
     min-height: 400px;
   }
 
+  .readOnlyMessage {
+    margin-top: 12px;
+    margin-bottom: 36px;
+    font-style: italic;
+  }
+
   .setting {
-    margin-top: 8px;
+    margin-top: 12px;
+
+    .settingDisplayName {
+      font-weight: bold;
+    }
+
+    .settingDescription {
+      font-size: 14px;
+    }
   }
 
   .buttons {

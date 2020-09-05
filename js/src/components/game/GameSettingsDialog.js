@@ -11,6 +11,7 @@ import {Dropdown} from 'primereact/dropdown';
  *   settingsConfig
  *   settings
  *   onSettingsChange
+ *   readOnly
  */
 class GameSettingsDialog extends React.Component {
 
@@ -59,6 +60,7 @@ class GameSettingsDialog extends React.Component {
       <Dropdown
           value={selectedValue}
           options={options}
+          disabled={this.props.readOnly}
           onChange={e => {
             this.setState({
               settings: Object.assign(
@@ -68,10 +70,17 @@ class GameSettingsDialog extends React.Component {
   }
 
   renderSetting(settingConfig) {
+    let label = (
+      <LabelValue
+          label={settingConfig.displayName}
+          labelClassName='settingDisplayName'
+          value={settingConfig.description}
+          valueClassName='settingDescription' />
+    );
     return (
       <div className='setting' key={settingConfig.canonicalName}>
         <LabelValue
-            label={settingConfig.displayName}
+            label={label}
             value={this.renderSettingSelector(
                 settingConfig,
                 this.props.settings[settingConfig.canonicalName])}
@@ -80,9 +89,18 @@ class GameSettingsDialog extends React.Component {
     );
   }
 
+  renderReadOnlyMessage() {
+    return (
+      <div className='readOnlyMessage'>
+        You may modify settings between games.
+      </div>
+    );
+  }
+
   renderSettings() {
     return (
       <div>
+        {this.props.readOnly ? this.renderReadOnlyMessage() : ''}
         {this.props.settingsConfig.map(this.renderSetting.bind(this))}
       </div>
     );

@@ -40,6 +40,10 @@ class GamePlay extends React.Component {
     this.gameManager.startGame();
   }
 
+  onEndGame() {
+    this.gameManager.setGamePhase(GameManager.Phase.POST_GAME, 'Game aborted!');
+  };
+
   onMove(gameState, action) {
     this.gameManager.onAction(action);
   }
@@ -61,22 +65,27 @@ class GamePlay extends React.Component {
   }
 
   renderInstructions() {
-    /* open={true} */
     return (
       <GameInstructionsDialog
+          open={true}
           content={this.gameManager.getGame().renderInstructions()} />
     );
   }
 
   renderSettings() {
-    return (
-      <GameSettingsDialog
-          settingsConfig={this.gameManager.getGame().getSettingsConfig()}
-          settings={this.state.gameSettings}
-          onSettingsChange={
-            settings => this.gameManager.setGameSettings(settings)
-          } />
-    );
+    let settingsConfig = this.gameManager.getGame().getSettingsConfig();
+    if (settingsConfig.length > 0) {
+      return (
+        <GameSettingsDialog
+            settingsConfig={settingsConfig}
+            settings={this.state.gameSettings}
+            readOnly={this.state.gamePhase === GameManager.Phase.PLAYING}
+            onSettingsChange={
+              settings => this.gameManager.setGameSettings(settings)
+            } />
+      );
+    }
+    return null;
   }
 
   renderGameCanvas() {
@@ -84,6 +93,25 @@ class GamePlay extends React.Component {
         this.state.gameState,
         this.state.gameSettings,
         this.gameManager.getPlayerManager());
+  }
+
+  renderGameMenuButtons() {
+    if (this.state.gamePhase === GameManager.Phase.PRE_GAME) {
+      return (
+        <Button label='New Game' onClick={this.onNewGame.bind(this)} />
+      );
+    }
+    if (this.state.gamePhase === GameManager.Phase.PLAYING) {
+      return (
+        <Button label='Quit Game' onClick={this.onEndGame.bind(this)} />
+      );
+    }
+    if (this.state.gamePhase === GameManager.Phase.POST_GAME) {
+      return (
+        <Button label='New Game' onClick={this.onNewGame.bind(this)} />
+      );
+    }
+    return null;
   }
 
   render() {
@@ -95,10 +123,7 @@ class GamePlay extends React.Component {
         <div className='section'>
           <div className='gameMenu'>
             <LabelValue
-                label={
-                  <Button
-                      label='New Game' onClick={this.onNewGame.bind(this)} />
-                }
+                label={this.renderGameMenuButtons()}
                 value={
                   <div>
                     {this.renderInstructions()}
