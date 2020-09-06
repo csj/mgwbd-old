@@ -9,12 +9,13 @@ _GAME_MAP = {
 }
 
 
-def action(gameType, gameState, action):
+def action(gameType, gameState, action, gamePhase=None, gameSettings=None):
   if gameType not in _GAME_MAP:
     raise BadRequest('Unknown game.')
   # TODO: in the future, instantiate this from database
   gameInst = _GAME_MAP[gameType]()
-  newGameState = gameInst.action(gameState, action)
+  newGameState = gameInst.action(
+      gameState, action, gamePhase=gamePhase, gameSettings=gameSettings)
   return {
     'gameState': newGameState,
   }

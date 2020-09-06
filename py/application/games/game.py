@@ -29,6 +29,6 @@ class Game():
   def gameEndCondition(self, gameState):
     return None
 
-  def action(self, gameState, action):
+  def action(self, gameState, action, **kwargs):
     return gameState
 

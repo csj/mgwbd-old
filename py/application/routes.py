@@ -33,7 +33,10 @@ def gameplay_action():
   result = gamePlayer.action(
       request.json['gameType'],
       request.json['gameState'],
-      request.json['action'])
+      request.json['action'],
+      gamePhase=request.json['gamePhase'], # TODO don't accept this parameter
+      gameSettings=request.json['gameSettings'], # TODO don't accept this parameter
+      )
   return jsonify(result)
 
 # TODO make this admin-protected

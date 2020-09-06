@@ -75,7 +75,22 @@ class Sequencium(Game):
               return True
     return False
 
-  def action(self, gameState, action):
+  def nextPlayerTurn(self, gameState, gameSettings):
+    playerNumber = gameState['activePlayer']
+    grid = gameState['grid']
+    if not self.opposingPlayerHasAvailableMove(playerNumber, grid):
+      return
+    if not gameSettings or not gameSettings['doubleMoves']:
+      Game.nextPlayerTurn(self, gameState)
+      return
+    numOccupiedSquares = 0
+    for r in range(len(grid)):
+      for c in range(len(grid[0])):
+        numOccupiedSquares += 1 if grid[r][c] else 0
+    if numOccupiedSquares % 2:
+      Game.nextPlayerTurn(self, gameState)
+
+  def action(self, gameState, action, gamePhase=None, gameSettings=None):
     grid = gameState['grid']
     playerNumber = action['playerNumber']
     rowFrom = action['rowFrom']
@@ -98,7 +113,6 @@ class Sequencium(Game):
         'playerNumber': playerNumber, 'value': value, 'from': direction}
     newGameState['lastMove'] = {'row': rowTo, 'col': colTo}
     self.checkGameEndCondition(newGameState)
-    if self.opposingPlayerHasAvailableMove(playerNumber, newGameState['grid']):
-      self.nextPlayerTurn(newGameState)
+    self.nextPlayerTurn(newGameState, gameSettings)
     return newGameState
 

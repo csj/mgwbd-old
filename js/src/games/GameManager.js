@@ -110,7 +110,9 @@ class GameManager {
     this.http.post('/gameplay/action')
         .send({
           gameType: this.game.getCanonicalName(),
-          gameState: this.gameState,
+          gameState: this.gameState, // TODO store this server side
+          gamePhase: this.gamePhase, // TODO store this server side
+          gameSettings: this.gameSettings, // TODO store this server side
           action,
         })
         .then(this.onActionResponse.bind(this), this.onActionError);

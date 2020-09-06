@@ -41,7 +41,6 @@ const Settings = [
     defaultValue: true,
   },
   {
-    // TODO: implement this
     canonicalName: 'doubleMoves',
     displayName: 'Players move twice',
     description: 'Starting with the second player’s first turn, each player moves twice per turn.',

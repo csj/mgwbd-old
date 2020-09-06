@@ -114,7 +114,7 @@ class Dandelions(Game):
     self.nextPlayerTurn(newGameState)
     return newGameState
 
-  def action(self, gameState, action):
+  def action(self, gameState, action, **kwargs):
     if not gameState['activePlayer']:
       return gameState
     if gameState['activePlayer'] == 1 and 'grid' in action:
