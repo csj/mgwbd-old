@@ -27,6 +27,15 @@ def static_redirect():
   scheme = 'http' if 'localhost:' in request.host else 'https'
   return redirect(scheme + '://' + request.host + '/static' + request.path)
 
+@main_blueprint.route('/gameplay/new', methods=['POST'])
+@cross_origin()
+def gameplay_new():
+  result = gamePlayer.new(
+      request.json['gameType'],
+      request.json['gameSettings'],
+      )
+  return jsonify(result)
+
 @main_blueprint.route('/gameplay/action', methods=['POST'])
 @cross_origin()
 def gameplay_action():

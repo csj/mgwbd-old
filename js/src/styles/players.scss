@@ -1,4 +1,5 @@
 @import 'styles/common.scss';
+@use 'sass:color';
 @use 'sass:selector';
 
 
@@ -12,28 +13,39 @@ $_playerColorE: #6a4c93;  // purple
 
 
 @mixin playerStyles($selector, $property, $value: 'COLOR') {
+
   #{$selector} {
     #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorDefault));
   }
 
   @at-root #{selector-append(&, '.playerStyleA')} #{$selector} {
-    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorA));
+    $v1: str-replace($value, 'COLOR', $_playerColorA);
+    $v2: str-replace($v1, 'HUE', #{hue($_playerColorA)});
+    #{$property}: unquote($v2);
   }
 
   @at-root #{selector-append(&, '.playerStyleB')} #{$selector} {
-    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorB));
+    $v1: str-replace($value, 'COLOR', $_playerColorB);
+    $v2: str-replace($v1, 'HUE', #{hue($_playerColorB)});
+    #{$property}: unquote($v2);
   }
 
   @at-root #{selector-append(&, '.playerStyleC')} #{$selector} {
-    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorC));
+    $v1: str-replace($value, 'COLOR', $_playerColorC);
+    $v2: str-replace($v1, 'HUE', #{hue($_playerColorC)});
+    #{$property}: unquote($v2);
   }
 
   @at-root #{selector-append(&, '.playerStyleD')} #{$selector} {
-    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorD));
+    $v1: str-replace($value, 'COLOR', $_playerColorD);
+    $v2: str-replace($v1, 'HUE', #{hue($_playerColorD)});
+    #{$property}: unquote($v2);
   }
 
   @at-root #{selector-append(&, '.playerStyleE')} #{$selector} {
-    #{$property}: unquote(str-replace($value, 'COLOR', $_playerColorE));
+    $v1: str-replace($value, 'COLOR', $_playerColorE);
+    $v2: str-replace($v1, 'HUE', #{hue($_playerColorE)});
+    #{$property}: unquote($v2);
   }
 }
 

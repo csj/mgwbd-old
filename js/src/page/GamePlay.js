@@ -2,6 +2,7 @@ import './GamePlay.scss';
 import { Button } from 'primereact/button';
 import GameInstructionsDialog from 'components/game/GameInstructionsDialog';
 import GameManager from 'games/GameManager';
+import GamePhase from 'games/GamePhase';
 import GameSettingsDialog from 'components/game/GameSettingsDialog';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
@@ -41,7 +42,7 @@ class GamePlay extends React.Component {
   }
 
   onEndGame() {
-    this.gameManager.setGamePhase(GameManager.Phase.POST_GAME, 'Game aborted!');
+    this.gameManager.setGamePhase(GamePhase.POST_GAME, 'Game aborted!');
   };
 
   onMove(gameState, action) {
@@ -79,7 +80,7 @@ class GamePlay extends React.Component {
         <GameSettingsDialog
             settingsConfig={settingsConfig}
             settings={this.state.gameSettings}
-            readOnly={this.state.gamePhase === GameManager.Phase.PLAYING}
+            readOnly={this.state.gamePhase === GamePhase.PLAYING}
             onSettingsChange={
               settings => this.gameManager.setGameSettings(settings)
             } />
@@ -96,17 +97,17 @@ class GamePlay extends React.Component {
   }
 
   renderGameMenuButtons() {
-    if (this.state.gamePhase === GameManager.Phase.PRE_GAME) {
+    if (this.state.gamePhase === GamePhase.PRE_GAME) {
       return (
         <Button label='New Game' onClick={this.onNewGame.bind(this)} />
       );
     }
-    if (this.state.gamePhase === GameManager.Phase.PLAYING) {
+    if (this.state.gamePhase === GamePhase.PLAYING) {
       return (
         <Button label='Quit Game' onClick={this.onEndGame.bind(this)} />
       );
     }
-    if (this.state.gamePhase === GameManager.Phase.POST_GAME) {
+    if (this.state.gamePhase === GamePhase.POST_GAME) {
       return (
         <Button label='New Game' onClick={this.onNewGame.bind(this)} />
       );

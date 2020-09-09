@@ -1,12 +1,6 @@
+import GamePhase from './GamePhase';
 import Http from 'components/http/Http';
 import PlayerManager from 'players/PlayerManager';
-
-
-const Phase = {
-  PRE_GAME: 1,
-  PLAYING: 2,
-  POST_GAME: 3,
-};
 
 
 class GameManager {
@@ -16,7 +10,7 @@ class GameManager {
     this.game = null;
     this.gameState = {};
     this.gameSettings = {};
-    this.gamePhase = Phase.PRE_GAME;
+    this.gamePhase = GamePhase.PRE_GAME;
   }
 
   setGame(game) {
@@ -97,14 +91,23 @@ class GameManager {
   }
 
   startGame() {
-    this.setGameState(this.game.getNewGameState());
-    this.setGamePhase(Phase.PLAYING);
+    this.http.post('/gameplay/new')
+        .send({
+          gameType: this.game.getCanonicalName(),
+          gameSettings: this.gameSettings,
+        })
+        .then(this.onStartGameResponse.bind(this), this.onError);
+  }
+
+  onStartGameResponse(rsp) {
+    this.onActionResponse(rsp);
+    this.setGamePhase(GamePhase.PLAYING);
     let firstPlayerName = this.getPlayerManager().getPlayer(1).getName();
     this.sendMessage(`Here we go! ${firstPlayerName} moves first.`);
   }
 
   onAction(action) {
-    if (this.gamePhase !== Phase.PLAYING) {
+    if (this.gamePhase !== GamePhase.PLAYING) {
       return;
     }
     this.http.post('/gameplay/action')
@@ -115,14 +118,14 @@ class GameManager {
           gameSettings: this.gameSettings, // TODO store this server side
           action,
         })
-        .then(this.onActionResponse.bind(this), this.onActionError);
+        .then(this.onActionResponse.bind(this), this.onError);
   }
 
   onActionResponse(rsp) {
     let gameState = rsp.body.gameState;
     this.setGameState(gameState);
     if (gameState.gameEnd) {
-      this.setGamePhase(Phase.POST_GAME);
+      this.setGamePhase(GamePhase.POST_GAME);
       if (gameState.gameEnd.tie) {
         this.sendMessage("Incredible, it's a tie! How about another?");
         return;
@@ -134,7 +137,7 @@ class GameManager {
     }
   }
 
-  onActionError(error) {
+  onError(error) {
     console.log(error);
   }
 }
@@ -148,9 +151,6 @@ GameManager.Factory = class {
 
 
 const _instance = new GameManager();
-
-
-GameManager.Phase = Phase;
 
 
 export default GameManager;

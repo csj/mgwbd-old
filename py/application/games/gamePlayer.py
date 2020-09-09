@@ -9,6 +9,14 @@ _GAME_MAP = {
 }
 
 
+def new(gameType, gameSettings=None):
+  if gameType not in _GAME_MAP:
+    raise BadRequest('Unknown game.')
+  gameInst = _GAME_MAP[gameType]()
+  gameState = gameInst.getInitialGameState(gameSettings)
+  return { 'gameState': gameState }
+
+
 def action(gameType, gameState, action, gamePhase=None, gameSettings=None):
   if gameType not in _GAME_MAP:
     raise BadRequest('Unknown game.')

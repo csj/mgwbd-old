@@ -90,6 +90,21 @@ class Sequencium(Game):
     if numOccupiedSquares % 2:
       Game.nextPlayerTurn(self, gameState)
 
+  def getInitialGameState(self, gameSettings=None):
+    return {
+      'grid': [
+        [_sq(1, 1, None), None, None, None, None, None],
+        [None, _sq(1, 2, 'NW'), None, None, None, None],
+        [None, None, _sq(1, 3, 'NW'), None, None, None],
+        [None, None, None, _sq(2, 3, 'SE'), None, None],
+        [None, None, None, None, _sq(2, 2, 'SE'), None],
+        [None, None, None, None, None, _sq(2, 1, None)],
+      ],
+      'lastMove': {}, # row: 3, col: 3,
+      'activePlayer': 1,
+    }
+ 
+
   def action(self, gameState, action, gamePhase=None, gameSettings=None):
     grid = gameState['grid']
     playerNumber = action['playerNumber']
@@ -115,4 +130,9 @@ class Sequencium(Game):
     self.checkGameEndCondition(newGameState)
     self.nextPlayerTurn(newGameState, gameSettings)
     return newGameState
+
+
+
+def _sq(playerNumber, value, direction):
+	return {'playerNumber': playerNumber, 'value': value, 'from': direction}
 

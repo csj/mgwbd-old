@@ -11,6 +11,7 @@ class BaseConfig(object):
   APP_CORS = False
   AWS_REGION = 'us-west-1'
   SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+  print(SQLALCHEMY_DATABASE_URI)
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
