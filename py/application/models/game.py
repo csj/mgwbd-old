@@ -15,3 +15,11 @@ class GameInstance(BaseModel):
   def __repr__(self):
     return '[GameInstance (id:{}) {}]'.format(self.id, self.gameKey)
 
+class ArchivedGameInstance(BaseModel):
+  """Represents a game in the past."""
+  hostDomain = db.Column(db.String(40))
+  gameType = db.Column(db.String(40))
+  gamePhase = db.Column(db.Integer())
+  gameStart = db.Column(db.DateTime)
+  gameEnd = db.Column(db.DateTime)
+

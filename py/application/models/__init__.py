@@ -1,2 +1,2 @@
-from .game import GameInstance
+from .game import ArchivedGameInstance, GameInstance
 

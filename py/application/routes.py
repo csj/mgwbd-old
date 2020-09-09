@@ -4,15 +4,19 @@ from flask import Blueprint, jsonify, redirect, render_template, request
 from flask_cors import cross_origin
 from werkzeug.exceptions import BadRequest
 from application.games import gamePlayer
+from application import cron
 
 
 MAIN_GROUP = 'main'
+CRON_GROUP = 'cron'
 
 main_blueprint = Blueprint(MAIN_GROUP, __name__, template_folder='../static')
+cron_blueprint = Blueprint(CRON_GROUP, __name__)
 
 
 def register_blueprints(app):
   app.register_blueprint(main_blueprint)
+  app.register_blueprint(cron_blueprint)
 
 
 @main_blueprint.route('/')
@@ -26,6 +30,11 @@ def landing(path=''):
 def static_redirect():
   scheme = 'http' if 'localhost:' in request.host else 'https'
   return redirect(scheme + '://' + request.host + '/static' + request.path)
+
+@cron_blueprint.route('/cron/archive-stale-games')
+def cron_archive_stale_games():
+  cron.archiveStaleGames()
+  return jsonify({'result': 'success'})
 
 @main_blueprint.route('/gameplay/new', methods=['POST'])
 @cross_origin()

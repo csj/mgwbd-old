@@ -1,6 +1,6 @@
 version: 1
 cron:
  - name: "archive-stale-games"
-   url: "/test"
+   url: "/cron/archive-stale-games"
    schedule: "*/10 * * * *"
 
