@@ -1,0 +1,6 @@
+version: 1
+cron:
+  - name: 'archive-stale-games'
+    url: '/test'
+    schedule: '0 * * * *'
+
