@@ -39,13 +39,7 @@ def gameplay_new():
 @main_blueprint.route('/gameplay/action', methods=['POST'])
 @cross_origin()
 def gameplay_action():
-  result = gamePlayer.action(
-      request.json['gameType'],
-      request.json['gameState'],
-      request.json['action'],
-      gamePhase=request.json['gamePhase'], # TODO don't accept this parameter
-      gameSettings=request.json['gameSettings'], # TODO don't accept this parameter
-      )
+  result = gamePlayer.action(request.json['gameKey'], request.json['action'])
   return jsonify(result)
 
 # TODO make this admin-protected

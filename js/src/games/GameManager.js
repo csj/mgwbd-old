@@ -8,6 +8,7 @@ class GameManager {
     this.http = new Http.Factory().create();
     this.playerManager = new PlayerManager.Factory().create();
     this.game = null;
+    this.gameKey = null;
     this.gameState = {};
     this.gameSettings = {};
     this.gamePhase = GamePhase.PRE_GAME;
@@ -101,6 +102,7 @@ class GameManager {
 
   onStartGameResponse(rsp) {
     this.onActionResponse(rsp);
+    this.gameKey = rsp.body.gameKey;
     this.setGamePhase(GamePhase.PLAYING);
     let firstPlayerName = this.getPlayerManager().getPlayer(1).getName();
     this.sendMessage(`Here we go! ${firstPlayerName} moves first.`);
@@ -111,13 +113,7 @@ class GameManager {
       return;
     }
     this.http.post('/gameplay/action')
-        .send({
-          gameType: this.game.getCanonicalName(),
-          gameState: this.gameState, // TODO store this server side
-          gamePhase: this.gamePhase, // TODO store this server side
-          gameSettings: this.gameSettings, // TODO store this server side
-          action,
-        })
+        .send({ gameKey: this.gameKey, action, })
         .then(this.onActionResponse.bind(this), this.onError);
   }
 

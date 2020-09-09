@@ -123,3 +123,16 @@ class Dandelions(Game):
       return self.actionCompass(gameState, action)
     return gameState
 
+  def getInitialGameState(self, gameSettings=None):
+    return {
+      'compass': { 'directions': [] },
+      'grid': [
+        [None, None, None, None, None],
+        [None, None, None, None, None],
+        [None, None, None, None, None],
+        [None, None, None, None, None],
+        [None, None, None, None, None],
+      ],
+      'activePlayer': 1,
+    }
+

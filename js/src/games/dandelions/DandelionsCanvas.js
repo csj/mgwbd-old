@@ -37,7 +37,8 @@ class DandelionsCanvas extends React.Component {
     let isClickable = (
         data !== SquareStates.FLWR &&
         this.props.gameState.activePlayer === 1);
-    if (this.props.gameState.lastMove.grid[rowIndex][colIndex] != null) {
+    if (this.props.gameState.lasMove &&
+        this.props.gameState.lastMove.grid[rowIndex][colIndex] != null) {
       data = this.props.gameState.lastMove.grid[rowIndex][colIndex];
       highlight = true;
     }

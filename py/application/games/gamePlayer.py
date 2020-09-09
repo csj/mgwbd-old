@@ -1,6 +1,10 @@
 from .dandelions import Dandelions
 from .sequencium import Sequencium
+from .constants import GamePhase
+from application import db
+from application.models import GameInstance
 from werkzeug.exceptions import BadRequest
+import random
 
 
 _GAME_MAP = {
@@ -8,22 +12,37 @@ _GAME_MAP = {
   'sequencium': Sequencium,
 }
 
+_GAME_KEY_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
+_GAME_KEY_LEN = 8
+
 
 def new(gameType, gameSettings=None):
   if gameType not in _GAME_MAP:
     raise BadRequest('Unknown game.')
-  gameInst = _GAME_MAP[gameType]()
-  gameState = gameInst.getInitialGameState(gameSettings)
-  return { 'gameState': gameState }
+  game = _GAME_MAP[gameType]()
+  gameState = game.getInitialGameState(gameSettings)
+  gameKey = _generateGameKey()
+  gameKey = ''.join(random.choice(_GAME_KEY_CHARS) for i in range(_GAME_KEY_LEN))
+  gameInstance = GameInstance.create(
+      db.session, gameKey=gameKey, gameType=gameType, gameSettings=gameSettings,
+      gameState=gameState, gamePhase=GamePhase.PLAYING.value)
+  db.session.commit()
+  return { 'gameState': gameState, 'gameKey': gameKey, }
 
 
-def action(gameType, gameState, action, gamePhase=None, gameSettings=None):
-  if gameType not in _GAME_MAP:
-    raise BadRequest('Unknown game.')
-  # TODO: in the future, instantiate this from database
-  gameInst = _GAME_MAP[gameType]()
-  newGameState = gameInst.action(
-      gameState, action, gamePhase=gamePhase, gameSettings=gameSettings)
-  return {
-    'gameState': newGameState,
-  }
+def action(gameKey, action):
+  gameInstance = GameInstance.get(db.session, gameKey=gameKey)
+  if not gameInstance:
+    raise BadRequest('No such game instance.')
+
+  gamePlayer = _GAME_MAP[gameInstance.gameType]()
+  newGameState = gamePlayer.action(
+      gameInstance.gameState, action, gamePhase=gameInstance.gamePhase,
+      gameSettings=gameInstance.gameSettings)
+  gameInstance.gameState = newGameState
+  db.session.commit()
+  return { 'gameState': newGameState }
+
+
+def _generateGameKey():
+  return ''.join(random.choice(_GAME_KEY_CHARS) for i in range(_GAME_KEY_LEN))
