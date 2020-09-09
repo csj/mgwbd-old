@@ -16,7 +16,7 @@ _GAME_KEY_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
 _GAME_KEY_LEN = 8
 
 
-def new(gameType, gameSettings=None):
+def new(hostDomain, gameType, gameSettings=None):
   if gameType not in _GAME_MAP:
     raise BadRequest('Unknown game.')
   game = _GAME_MAP[gameType]()
@@ -24,8 +24,9 @@ def new(gameType, gameSettings=None):
   gameKey = _generateGameKey()
   gameKey = ''.join(random.choice(_GAME_KEY_CHARS) for i in range(_GAME_KEY_LEN))
   gameInstance = GameInstance.create(
-      db.session, gameKey=gameKey, gameType=gameType, gameSettings=gameSettings,
-      gameState=gameState, gamePhase=GamePhase.PLAYING.value)
+      db.session, hostDomain=hostDomain, gameKey=gameKey, gameType=gameType,
+      gameSettings=gameSettings, gameState=gameState,
+      gamePhase=GamePhase.PLAYING.value)
   db.session.commit()
   return { 'gameState': gameState, 'gameKey': gameKey, }
 
@@ -34,12 +35,16 @@ def action(gameKey, action):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
     raise BadRequest('No such game instance.')
+  if gameInstance.gamePhase != GamePhase.PLAYING.value:
+    raise BadRequest('Game instance is not currently playing.')
 
   gamePlayer = _GAME_MAP[gameInstance.gameType]()
   newGameState = gamePlayer.action(
       gameInstance.gameState, action, gamePhase=gameInstance.gamePhase,
       gameSettings=gameInstance.gameSettings)
   gameInstance.gameState = newGameState
+  if gamePlayer.gameEndCondition(newGameState):
+    gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
   return { 'gameState': newGameState }
 

@@ -65,6 +65,10 @@ class GamePlay extends React.Component {
     this.setState({messages: this.state.messages.concat(msg)});
   }
 
+  onModifyPlayers() {
+    console.log('oh, so you want to change things up do ya?');
+  }
+
   renderInstructions() {
     return (
       <GameInstructionsDialog
@@ -97,19 +101,34 @@ class GamePlay extends React.Component {
   }
 
   renderGameMenuButtons() {
+    let newGameButton =
+        <Button label='New Game' onClick={this.onNewGame.bind(this)} />;
+    let quitGameButton =
+        <Button label='Quit Game' onClick={this.onEndGame.bind(this)} />;
+    let modifyPlayersButton =
+        <Button
+            label='Modify Players'
+            className='p-button-outlined'
+            onClick={this.onModifyPlayers.bind(this)} />;
     if (this.state.gamePhase === GamePhase.PRE_GAME) {
       return (
-        <Button label='New Game' onClick={this.onNewGame.bind(this)} />
+        <div>
+          {newGameButton}
+        </div>
       );
     }
     if (this.state.gamePhase === GamePhase.PLAYING) {
       return (
-        <Button label='Quit Game' onClick={this.onEndGame.bind(this)} />
+        <div>
+          {quitGameButton}
+        </div>
       );
     }
     if (this.state.gamePhase === GamePhase.POST_GAME) {
       return (
-        <Button label='New Game' onClick={this.onNewGame.bind(this)} />
+        <div>
+          {newGameButton}
+        </div>
       );
     }
     return null;
@@ -122,17 +141,17 @@ class GamePlay extends React.Component {
           {this.gameManager.getGame().getDisplayName()}
         </div>
         <div className='section'>
-          <div className='gameMenu'>
-            <LabelValue
-                label={this.renderGameMenuButtons()}
-                value={
-                  <div>
-                    {this.renderInstructions()}
-                    {this.renderSettings()}
-                  </div>
-                }
-                styles={LabelValue.Style.LEFT_RIGHT} />
-          </div>
+          <LabelValue
+              className='gameMenu'
+              label={this.renderGameMenuButtons()}
+              labelClassName='gameMenuButtons'
+              value={
+                <div>
+                  {this.renderInstructions()}
+                  {this.renderSettings()}
+                </div>
+              }
+              styles={LabelValue.Style.LEFT_RIGHT} />
           <div className='gameCanvas'>
             {this.renderGameCanvas()}
           </div>

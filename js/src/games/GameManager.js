@@ -17,6 +17,7 @@ class GameManager {
   setGame(game) {
     this.game = game;
     this.gameState = game.getBlankGameState();
+    this.gamePhase = GamePhase.PRE_GAME;
     this.gameSettings = game.getSettingsConfig()
         .reduce(
             (result, item) => {
@@ -94,6 +95,7 @@ class GameManager {
   startGame() {
     this.http.post('/gameplay/new')
         .send({
+          hostDomain: document.location.hostname,
           gameType: this.game.getCanonicalName(),
           gameSettings: this.gameSettings,
         })

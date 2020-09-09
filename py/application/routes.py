@@ -31,6 +31,7 @@ def static_redirect():
 @cross_origin()
 def gameplay_new():
   result = gamePlayer.new(
+      request.json['hostDomain'],
       request.json['gameType'],
       request.json['gameSettings'],
       )
@@ -55,6 +56,7 @@ def internal_environment():
 @cross_origin()
 def test():
   result = 'hello'
+  print('/test called')
   return jsonify({ 'result': result })
 
 @main_blueprint.errorhandler(BadRequest)

@@ -22,13 +22,6 @@ class Game {
     return {};
   }
 
-  getNewGameState() {
-    return Object.assign(
-        {},
-        this.getBlankGameState(),
-        {activePlayer: 1});
-  }
-
   getSettingsConfig() {
     return [];
   }
