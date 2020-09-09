@@ -9,21 +9,22 @@ class GameManager {
     this.playerManager = new PlayerManager.Factory().create();
     this.game = null;
     this.gameKey = null;
-    this.gameState = {};
-    this.gameSettings = {};
+    this.gameState = null;
+    this.gameSettings = null;
+    this.gameSettingsConfig = null;
     this.gamePhase = GamePhase.PRE_GAME;
   }
 
   setGame(game) {
     this.game = game;
-    this.gameState = game.getBlankGameState();
+    this.gameState = null;
     this.gamePhase = GamePhase.PRE_GAME;
-    this.gameSettings = game.getSettingsConfig()
-        .reduce(
-            (result, item) => {
-              result[item.canonicalName] = item.defaultValue;
-              return result;
-            }, {});
+    let playerNames = this.game.getDefaultPlayerNames();
+    let playerManager = this.getPlayerManager();
+    playerManager.resetPlayers();
+    playerManager.createLocalHumanPlayer(playerNames[0]);
+    playerManager.createLocalHumanPlayer(playerNames[1]);
+    this.newGame();
   }
 
   setGameStateChangeHandler(fn) {
@@ -80,6 +81,10 @@ class GameManager {
     return this.gameState;
   }
 
+  getGameSettingsConfig() {
+    return this.gameSettingsConfig;
+  }
+
   getGameSettings() {
     return this.gameSettings;
   }
@@ -92,19 +97,32 @@ class GameManager {
     return this.playerManager;
   }
 
-  startGame() {
+  newGame() {
     this.http.post('/gameplay/new')
         .send({
           hostDomain: document.location.hostname,
           gameType: this.game.getCanonicalName(),
+        })
+        .then(this.onNewGameResponse.bind(this), this.onError);
+  }
+
+  startGame() {
+    this.http.post('/gameplay/start')
+        .send({
+          gameKey: this.gameKey,
           gameSettings: this.gameSettings,
         })
         .then(this.onStartGameResponse.bind(this), this.onError);
   }
 
-  onStartGameResponse(rsp) {
+  onNewGameResponse(rsp) {
     this.onActionResponse(rsp);
     this.gameKey = rsp.body.gameKey;
+    this.setGamePhase(GamePhase.PRE_GAME);
+  }
+
+  onStartGameResponse(rsp) {
+    this.onActionResponse(rsp);
     this.setGamePhase(GamePhase.PLAYING);
     let firstPlayerName = this.getPlayerManager().getPlayer(1).getName();
     this.sendMessage(`Here we go! ${firstPlayerName} moves first.`);
@@ -120,18 +138,29 @@ class GameManager {
   }
 
   onActionResponse(rsp) {
-    let gameState = rsp.body.gameState;
-    this.setGameState(gameState);
-    if (gameState.gameEnd) {
-      this.setGamePhase(GamePhase.POST_GAME);
-      if (gameState.gameEnd.tie) {
-        this.sendMessage("Incredible, it's a tie! How about another?");
-        return;
+    if (!rsp || !rsp.body) {
+      return;
+    }
+    if (rsp.body.gameState) {
+      let gameState = rsp.body.gameState;
+      this.setGameState(gameState);
+      if (gameState.gameEnd) {
+        this.setGamePhase(GamePhase.POST_GAME);
+        if (gameState.gameEnd.tie) {
+          this.sendMessage("Incredible, it's a tie! How about another?");
+          return;
+        }
+        let winningPlayerName =
+            this.getPlayerManager().getPlayer(gameState.gameEnd.win).getName();
+        this.sendMessage(
+            `Wow! ${winningPlayerName} is the winner! How about another?`);
       }
-      let winningPlayerName =
-          this.getPlayerManager().getPlayer(gameState.gameEnd.win).getName();
-      this.sendMessage(
-          `Wow! ${winningPlayerName} is the winner! How about another?`);
+    }
+    if (rsp.body.gameSettingsConfig) {
+      this.gameSettingsConfig = rsp.body.gameSettingsConfig;
+    }
+    if (rsp.body.gameSettings) {
+      this.setGameSettings(rsp.body.gameSettings);
     }
   }
 

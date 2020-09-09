@@ -39,11 +39,14 @@ def cron_archive_stale_games():
 @main_blueprint.route('/gameplay/new', methods=['POST'])
 @cross_origin()
 def gameplay_new():
-  result = gamePlayer.new(
-      request.json['hostDomain'],
-      request.json['gameType'],
-      request.json['gameSettings'],
-      )
+  result = gamePlayer.new(request.json['hostDomain'], request.json['gameType'])
+  return jsonify(result)
+
+@main_blueprint.route('/gameplay/start', methods=['POST'])
+@cross_origin()
+def gameplay_start():
+  result = gamePlayer.start(
+      request.json['gameKey'], request.json['gameSettings'])
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/action', methods=['POST'])

@@ -32,12 +32,7 @@ class GamePlay extends React.Component {
     };
   }
 
-  onNewGame() {
-    let playerNames = this.gameManager.getGame().getDefaultPlayerNames();
-    let playerManager = this.gameManager.getPlayerManager();
-    playerManager.resetPlayers();
-    playerManager.createLocalHumanPlayer(playerNames[0]);
-    playerManager.createLocalHumanPlayer(playerNames[1]);
+  onStartGame() {
     this.gameManager.startGame();
   }
 
@@ -78,8 +73,8 @@ class GamePlay extends React.Component {
   }
 
   renderSettings() {
-    let settingsConfig = this.gameManager.getGame().getSettingsConfig();
-    if (settingsConfig.length > 0) {
+    let settingsConfig = this.gameManager.getGameSettingsConfig();
+    if (this.state.gameSettings) {
       return (
         <GameSettingsDialog
             settingsConfig={settingsConfig}
@@ -101,8 +96,8 @@ class GamePlay extends React.Component {
   }
 
   renderGameMenuButtons() {
-    let newGameButton =
-        <Button label='New Game' onClick={this.onNewGame.bind(this)} />;
+    let startGameButton =
+        <Button label='Start Game' onClick={this.onStartGame.bind(this)} />;
     let quitGameButton =
         <Button label='Quit Game' onClick={this.onEndGame.bind(this)} />;
     let modifyPlayersButton =
@@ -113,7 +108,7 @@ class GamePlay extends React.Component {
     if (this.state.gamePhase === GamePhase.PRE_GAME) {
       return (
         <div>
-          {newGameButton}
+          {startGameButton}
         </div>
       );
     }
@@ -127,34 +122,48 @@ class GamePlay extends React.Component {
     if (this.state.gamePhase === GamePhase.POST_GAME) {
       return (
         <div>
-          {newGameButton}
+          {startGameButton}
         </div>
       );
     }
     return null;
   }
 
-  render() {
+  renderLoading() {
     return (
-      <div className='GamePlay page'>
-        <div className='section subtitle'>
-          {this.gameManager.getGame().getDisplayName()}
-        </div>
-        <div className='section'>
-          <LabelValue
-              className='gameMenu'
-              label={this.renderGameMenuButtons()}
-              labelClassName='gameMenuButtons'
-              value={
-                <div>
-                  {this.renderInstructions()}
-                  {this.renderSettings()}
-                </div>
-              }
-              styles={LabelValue.Style.LEFT_RIGHT} />
-          <div className='gameCanvas'>
-            {this.renderGameCanvas()}
-          </div>
+    <div className='section'>
+      <LabelValue
+          className='gameMenu'
+          label={this.renderGameMenuButtons()}
+          labelClassName='gameMenuButtons'
+          value={
+            <div>
+              {this.renderInstructions()}
+              {this.renderSettings()}
+            </div>
+          }
+          styles={LabelValue.Style.LEFT_RIGHT} />
+      Loading...
+    </div>
+    );
+  }
+
+  renderLoaded() {
+    return (
+      <div className='section'>
+        <LabelValue
+            className='gameMenu'
+            label={this.renderGameMenuButtons()}
+            labelClassName='gameMenuButtons'
+            value={
+              <div>
+                {this.renderInstructions()}
+                {this.renderSettings()}
+              </div>
+            }
+            styles={LabelValue.Style.LEFT_RIGHT} />
+        <div className='gameCanvas'>
+          {this.state.gamePhase ? this.renderGameCanvas() : 'loading...'}
         </div>
         <PlayerArea
             players={this.gameManager.getPlayerManager().getPlayers()}
@@ -163,6 +172,18 @@ class GamePlay extends React.Component {
           {this.state.messages.map(
               (m, i) => <div key={i} className='message'>{m}</div>)}
         </div>
+      </div>
+
+    );
+  }
+
+  render() {
+    return (
+      <div className='GamePlay page'>
+        <div className='section subtitle'>
+          {this.gameManager.getGame().getDisplayName()}
+        </div>
+        {this.state.gameState ? this.renderLoaded() : this.renderLoading()}
       </div>
     );
   }

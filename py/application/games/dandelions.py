@@ -133,6 +133,6 @@ class Dandelions(Game):
         [None, None, None, None, None],
         [None, None, None, None, None],
       ],
-      'activePlayer': 1,
+      'activePlayer': None,
     }
 

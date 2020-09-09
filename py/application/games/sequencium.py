@@ -77,6 +77,9 @@ class Sequencium(Game):
 
   def nextPlayerTurn(self, gameState, gameSettings):
     playerNumber = gameState['activePlayer']
+    if not playerNumber:
+      Game.nextPlayerTurn(self, gameState)
+      return
     grid = gameState['grid']
     if not self.opposingPlayerHasAvailableMove(playerNumber, grid):
       return
@@ -101,9 +104,28 @@ class Sequencium(Game):
         [None, None, None, None, None, _sq(2, 1, None)],
       ],
       'lastMove': {}, # row: 3, col: 3,
-      'activePlayer': 1,
+      'activePlayer': None,
     }
  
+  def getSettingsConfig(self):
+    return [
+      {
+        'canonicalName': 'handDrawnGrid',
+        'displayName': 'Hand-drawn grid',
+        'description': 'Displays the game grid as a drawing.',
+        'values': [True, False],
+        'defaultValue': True,
+      },
+      {
+        'canonicalName': 'doubleMoves',
+        'displayName': 'Players move twice',
+        'description': (
+            'Starting with the second player’s first turn, each player '
+            'moves twice per turn.'),
+        'values': [True, False],
+        'defaultValue': False,
+      },
+    ]
 
   def action(self, gameState, action, gamePhase=None, gameSettings=None):
     grid = gameState['grid']

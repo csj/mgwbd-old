@@ -31,23 +31,6 @@ import React from 'react';
 
 const Move = (playerNumber, rowFrom, colFrom, rowTo, colTo) => ({
     playerNumber, rowFrom, colFrom, rowTo, colTo});
-const Sq = (playerNumber, value, from) => ({playerNumber, value, from});
-const Settings = [
-  {
-    canonicalName: 'handDrawnGrid',
-    displayName: 'Hand-drawn grid',
-    description: 'Displays the game grid as a drawing.',
-    values: [true, false],
-    defaultValue: true,
-  },
-  {
-    canonicalName: 'doubleMoves',
-    displayName: 'Players move twice',
-    description: 'Starting with the second player’s first turn, each player moves twice per turn.',
-    values: [true, false],
-    defaultValue: false,
-  },
-];
 
 
 class Sequencium extends Game {
@@ -57,27 +40,6 @@ class Sequencium extends Game {
 
   getDisplayName() {
     return 'Sequencium';
-  }
-
-  getBlankGameState() {
-    return {
-      grid: [
-        [Sq(1, 1, null), null, null, null, null, null],
-        [null, Sq(1, 2, 'NW'), null, null, null, null],
-        [null, null, Sq(1, 3, 'NW'), null, null, null],
-        [null, null, null, Sq(2, 3, 'SE'), null, null],
-        [null, null, null, null, Sq(2, 2, 'SE'), null],
-        [null, null, null, null, null, Sq(2, 1, null)],
-      ],
-      lastMove: {
-        // row: 3, col: 3,
-      },
-      activePlayer: null,
-    };
-  }
-
-  getSettingsConfig() {
-    return Settings;
   }
 
   renderInstructions() {

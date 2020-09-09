@@ -1,10 +1,12 @@
 
 
 class Game():
-  def nextPlayerTurn(self, gameState):
+  def nextPlayerTurn(self, gameState, **kwargs):
     # By default, assumes two players alternating
-    if gameState['gameEnd']:
+    if 'gameEnd' in gameState and gameState['gameEnd']:
       gameState['activePlayer'] = None
+    elif gameState['activePlayer'] is None:
+      gameState['activePlayer'] = 1
     else:
       gameState['activePlayer'] = gameState['activePlayer'] % 2 + 1
 
@@ -28,6 +30,9 @@ class Game():
 
   def gameEndCondition(self, gameState):
     return None
+
+  def getSettingsConfig(self):
+    return []
 
   def getInitialGameState(self, gameSettings):
     return {}

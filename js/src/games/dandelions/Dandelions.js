@@ -2,7 +2,6 @@ import DandelionsCanvas from './DandelionsCanvas';
 import DandelionsInstructions from './DandelionsInstructions';
 import Game from 'games/Game';
 import React from 'react';
-import { SquareStates } from './Constants.js';
 
 /**
  * Game State looks like this:
@@ -43,31 +42,6 @@ class Dandelions extends Game {
 
   getDefaultPlayerNames() {
     return [ 'Dandelions', 'Wind', ];
-  }
-
-  getBlankGameState() {
-    let sq = SquareStates;
-    return {
-      compass: { directions: [] },
-      grid: [
-        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-        [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-      ],
-      lastMove: {
-        compass: null,
-        grid: [
-          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-          [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
-        ],
-      },
-      activePlayer: null,
-    };
   }
 
   renderInstructions() {
