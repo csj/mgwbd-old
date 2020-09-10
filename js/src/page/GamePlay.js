@@ -6,187 +6,114 @@ import GamePhase from 'games/GamePhase';
 import GameSettingsDialog from 'components/game/GameSettingsDialog';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 
-class GamePlay extends React.Component {
+const GamePlay = props => {
+  const gameManager = new GameManager.Factory().create();
+  const [game, _] = useState(new props.game());
+  const [gameState, setGameState] = useState({});
+  const [gamePhase, setGamePhase] = useState(GamePhase.PRE_GAME);
+  const [gameSettings, setGameSettings] = useState({});
+  const [messages, setMessages] = useState([]);
 
-  constructor(props) {
-    super();
-    let game = new props.game();
-    game.setMoveHandler(this.onMove.bind(this));
-    this.gameManager = new GameManager.Factory().create();
-    this.gameManager.setGame(game);
-    this.gameManager.setGameStateChangeHandler(
-        this.onGameStateChange.bind(this));
-    this.gameManager.setGamePhaseChangeHandler(
-        this.onGamePhaseChange.bind(this));
-    this.gameManager.setGameSettingsChangeHandler(
-        this.onGameSettingsChange.bind(this));
-    this.gameManager.setMessageHandler(this.onGameMessage.bind(this));
-    this.state = {
-      gameState: this.gameManager.getGameState(),
-      gameSettings: this.gameManager.getGameSettings(),
-      gamePhase: this.gameManager.getGamePhase(),
-      messages: [],
-    };
-  }
+  useEffect(() => {
+    gameManager.setGame(game);
+    gameManager.setGameStateChangeHandler(setGameState);
+    gameManager.setGamePhaseChangeHandler(setGamePhase);
+    gameManager.setGameSettingsChangeHandler(setGameSettings);
+    gameManager.setMessageHandler(m => setMessages(ms => ms.concat(m)));
+  }, [game, gameManager, props.game]);
 
-  onStartGame() {
-    this.gameManager.startGame();
-  }
+  const onStartGame = () => gameManager.startGame();
+  const onEndGame = () =>
+    gameManager.setGamePhase(GamePhase.POST_GAME, 'Game aborted!');
 
-  onEndGame() {
-    this.gameManager.setGamePhase(GamePhase.POST_GAME, 'Game aborted!');
-  };
-
-  onMove(gameState, action) {
-    this.gameManager.onAction(action);
-  }
-
-  onGameStateChange(gameState) {
-    this.setState({gameState});
-  }
-
-  onGamePhaseChange(gamePhase) {
-    this.setState({gamePhase});
-  }
-
-  onGameSettingsChange(gameSettings) {
-    this.setState({gameSettings});
-  }
-
-  onGameMessage(msg) {
-    this.setState({messages: this.state.messages.concat(msg)});
-  }
-
-  onModifyPlayers() {
+  const onModifyPlayers = () => {
     console.log('oh, so you want to change things up do ya?');
   }
 
-  renderInstructions() {
-    return (
+  const renderInstructions = () =>
       <GameInstructionsDialog
-          open={true}
-          content={this.gameManager.getGame().renderInstructions()} />
-    );
-  }
+          open={true} content={game.renderInstructions()} />;
 
-  renderSettings() {
-    let settings = this.state.gameSettings;
-    if (settings && Object.keys(settings).length) {
+  const renderGameSettings = () => {
+    if (gameSettings && Object.keys(gameSettings).length) {
       return (
         <GameSettingsDialog
-            settingsConfig={this.gameManager.getGameSettingsConfig()}
-            settings={this.gameManager.getGameSettings()}
-            readOnly={this.state.gamePhase === GamePhase.PLAYING}
-            onSettingsChange={
-              settings => this.gameManager.setGameSettings(settings)
-            } />
+            settingsConfig={gameManager.getGameSettingsConfig()}
+            settings={gameSettings}
+            readOnly={gamePhase === GamePhase.PLAYING}
+            onSettingsChange={s => gameManager.setGameSettings(s)} />
       );
     }
     return null;
-  }
+  };
 
-  renderGameCanvas() {
-    return this.gameManager.getGame().renderCanvas(
-        this.state.gameState,
-        this.state.gameSettings,
-        this.gameManager.getPlayerManager());
-  }
-
-  renderGameMenuButtons() {
-    let startGameButton =
-        <Button label='Start Game' onClick={this.onStartGame.bind(this)} />;
-    let quitGameButton =
-        <Button label='Quit Game' onClick={this.onEndGame.bind(this)} />;
+  const renderGameMenuButtons = () => {
+    let startGameButton = <Button label='Start Game' onClick={onStartGame} />;
+    let quitGameButton = <Button label='Quit Game' onClick={onEndGame} />;
+    /*
     let modifyPlayersButton =
         <Button
-            label='Modify Players'
-            className='p-button-outlined'
-            onClick={this.onModifyPlayers.bind(this)} />;
-    if (this.state.gamePhase === GamePhase.PRE_GAME) {
-      return (
-        <div>
-          {startGameButton}
-        </div>
-      );
+            label='Modify Players' className='p-button-outlined'
+            onClick={onModifyPlayers} />;
+            */
+    if (gamePhase === GamePhase.PRE_GAME) {
+      return ( <div> {startGameButton} </div>);
     }
-    if (this.state.gamePhase === GamePhase.PLAYING) {
-      return (
-        <div>
-          {quitGameButton}
-        </div>
-      );
+    if (gamePhase === GamePhase.PLAYING) {
+      return ( <div> {quitGameButton} </div>);
     }
-    if (this.state.gamePhase === GamePhase.POST_GAME) {
-      return (
-        <div>
-          {startGameButton}
-        </div>
-      );
+    if (gamePhase === GamePhase.POST_GAME) {
+      return ( <div> {startGameButton} </div>);
     }
     return null;
-  }
+  };
 
-  renderLoading() {
-    return (
-    <div className='section'>
+  const renderGameMenu = () => 
       <LabelValue
           className='gameMenu'
-          label={this.renderGameMenuButtons()}
+          label={renderGameMenuButtons()}
           labelClassName='gameMenuButtons'
           value={
             <div>
-              {this.renderInstructions()}
-              {this.renderSettings()}
+              {renderInstructions()}
+              {renderGameSettings()}
             </div>
           }
-          styles={LabelValue.Style.LEFT_RIGHT} />
-      Loading...
-    </div>
-    );
-  }
+          styles={LabelValue.Style.LEFT_RIGHT} />;
 
-  renderLoaded() {
-    return (
+  const renderLoading = () => <div className='section'>{renderGameMenu()}</div>;
+
+  const renderLoaded = () =>
       <div className='section'>
-        <LabelValue
-            className='gameMenu'
-            label={this.renderGameMenuButtons()}
-            labelClassName='gameMenuButtons'
-            value={
-              <div>
-                {this.renderInstructions()}
-                {this.renderSettings()}
-              </div>
-            }
-            styles={LabelValue.Style.LEFT_RIGHT} />
+        {renderGameMenu()}
         <div className='gameCanvas'>
-          {this.state.gamePhase ? this.renderGameCanvas() : 'loading...'}
+          {game.renderCanvas(
+              gameState, gameSettings, gameManager.getPlayerManager())}
         </div>
         <PlayerArea
-            players={this.gameManager.getPlayerManager().getPlayers()}
-            activePlayer={this.state.gameState.activePlayer} />
+            players={gameManager.getPlayerManager().getPlayers()}
+            activePlayer={gameState.activePlayer} />
         <div className='section log'>
-          {this.state.messages.map(
+          {messages.map(
               (m, i) => <div key={i} className='message'>{m}</div>)}
         </div>
-      </div>
+      </div>;
 
-    );
-  }
-
-  render() {
+  const render = () => {
     return (
       <div className='GamePlay page'>
         <div className='section subtitle'>
-          {this.gameManager.getGame().getDisplayName()}
+          {game.getDisplayName()}
         </div>
-        {this.state.gameState ? this.renderLoaded() : this.renderLoading()}
+        {Object.keys(gameState).length ? renderLoaded() : renderLoading()}
       </div>
     );
-  }
+  };
+
+  return render();
 }
 
 
