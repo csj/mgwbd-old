@@ -17,11 +17,7 @@ class Sequencium extends Game {
     return <SequenciumInstructions />;
   }
 
-  renderCanvas(gameState, gameSettings, playerManager) {
-    gameSettings = Object.assign({}, gameSettings, {
-      playerStyleClasses:
-          playerManager.getPlayers().map(p => p.getPlayerStyleClass()),
-    });
+  renderCanvas(gameState, gameSettings) {
     return (
       <SequenciumCanvas
           gameState={gameState}

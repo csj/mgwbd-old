@@ -75,7 +75,12 @@ class SequenciumCanvas extends React.Component {
   }
 
   getPlayerStyle(playerNumber) {
-    return this.props.gameSettings.playerStyleClasses[playerNumber - 1];
+    // TODO move to a util class?
+    if (playerNumber && this.props.gameSettings.players) {
+      let playerStyle = this.props.gameSettings.players[playerNumber - 1].style;
+      return `playerStyle${playerStyle}`;
+    }
+    return '';
   }
 
   renderGridSquare(data, rowIndex, colIndex) {

@@ -21,7 +21,8 @@ def new(hostDomain, gameType):
     raise BadRequest('Unknown game.')
   game = _GAME_MAP[gameType]()
   gameSettingsConfig = game.getSettingsConfig()
-  gameSettings = _makeDefaultGameSettings(gameSettingsConfig)
+  playerConfig = game.getDefaultPlayerConfig()
+  gameSettings = _makeDefaultGameSettings(playerConfig, gameSettingsConfig)
   gameState = game.getInitialGameState(gameSettings)
   gameKey = _generateGameKey()
   gameInstance = GameInstance.create(
@@ -84,6 +85,8 @@ def _generateGameKey():
   return ''.join(random.choice(_GAME_KEY_CHARS) for i in range(_GAME_KEY_LEN))
 
 
-def _makeDefaultGameSettings(settingsConfig):
-  return {s['canonicalName']: s['defaultValue'] for s in settingsConfig}
+def _makeDefaultGameSettings(players, settingsConfig):
+  settings = {s['canonicalName']: s['defaultValue'] for s in settingsConfig}
+  settings['players'] = players
+  return settings
 

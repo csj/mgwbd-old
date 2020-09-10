@@ -22,9 +22,9 @@ class GameManager {
     this.gamePhase = GamePhase.PRE_GAME;
     let playerNames = this.game.getDefaultPlayerNames();
     let playerManager = this.getPlayerManager();
-    playerManager.resetPlayers();
-    playerManager.createLocalHumanPlayer(playerNames[0]);
-    playerManager.createLocalHumanPlayer(playerNames[1]);
+    //playerManager.resetPlayers();
+    //playerManager.createLocalHumanPlayer(playerNames[0]);
+    //playerManager.createLocalHumanPlayer(playerNames[1]);
     this.newGame();
   }
 
@@ -125,7 +125,7 @@ class GameManager {
   onStartGameResponse(rsp) {
     this.onActionResponse(rsp);
     this.setGamePhase(GamePhase.PLAYING);
-    let firstPlayerName = this.getPlayerManager().getPlayer(1).getName();
+    let firstPlayerName = this.gameSettings.players[0].name;
     this.sendMessage(`Here we go! ${firstPlayerName} moves first.`);
   }
 

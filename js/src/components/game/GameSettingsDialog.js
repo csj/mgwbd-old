@@ -1,5 +1,6 @@
 import './GameSettingsDialog.scss';
 import InfoDialog from 'components/chrome/InfoDialog';
+import PlayerConfig from 'components/player/PlayerConfig';
 import LabelValue from 'components/chrome/LabelValue';
 import React from 'react';
 import {Button} from 'primereact/button';
@@ -99,6 +100,7 @@ class GameSettingsDialog extends React.Component {
     return (
       <div>
         {this.props.readOnly ? this.renderReadOnlyMessage() : ''}
+        <PlayerConfig />
         {this.props.settingsConfig.map(this.renderSetting.bind(this))}
       </div>
     );

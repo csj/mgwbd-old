@@ -136,3 +136,9 @@ class Dandelions(Game):
       'activePlayer': None,
     }
 
+  def getDefaultPlayerConfig(self):
+    config = Game.getDefaultPlayerConfig(self)
+    config[0]['name'] = 'Dandelions'
+    config[1]['name'] = 'Wind'
+    return config
+

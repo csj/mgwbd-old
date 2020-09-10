@@ -31,6 +31,12 @@ class Game():
   def gameEndCondition(self, gameState):
     return None
 
+  def getDefaultPlayerConfig(self):
+    return [
+      {'playerType': 'human', 'owner': None, 'name': 'Player 1', 'style': 'A'},
+      {'playerType': 'human', 'owner': None, 'name': 'Player 2', 'style': 'B'},
+    ]
+
   def getSettingsConfig(self):
     return []
 

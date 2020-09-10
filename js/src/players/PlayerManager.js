@@ -1,6 +1,3 @@
-import LocalHumanPlayer from 'players/LocalHumanPlayer';
-
-
 const PlayerStyleClasses = [
   'playerStyleA',
   'playerStyleB',
@@ -19,12 +16,6 @@ class PlayerManager {
     let count = this.availableStyles.length;
     let index = Math.floor(Math.random() * count);
     return this.availableStyles.splice(index, 1)[0];
-  }
-
-  createLocalHumanPlayer(name) {
-    let player = new LocalHumanPlayer(name);
-    player.setPlayerStyleClass(this.chooseRandomPlayerStyle());
-    this.players.push(player);
   }
 
   resetPlayers() {

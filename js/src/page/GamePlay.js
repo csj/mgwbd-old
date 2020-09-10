@@ -94,7 +94,7 @@ const GamePlay = props => {
               gameState, gameSettings, gameManager.getPlayerManager())}
         </div>
         <PlayerArea
-            players={gameManager.getPlayerManager().getPlayers()}
+            players={gameSettings && gameSettings.players}
             activePlayer={gameState.activePlayer} />
         <div className='section log'>
           {messages.map(

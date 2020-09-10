@@ -1,13 +1,35 @@
 import './PlayerArea.scss';
 import React from 'react';
+import faceA from 'images/faceA.png';
+import faceB from 'images/faceB.png';
+import faceC from 'images/faceC.png';
+import faceD from 'images/faceD.png';
+import faceE from 'images/faceE.png';
+
+
+const FaceMap = {  // TODO make this and others into a utility/helper class
+  'playerStyleA': faceA,
+  'playerStyleB': faceB,
+  'playerStyleC': faceC,
+  'playerStyleD': faceD,
+  'playerStyleE': faceE,
+};
 
 
 class PlayerArea extends React.Component {
+  
+  getPlayerStyleClass(player) {
+    return `playerStyle${player.style}`;
+  }
+
+  getAvatar(player) {
+    return FaceMap[this.getPlayerStyleClass(player)];
+  }
 
   renderPlayer(index) {
     let player = this.props.players[index];
     let playerNumber = index + 1;
-    let extraClasses = player.getPlayerStyleClass();
+    let extraClasses = this.getPlayerStyleClass(player);
     if (this.props.activePlayer === playerNumber) {
       extraClasses += ' active';
     }
@@ -15,19 +37,19 @@ class PlayerArea extends React.Component {
       <div
           key={playerNumber}
           className={`
-              player player${playerNumber} ${player.getPlayerStyleClass()}
+              player player${playerNumber}
               ${extraClasses}`}>
         <img
-            src={player.getAvatar()}
+            src={this.getAvatar(player)}
             alt={`Player {$playerNumber} avatar`} />
-        <div className='name'>{player.getName()}</div>
+        <div className='name'>{player.name}</div>
       </div>
     );
   }
 
   render() {
     let content;
-    if (this.props.players.length === 0) {
+    if (!this.props.players || this.props.players.length === 0) {
       content = '';
     }
     else if (this.props.players.length === 2) {
