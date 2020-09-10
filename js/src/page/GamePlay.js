@@ -90,8 +90,7 @@ const GamePlay = props => {
       <div className='section'>
         {renderGameMenu()}
         <div className='gameCanvas'>
-          {game.renderCanvas(
-              gameState, gameSettings, gameManager.getPlayerManager())}
+          {game.renderCanvas(gameState, gameSettings, gamePhase)}
         </div>
         <PlayerArea
             players={gameSettings && gameSettings.players}

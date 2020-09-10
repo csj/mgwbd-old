@@ -1,12 +1,10 @@
 import GamePhase from './GamePhase';
 import Http from 'components/http/Http';
-import PlayerManager from 'players/PlayerManager';
 
 
 class GameManager {
   constructor() {
     this.http = new Http.Factory().create();
-    this.playerManager = new PlayerManager.Factory().create();
     this.game = null;
     this.gameKey = null;
     this.gameState = null;
@@ -20,11 +18,6 @@ class GameManager {
     this.game.setMoveHandler(this.onAction.bind(this));
     this.gameState = null;
     this.gamePhase = GamePhase.PRE_GAME;
-    let playerNames = this.game.getDefaultPlayerNames();
-    let playerManager = this.getPlayerManager();
-    //playerManager.resetPlayers();
-    //playerManager.createLocalHumanPlayer(playerNames[0]);
-    //playerManager.createLocalHumanPlayer(playerNames[1]);
     this.newGame();
   }
 
@@ -94,10 +87,6 @@ class GameManager {
     return this.gamePhase;
   }
 
-  getPlayerManager() {
-    return this.playerManager;
-  }
-
   newGame() {
     this.http.post('/gameplay/new')
         .send({
@@ -152,7 +141,7 @@ class GameManager {
           return;
         }
         let winningPlayerName =
-            this.getPlayerManager().getPlayer(gameState.gameEnd.win).getName();
+            this.gameSettings.players[gameState.gameEnd.win - 1].name;
         this.sendMessage(
             `Wow! ${winningPlayerName} is the winner! How about another?`);
       }

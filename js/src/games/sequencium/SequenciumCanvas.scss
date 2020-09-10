@@ -12,6 +12,15 @@
     touch-action: none;
     z-index: 1;
 
+    &.gamePhase2 .square {
+      @include playerStyles('.touchable:hover', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
+      @include playerStyles('.lastMove', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
+    }
+
+    &.gamePhase3 .square {
+      @include playerStyles('.maxScore', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
+    }
+
     .row {
       display: flex;
 
@@ -28,8 +37,6 @@
 
         @include playerStyles('*', 'color');
         @include playerStyles('.linkLine', 'background-color', 'COLOR');
-        @include playerStyles('.touchable:hover', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
-        @include playerStyles('.lastMove', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
 
         &.squareOutline {
           border: 1px solid black;

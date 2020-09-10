@@ -17,11 +17,12 @@ class Sequencium extends Game {
     return <SequenciumInstructions />;
   }
 
-  renderCanvas(gameState, gameSettings) {
+  renderCanvas(gameState, gameSettings, gamePhase) {
     return (
       <SequenciumCanvas
           gameState={gameState}
           gameSettings={gameSettings}
+          gamePhase={gamePhase}
           onChooseMove={this.onChooseMove.bind(this)} />
     );
   }
