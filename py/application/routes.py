@@ -31,7 +31,7 @@ def static_redirect():
   scheme = 'http' if 'localhost:' in request.host else 'https'
   return redirect(scheme + '://' + request.host + '/static' + request.path)
 
-@cron_blueprint.route('/cron/archive-stale-games')
+@cron_blueprint.route('/cron/archive-stale-games', methods=['POST'])
 def cron_archive_stale_games():
   cron.archiveStaleGames()
   return jsonify({'result': 'success'})
