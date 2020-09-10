@@ -73,12 +73,12 @@ class GamePlay extends React.Component {
   }
 
   renderSettings() {
-    let settingsConfig = this.gameManager.getGameSettingsConfig();
-    if (this.state.gameSettings) {
+    let settings = this.state.gameSettings;
+    if (settings && Object.keys(settings).length) {
       return (
         <GameSettingsDialog
-            settingsConfig={settingsConfig}
-            settings={this.state.gameSettings}
+            settingsConfig={this.gameManager.getGameSettingsConfig()}
+            settings={this.gameManager.getGameSettings()}
             readOnly={this.state.gamePhase === GamePhase.PLAYING}
             onSettingsChange={
               settings => this.gameManager.setGameSettings(settings)

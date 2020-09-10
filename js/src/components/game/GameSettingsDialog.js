@@ -21,10 +21,8 @@ class GameSettingsDialog extends React.Component {
     this.dialogRef = React.createRef();
   }
 
-  componentWillMount() {
-    this.setState({
-      settings: Object.assign({}, this.props.settings),
-    });
+  static getDerivedStateFromProps(props, state) {
+    return { settings: Object.assign({}, props.settings, state.settings) };
   }
 
   onCancel() {
@@ -125,7 +123,6 @@ class GameSettingsDialog extends React.Component {
           header='Settings'
           footer={this.renderButtons()}
           icon='pi-cog'
-          open={this.state.visible}
           {...this.props}
           content={this.renderSettings()} />
     );
