@@ -1,5 +1,6 @@
 import './SequenciumCanvas.scss';
 import grid66 from 'images/grid-6-6.png';
+import PlayerHelper from 'players/PlayerHelper';
 import React, { useState } from 'react';
 
 
@@ -76,31 +77,23 @@ const SequenciumCanvas = props => {
     chooseMove(props.gameState.activePlayer, rowFrom, colFrom, rowTo, colTo);
   };
 
-  const getPlayerStyle = playerNumber => {
-    // TODO move to a util class?
-    if (playerNumber && props.gameSettings.players) {
-      let playerStyle = props.gameSettings.players[playerNumber - 1].style;
-      return `playerStyle${playerStyle}`;
-    }
-    return '';
-  };
-
   const renderGridSquare = (data, row, col) => {
-    let playerNumber = data && data.playerNumber;
+    let playerNumber = (data && data.playerNumber) ||
+        props.gameState.activePlayer;
     let isLastMove =
       props.gameState.lastMove.row === row &&
       props.gameState.lastMove.col === col;
     let isMaxScore = (data && data.value) === maxScores[playerNumber];
     let isTouchable = validFrom[row][col] || validTo[row][col];
     let isActive = moveFrom.row === row && moveFrom.col === col;
-    let playerStyleClass =
-        getPlayerStyle(playerNumber || props.gameState.activePlayer);
     let designStyleClass =
         props.gameSettings.handDrawnGrid ? null : 'squareOutline';
 
-    let outerClassName = `square ${playerStyleClass} ${designStyleClass} `;
-    if (playerNumber) {
-      outerClassName += `player${playerNumber}`;
+    let outerClassName = `square ${designStyleClass} `;
+    if (playerNumber && props.gameSettings.players) {
+      let playerStyleClass = PlayerHelper.getStyleClass(
+          props.gameSettings.players[playerNumber - 1]);
+      outerClassName += `${playerStyleClass} `;
     }
     return (
       <div key={`r${row}c${col}`} className={outerClassName}>

@@ -1,35 +1,14 @@
 import './PlayerArea.scss';
+import PlayerHelper from 'players/PlayerHelper';
 import React from 'react';
-import faceA from 'images/faceA.png';
-import faceB from 'images/faceB.png';
-import faceC from 'images/faceC.png';
-import faceD from 'images/faceD.png';
-import faceE from 'images/faceE.png';
-
-
-const FaceMap = {  // TODO make this and others into a utility/helper class
-  'playerStyleA': faceA,
-  'playerStyleB': faceB,
-  'playerStyleC': faceC,
-  'playerStyleD': faceD,
-  'playerStyleE': faceE,
-};
 
 
 class PlayerArea extends React.Component {
   
-  getPlayerStyleClass(player) {
-    return `playerStyle${player.style}`;
-  }
-
-  getAvatar(player) {
-    return FaceMap[this.getPlayerStyleClass(player)];
-  }
-
   renderPlayer(index) {
     let player = this.props.players[index];
     let playerNumber = index + 1;
-    let extraClasses = this.getPlayerStyleClass(player);
+    let extraClasses = PlayerHelper.getStyleClass(player);
     if (this.props.activePlayer === playerNumber) {
       extraClasses += ' active';
     }
@@ -40,7 +19,7 @@ class PlayerArea extends React.Component {
               player player${playerNumber}
               ${extraClasses}`}>
         <img
-            src={this.getAvatar(player)}
+            src={PlayerHelper.getAvatar(player)}
             alt={`Player {$playerNumber} avatar`} />
         <div className='name'>{player.name}</div>
       </div>
