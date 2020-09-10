@@ -10,8 +10,8 @@ import React, { useState, useEffect } from 'react';
 
 
 const GamePlay = props => {
+  const game = props.game;
   const gameManager = new GameManager.Factory().create();
-  const [game, _] = useState(new props.game());
   const [gameState, setGameState] = useState({});
   const [gamePhase, setGamePhase] = useState(GamePhase.PRE_GAME);
   const [gameSettings, setGameSettings] = useState({});
@@ -23,7 +23,7 @@ const GamePlay = props => {
     gameManager.setGamePhaseChangeHandler(setGamePhase);
     gameManager.setGameSettingsChangeHandler(setGameSettings);
     gameManager.setMessageHandler(m => setMessages(ms => ms.concat(m)));
-  }, [game, gameManager, props.game]);
+  }, [game, gameManager]);
 
   const onStartGame = () => gameManager.startGame();
   const onEndGame = () =>

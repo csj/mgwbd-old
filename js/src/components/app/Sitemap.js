@@ -19,7 +19,7 @@ const NAV_LINKS = Object.freeze([
         path: '/games/dandelions',
         component: GamePlay,
         componentProps: {
-          game: Dandelions,
+          game: new Dandelions(),
         },
       },
       {
@@ -27,7 +27,7 @@ const NAV_LINKS = Object.freeze([
         path: '/games/sequencium',
         component: GamePlay,
         componentProps: {
-          game: Sequencium,
+          game: new Sequencium(),
         },
       },
     ],

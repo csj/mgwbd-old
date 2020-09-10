@@ -26,9 +26,9 @@ class Game {
     return [];
   }
 
-  onChooseMove(gameState, move) {
+  onChooseMove(move) {
     if (this.moveHandler) {
-      this.moveHandler(gameState, move);
+      this.moveHandler(move);
     }
   }
 

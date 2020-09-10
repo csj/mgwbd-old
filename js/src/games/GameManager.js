@@ -17,7 +17,7 @@ class GameManager {
 
   setGame(game) {
     this.game = game;
-    this.game.setMoveHandler((_, action) => this.onAction(action));
+    this.game.setMoveHandler(this.onAction.bind(this));
     this.gameState = null;
     this.gamePhase = GamePhase.PRE_GAME;
     let playerNames = this.game.getDefaultPlayerNames();

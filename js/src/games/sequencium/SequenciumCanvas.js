@@ -3,6 +3,10 @@ import grid66 from 'images/grid-6-6.png';
 import React from 'react';
 
 
+const Move = (playerNumber, rowFrom, colFrom, rowTo, colTo) => ({
+    playerNumber, rowFrom, colFrom, rowTo, colTo});
+
+
 class SequenciumCanvas extends React.Component {
 
   constructor() {
@@ -13,7 +17,7 @@ class SequenciumCanvas extends React.Component {
   }
 
   onChooseMove(move) {
-    this.props.onChooseMove(this.props.gameState, move);
+    this.props.onChooseMove(move);
   }
 
   onMouseUp(rowTo, colTo) {
@@ -37,7 +41,7 @@ class SequenciumCanvas extends React.Component {
       colFrom = this.validTo[rowTo][colTo].fromCol;
     }
     this.setState({moveFrom: {}});
-    this.onChooseMove(this.props.createMove(
+    this.onChooseMove(Move(
         this.props.gameState.activePlayer, rowFrom, colFrom, rowTo, colTo));
   }
 

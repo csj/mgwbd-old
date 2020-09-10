@@ -3,33 +3,6 @@ import DandelionsInstructions from './DandelionsInstructions';
 import Game from 'games/Game';
 import React from 'react';
 
-/**
- * Game State looks like this:
- * {
- *   compass: {
- *     directions: ['N', 'E', ...],
- *   },
- *   grid: [
- *     [null, 'F', 'S', 'S', 'S'],
- *     [null, null, null, null, null],
- *     [null, null, null, null, null],
- *     [null, null, null, null, null],
- *     [null, null, null, null, null],
- *   ],
- *   lastMove: {
- *     compass: ...
- *     grid: ...
- *   },
- *   playerTurn: 1, // 1 or 2
- * }
- */
-
-
-const Move = Object.freeze({
-  grid: (row, col) => ({grid: {row, col}}),
-  compass: d => ({compass: d}),
-});
-
 
 class Dandelions extends Game {
   getCanonicalName() {
@@ -48,12 +21,11 @@ class Dandelions extends Game {
     return <DandelionsInstructions />;
   }
 
-  renderCanvas(gameState) {
+  renderCanvas(gameState, gameSettings) {
     return (
       <DandelionsCanvas
           gameState={gameState}
-          gameSettings={{}}
-          createMove={Move}
+          gameSettings={gameSettings}
           onChooseMove={this.onChooseMove.bind(this)} />
     );
   }

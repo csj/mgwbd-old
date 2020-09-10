@@ -10,6 +10,12 @@ import gamePieceDotHighlighted from 'images/game-piece-dot-highlighted.png';
 import { SquareStates, AllDirections } from './Constants.js';
 
 
+const Move = Object.freeze({
+  grid: (row, col) => ({grid: {row, col}}),
+  compass: d => ({compass: d}),
+});
+
+
 class DandelionsCanvas extends React.Component {
 
   constructor() {
@@ -20,7 +26,7 @@ class DandelionsCanvas extends React.Component {
   }
 
   onChooseMove(move) {
-    this.props.onChooseMove(this.props.gameState, move);
+    this.props.onChooseMove(move);
   }
 
   getSquareImg(squareState, isHighlighted) {
@@ -61,8 +67,7 @@ class DandelionsCanvas extends React.Component {
           onMouseOut={() => this.setState({hover: {}})}
           onClick={() => 
               isClickable &&
-              this.onChooseMove(
-                  this.props.createMove.grid(rowIndex, colIndex))} />
+              this.onChooseMove(Move.grid(rowIndex, colIndex))} />
     );
   }
 
@@ -102,8 +107,7 @@ class DandelionsCanvas extends React.Component {
             className='touchTarget'
             onMouseOver={() => this.setState({hover: {compass: direction}})}
             onMouseOut={() => this.setState({hover: {}})}
-            onClick={() =>
-                this.onChooseMove(this.props.createMove.compass(direction))} />
+            onClick={() => this.onChooseMove(Move.compass(direction))} />
       </div>
     );
   }
