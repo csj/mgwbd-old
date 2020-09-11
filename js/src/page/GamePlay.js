@@ -31,13 +31,12 @@ const GamePlay = props => {
 
   const renderInstructions = () =>
       <GameInstructionsDialog
-          open={false /*true*/} content={game.renderInstructions()} />;
+          open={true} content={game.renderInstructions()} />;
 
   const renderGameSettings = () => {
     if (gameSettings && Object.keys(gameSettings).length) {
       return (
         <GameSettingsDialog
-            open={true}
             settingsConfig={gameManager.getGameSettingsConfig()}
             settings={gameSettings}
             readOnly={gamePhase === GamePhase.PLAYING}

@@ -19,7 +19,7 @@ const PlayerConfig = props => {
   );
 
   return (
-    <div className={`PlayerConfig ${props.className}`}>
+    <div className={`hidden PlayerConfig ${props.className}`}>
       <div className='subsubtitle'>Players</div>
       {props.players.map(renderPlayer)}
       {renderMoreInfo()}
