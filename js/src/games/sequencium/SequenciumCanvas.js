@@ -116,7 +116,7 @@ const SequenciumCanvas = props => {
                 let el = document.elementFromPoint(
                     endTouch.pageX, endTouch.pageY);
                 if ('row' in el.dataset && 'col' in el.dataset) {
-                  this.onMouseUp(
+                  onMouseUp(
                       parseInt(el.dataset.row, 10),
                       parseInt(el.dataset.col, 10));
                 }
