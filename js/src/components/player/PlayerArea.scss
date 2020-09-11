@@ -5,24 +5,33 @@
 .PlayerArea {
 
   .playersHolder {
-    display: flex;
+    position: relative;
+    height: 100px;
   }
 
   .player {
+    position: absolute;
     display: flex;
-    flex-grow: 1;
 
     @include playerStyles('*', 'color');
 
+    &.player1 {
+      top: 0;
+      left: 0;
+    }
+
     &.player2 {
       flex-direction: row-reverse;
+      align-items: end;
+      bottom: 0;
+      right: 0;
       img {
         transform: scaleX(-1);
       }
     }
 
     &:not(.active) {
-      transform-origin: bottom left;
+      transform-origin: top left;
       transform: scaleX(.7) scaleY(.7);
 
       &.player2 {

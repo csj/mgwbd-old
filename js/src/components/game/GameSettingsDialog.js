@@ -1,7 +1,7 @@
 import './GameSettingsDialog.scss';
 import InfoDialog from 'components/chrome/InfoDialog';
-import PlayerConfig from 'components/player/PlayerConfig';
 import LabelValue from 'components/chrome/LabelValue';
+import PlayerConfig from 'components/player/PlayerConfig';
 import React from 'react';
 import {Button} from 'primereact/button';
 import {Dropdown} from 'primereact/dropdown';
@@ -72,7 +72,7 @@ class GameSettingsDialog extends React.Component {
     let label = (
       <LabelValue
           label={settingConfig.displayName}
-          labelClassName='settingDisplayName'
+          labelClassName='subsubtitle'
           value={settingConfig.description}
           valueClassName='settingDescription' />
     );
@@ -100,7 +100,8 @@ class GameSettingsDialog extends React.Component {
     return (
       <div>
         {this.props.readOnly ? this.renderReadOnlyMessage() : ''}
-        <PlayerConfig />
+        <PlayerConfig players={this.props.settings.players} />
+        <div className='divider' />
         {this.props.settingsConfig.map(this.renderSetting.bind(this))}
       </div>
     );

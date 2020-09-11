@@ -29,18 +29,15 @@ const GamePlay = props => {
   const onEndGame = () =>
     gameManager.setGamePhase(GamePhase.POST_GAME, 'Game aborted!');
 
-  const onModifyPlayers = () => {
-    console.log('oh, so you want to change things up do ya?');
-  }
-
   const renderInstructions = () =>
       <GameInstructionsDialog
-          open={true} content={game.renderInstructions()} />;
+          open={false /*true*/} content={game.renderInstructions()} />;
 
   const renderGameSettings = () => {
     if (gameSettings && Object.keys(gameSettings).length) {
       return (
         <GameSettingsDialog
+            open={true}
             settingsConfig={gameManager.getGameSettingsConfig()}
             settings={gameSettings}
             readOnly={gamePhase === GamePhase.PLAYING}
@@ -53,12 +50,6 @@ const GamePlay = props => {
   const renderGameMenuButtons = () => {
     let startGameButton = <Button label='Start Game' onClick={onStartGame} />;
     let quitGameButton = <Button label='Quit Game' onClick={onEndGame} />;
-    /*
-    let modifyPlayersButton =
-        <Button
-            label='Modify Players' className='p-button-outlined'
-            onClick={onModifyPlayers} />;
-            */
     if (gamePhase === GamePhase.PRE_GAME) {
       return ( <div> {startGameButton} </div>);
     }
