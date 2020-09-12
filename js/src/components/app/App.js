@@ -3,6 +3,7 @@ import 'primeflex/primeflex.scss';
 import 'primeicons/primeicons.css';
 import 'primereact/resources/primereact.min.css';
 import 'styles/fonts.scss';
+import 'styles/primereact-hacks.scss';
 import 'styles/media.scss';
 import 'styles/page.scss';
 import 'primereact/resources/themes/mdc-light-indigo/theme.css';

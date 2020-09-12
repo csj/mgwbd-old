@@ -33,12 +33,12 @@ PlayerHelper.getAvatar = playerOrStyle => {
 PlayerHelper.getType = player => {
   // We only support human players for now.
   if (player.owner === PlayerHelper.clientCode) {
-    return 'This device';
+    return 'This Device';
   }
   if (!player.owner) {
-    return 'Open seat';
+    return 'Open Seat';
   }
-  return 'Other device';
+  return 'Other Device';
 };
 
 

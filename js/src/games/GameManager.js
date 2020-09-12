@@ -88,6 +88,11 @@ class GameManager {
     return this.gamePhase;
   }
 
+  getJoinLink() {
+    // TODO may want to move this to a helper/util/manager class.
+    return `${document.location.origin}/join/${this.gameKey}`;
+  }
+
   newGame() {
     this.http.post('/gameplay/new')
         .send({

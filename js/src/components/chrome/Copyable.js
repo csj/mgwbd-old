@@ -45,7 +45,11 @@ class Copyable extends React.Component {
             tooltip={
               this.state.copied ?
                   'Copied to clipboard' : 'Click to copy value to clipboard'
-            } />
+            }
+            tooltipOptions={{
+              className: 'Copyable-tooltip',
+              position: this.props.position || 'bottom',
+            }} />
         <div className='copyableInner'>
           <div className='copyableValue' ref={this.ref}>
             {this.props.value}

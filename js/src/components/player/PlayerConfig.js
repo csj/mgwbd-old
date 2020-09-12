@@ -1,5 +1,6 @@
 import './PlayerConfig.scss';
 import Copyable from 'components/chrome/Copyable';
+import GameManager from 'games/GameManager';
 import InfoBubble from 'components/chrome/InfoBubble';
 import PlayerHelper from 'players/PlayerHelper';
 import React, {useEffect, useState} from 'react';
@@ -29,6 +30,7 @@ const PlayerConfig = props => {
   const [editedName, setEditedName] = useState(null);
   const [editedNameTimer, setEditedNameTimer] = useState(null);
   let avatarPanelRef = null;
+  let gameManager = new GameManager.Factory().create();
 
   useEffect(() => { // Debounce name typing.
     clearTimeout(editedNameTimer);
@@ -152,15 +154,28 @@ const PlayerConfig = props => {
   const renderShareLink = () => {
     return (
       <div className='shareLink'>
-        <Copyable label='copy game link' value={'dkfjlsdkfjsdlkfddkfjlsdkfjsdlkfddkfjlsdkfjsdlkfdsssdkfjlsdkfjsdlkfds'} />
+        <Copyable label='copy game link' value={gameManager.getJoinLink()} />
       </div>
     );
   };
 
   const renderMoreInfo = () => (
-    <div>
-      accordiontab
-    </div>
+    <Accordion className='moreInfo'>
+      <AccordionTab header={
+        <div>
+          <i className="pi pi-question-circle" />
+          How to play multiplayer
+        </div>
+      }>
+        <p>It’s easy to play with a distant friend! Just follow these steps.</p>
+        <ol>
+          <li>Tap the <em>Edit Player</em> button.</li>
+          <li>Tap <em>This Device</em> to relinquish a seat.</li>
+          <li>Copy the <em>Game Link</em> and share with a friend.</li>
+          <li>When your friend joins, they’ll join in the open slot.</li>
+        </ol>
+      </AccordionTab>
+    </Accordion>
   );
 
   return (

@@ -82,5 +82,26 @@
     }
   }
 
+  .shareLink {
+    margin: 16px 0;
+  }
+
+  .moreInfo {
+    font-family: $font_family_serif;
+
+    em {
+      color: $color_secondary;
+      font-style: initial;
+      font-weight: bold;
+    }
+
+    .p-accordion-header-link {
+      padding: 16px;
+    }
+    .p-accordion-header-text i {
+      margin-right: 12px;
+    }
+  }
+
 } /* .PlayerConfig */
 
