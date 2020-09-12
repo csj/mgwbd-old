@@ -1,5 +1,6 @@
 import GamePhase from './GamePhase';
 import Http from 'components/http/Http';
+import PlayerHelper from 'players/PlayerHelper';
 
 
 class GameManager {
@@ -106,6 +107,10 @@ class GameManager {
   }
 
   onNewGameResponse(rsp) {
+    if (rsp.body && rsp.body.gameSettings) {
+      let players = rsp.body.gameSettings.players || [];
+      players.forEach(PlayerHelper.claimPlayer);
+    }
     this.onActionResponse(rsp);
     this.gameKey = rsp.body.gameKey;
     this.setGamePhase(GamePhase.PRE_GAME);
@@ -123,7 +128,11 @@ class GameManager {
       return;
     }
     this.http.post('/gameplay/action')
-        .send({ gameKey: this.gameKey, action, })
+        .send({
+            gameKey: this.gameKey,
+            clientCode: PlayerHelper.clientCode,  // TODO verify this server-side
+            action,
+        })
         .then(this.onActionResponse.bind(this), this.onError);
   }
 

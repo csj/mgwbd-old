@@ -2,6 +2,37 @@
 
 .Copyable {
   position: relative;
+  background: #00000010;
+  border-radius: 6px;
+  height: 3em;
+
+  .copyableInner {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    & > * {
+      min-width: 0;
+    }
+
+    .copyableValue {
+      flex-grow: 1;
+      margin: 4px;
+      padding: 4px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .copyableLabel {
+      flex-shrink: 0;
+      background: $color_primary;
+      color: white;
+      font-family: $font_family_sans_serif;
+      font-size: $font_size_small;
+      margin: 4px;
+      padding: 4px;
+      border-radius: 4px;
+    }
+  }
 
   .copyableButton {
     opacity: 0;

@@ -19,7 +19,6 @@ class GameSettingsDialog extends React.Component {
   constructor() {
     super();
     this.state = {};
-    this.dialogRef = React.createRef();
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -27,18 +26,13 @@ class GameSettingsDialog extends React.Component {
   }
 
   onCancel() {
-    this.closeDialog();
+    this.setState({settings: this.props.settings});
   }
 
   onCommit() {
     if (this.props.onSettingsChange) {
       this.props.onSettingsChange(this.state.settings);
     }
-    this.closeDialog();
-  }
-
-  closeDialog() {
-    this.dialogRef.current.onExit();
   }
 
   renderSettingValue(value) {
@@ -100,8 +94,6 @@ class GameSettingsDialog extends React.Component {
     return (
       <div>
         {this.props.readOnly ? this.renderReadOnlyMessage() : ''}
-        <PlayerConfig players={this.props.settings.players} />
-        <div className='divider' />
         {this.props.settingsConfig.map(this.renderSetting.bind(this))}
       </div>
     );
@@ -122,9 +114,14 @@ class GameSettingsDialog extends React.Component {
           dialogClassName={
               `GameSettingsDialog-dialogElement
               ${this.props.dialogClassName}`}
-          dialogRef={this.dialogRef}
           header='Settings'
-          footer={this.renderButtons()}
+          footerButtons={[
+            {
+              label: 'Cancel', className: 'p-button-outlined',
+              onClick: this.onCancel.bind(this),
+            },
+            {label: 'OK', onClick: this.onCommit.bind(this)},
+          ]}
           icon='pi-cog'
           {...this.props}
           content={this.renderSettings()} />

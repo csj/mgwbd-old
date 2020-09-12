@@ -3,7 +3,84 @@
 
 
 .PlayerConfig {
+  &.readOnly {
+    .moveUp,
+    .moveDown,
+    .edit {
+      display: none;
+    }
+
+    .readOnlyMessage {
+      display: block;
+    }
+  }
+
+  .readOnlyMessage {
+    display: none;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .avatar {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &.avatarChoice {
+      display: inline-block;
+      cursor: pointer;
+      height: 64px;
+      width: 64px;
+      margin-right: 12px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .player {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    width: 100%;
+
+    > * {
+      flex-shrink: 0;
+      margin: 0 8px;
+    }
+
+    &.editable {
+      .avatar {
+        cursor: pointer;
+      }
+    }
+
+    .playerName {
+      flex-grow: 1;
+      flex-shrink: 1;
+      font-weight: bold;
+      @include playerStyles('*', 'color');
+      .p-inputtext {
+        font-family: $font_family_serif;
+        font-weight: bold;
+        width: 100%;
+      }
+    }
+
+    .avatar {
+      height: 32px;
+      width: 32px;
+    }
+
+    &:first-child .moveUp {
+      display: none;
+    }
+
+    &:last-child .moveDown {
+      display: none;
+    }
+  }
 
 } /* .PlayerConfig */
-
 

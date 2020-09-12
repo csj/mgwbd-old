@@ -35,15 +35,6 @@
     }
   }
 
-  .buttons {
-    margin-top: 32px;
-    text-align: right;
-
-    .p-button {
-      margin-left: 16px;
-    }
-  }
-
   @include desktop {
     max-height: 80%;
   }

@@ -6,6 +6,7 @@ import { Button } from 'primereact/button';
 /**
  * Props
  *   value
+ *   label
  *   className
  */
 class Copyable extends React.Component {
@@ -25,6 +26,16 @@ class Copyable extends React.Component {
     setTimeout(() => this.setState({ copied: false }), 2000);
   }
 
+  renderLabel() {
+    if (this.props.label) {
+      return (
+        <div className='copyableLabel'>
+          {this.props.label}
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div className={`Copyable ${this.props.className}`}>
@@ -35,8 +46,11 @@ class Copyable extends React.Component {
               this.state.copied ?
                   'Copied to clipboard' : 'Click to copy value to clipboard'
             } />
-        <div className='copyableValue' ref={this.ref}>
-          {this.props.value}
+        <div className='copyableInner'>
+          <div className='copyableValue' ref={this.ref}>
+            {this.props.value}
+          </div>
+          {this.renderLabel()}
         </div>
       </div>
     );

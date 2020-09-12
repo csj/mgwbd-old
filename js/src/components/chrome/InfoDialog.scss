@@ -64,6 +64,15 @@ $_target_size: 32px;
     overflow: auto;
     padding-bottom: $spacing_paragraph;
   }
+
+  .buttons {
+    text-align: right;
+
+    .p-button {
+      margin-left: 8px;
+    }
+  }
+
 }
 
 

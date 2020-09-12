@@ -14,6 +14,7 @@ import { Dialog } from 'primereact/dialog';
  *   icon
  *   header
  *   footer
+ *   footerButtons - see impl for more details
  *   content
  *   open - whether to render as initially visible
  */
@@ -29,6 +30,34 @@ class InfoDialog extends React.Component {
 
   show() {
     this.setState({visible: true});
+  }
+
+  customButtonClick(button) {
+    let close = button.close === undefined ? true : button.close;
+    if (button.onClick) {
+      button.onClick();
+    }
+    if (close) {
+      this.setState({visible: false});
+    }
+  }
+
+  renderFooter() {
+    if (this.props.footer) {
+      return this.props.footer;
+    }
+    if (this.props.footerButtons) {
+      return (
+        <div className='buttons'>
+          {this.props.footerButtons.map(b =>
+              <Button
+                  key={b.label} label={b.label} className={b.className}
+                  onClick={() => this.customButtonClick(b)} />)
+          }
+        </div>
+      );
+    }
+    return null;
   }
 
   render() {
@@ -52,7 +81,7 @@ class InfoDialog extends React.Component {
             appendTo={document.body}
             visible={this.state.visible}
             header={this.props.header || 'Information'}
-            footer={this.props.footer}
+            footer={this.renderFooter()}
             onHide={() => this.setState({visible: false})}>
           <div onClick={e => e.stopPropagation()}>
             {this.state.visible ? this.props.content : ''}

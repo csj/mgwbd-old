@@ -6,6 +6,7 @@ import GamePhase from 'games/GamePhase';
 import GameSettingsDialog from 'components/game/GameSettingsDialog';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
+import PlayerSettingsDialog from 'components/player/PlayerSettingsDialog';
 import React, { useState, useEffect } from 'react';
 
 
@@ -31,13 +32,23 @@ const GamePlay = props => {
 
   const renderInstructions = () =>
       <GameInstructionsDialog
-          open={true} content={game.renderInstructions()} />;
+          open={/* TODO true */false} content={game.renderInstructions()} />;
+
+  const renderPlayerSettings = () => {
+    return (
+      <PlayerSettingsDialog
+          settings={gameSettings}
+          readOnly={gamePhase === GamePhase.PLAYING}
+          onSettingsChange={s => gameManager.setGameSettings(s)} />
+    );
+  };
 
   const renderGameSettings = () => {
-    if (gameSettings && Object.keys(gameSettings).length) {
+    let config = gameManager.getGameSettingsConfig() || {};
+    if (Object.keys(config).length) {
       return (
         <GameSettingsDialog
-            settingsConfig={gameManager.getGameSettingsConfig()}
+            settingsConfig={config}
             settings={gameSettings}
             readOnly={gamePhase === GamePhase.PLAYING}
             onSettingsChange={s => gameManager.setGameSettings(s)} />
@@ -68,6 +79,7 @@ const GamePlay = props => {
           labelClassName='gameMenuButtons'
           value={
             <div>
+              {renderPlayerSettings()}
               {renderInstructions()}
               {renderGameSettings()}
             </div>
