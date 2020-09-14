@@ -1,10 +1,11 @@
 import Dandelions from 'games/dandelions/Dandelions';
-import Sequencium from 'games/sequencium/Sequencium';
 // import Default from 'page/Default';
 import Environment from 'page/internal/Environment';
 import GamesList from 'page/GamesList';
 import GamePlay from 'page/GamePlay';
+import JoinGame from 'page/JoinGame';
 import Icons from 'page/internal/Icons';
+import Sequencium from 'games/sequencium/Sequencium';
 
 
 const NAV_LINKS = Object.freeze([
@@ -14,6 +15,11 @@ const NAV_LINKS = Object.freeze([
     component: GamesList,
     sidenavVisible: false,
     children: [
+      {
+        label: 'Join',
+        path: '/join/:gameKey',
+        component: JoinGame,
+      },
       {
         label: 'Dandelions',
         path: '/games/dandelions',

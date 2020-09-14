@@ -42,11 +42,25 @@ def gameplay_new():
   result = gamePlayer.new(request.json['hostDomain'], request.json['gameType'])
   return jsonify(result)
 
+@main_blueprint.route('/gameplay/setsettings', methods=['POST'])
+@cross_origin()
+def gameplay_setsettings():
+  result = gamePlayer.setSettings(
+      request.json['gameKey'], request.json['gameSettings'])
+  return jsonify(result)
+
 @main_blueprint.route('/gameplay/start', methods=['POST'])
 @cross_origin()
 def gameplay_start():
   result = gamePlayer.start(
       request.json['gameKey'], request.json['gameSettings'])
+  return jsonify(result)
+
+@main_blueprint.route('/gameplay/poll', methods=['GET'])
+@cross_origin()
+def gameplay_poll():
+  result = gamePlayer.poll(
+      request.args['gameKey'], int(request.args['lastSeenMillis']))
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/action', methods=['POST'])

@@ -12,6 +12,24 @@ class GameManager {
     this.gameSettings = null;
     this.gameSettingsConfig = null;
     this.gamePhase = GamePhase.PRE_GAME;
+    this.pollIntervalId = setInterval(this.poll.bind(this), 1000);
+  }
+
+  poll() {
+    // See if we need to poll.
+    if (!this.gameSettings ||
+        !this.gameSettings.players) {
+      return;
+    }
+    let allLocal =
+        this.gameSettings.players.reduce(
+            (result, p) => PlayerHelper.isClaimedByMe(p) && result, true);
+    if (allLocal) {
+      return; // No need to poll.
+    }
+    this.http.get('/gameplay/poll')
+        .query({ gameKey: this.gameKey, lastSeenMillis: this.lastSeenMillis, })
+        .then(this.onActionResponse.bind(this), this.onError);
   }
 
   setGame(game) {
@@ -51,10 +69,13 @@ class GameManager {
     this.gameSettingsChangeHandler = fn;
   }
 
-  setGameSettings(gameSettings) {
+  setGameSettings(gameSettings, fromServer) {
     this.gameSettings = gameSettings;
     if (this.gameSettingsChangeHandler) {
       this.gameSettingsChangeHandler(this.gameSettings);
+    }
+    if (!fromServer) {
+      this.onGameSettings(this.gameSettings);
     }
   }
 
@@ -128,6 +149,15 @@ class GameManager {
     this.sendMessage(`Here we go! ${firstPlayerName} moves first.`);
   }
 
+  onGameSettings(gameSettings) {
+    this.http.post('/gameplay/setsettings')
+        .send({
+            gameKey: this.gameKey,
+            gameSettings,
+        })
+        .then(this.onActionResponse.bind(this), this.onError);
+  }
+
   onAction(action) {
     if (this.gamePhase !== GamePhase.PLAYING) {
       return;
@@ -164,7 +194,10 @@ class GameManager {
       this.gameSettingsConfig = rsp.body.gameSettingsConfig;
     }
     if (rsp.body.gameSettings) {
-      this.setGameSettings(rsp.body.gameSettings);
+      this.setGameSettings(rsp.body.gameSettings, true);
+    }
+    if (rsp.body.lastSeenMillis) {
+      this.lastSeenMillis = rsp.body.lastSeenMillis;
     }
   }
 

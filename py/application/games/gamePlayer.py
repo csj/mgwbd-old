@@ -33,6 +33,31 @@ def new(hostDomain, gameType):
   return {
     'gameState': gameState, 'gameSettingsConfig': gameSettingsConfig,
     'gameSettings': gameSettings, 'gameKey': gameKey,
+    'lastSeenMillis': _modifiedMillis(gameInstance),
+  }
+
+
+def setSettings(gameKey, gameSettings):
+  gameInstance = GameInstance.get(db.session, gameKey=gameKey)
+  if not gameInstance:
+    raise BadRequest('No such game instance.')
+  # TODO
+  if gameInstance.gamePhase == GamePhase.PLAYING.value:
+    raise BadRequest('Cannot modify settings for a game in progress.')
+  if gameInstance.gamePhase == GamePhase.POST_GAME.value:
+    _archiveGame(gameInstance)
+    gameInstance = GameInstance.create(
+        db.session, hostDomain=gameInstance.hostDomain, gameKey=gameKey,
+        gameType=gameInstance.gameType)
+  game = _GAME_MAP[gameInstance.gameType]()
+  gameState = game.getInitialGameState(gameSettings)
+  game.nextPlayerTurn(gameState, gameSettings=gameSettings)
+  gameInstance.gameSettings = gameSettings
+  gameInstance.gameState = gameState
+  db.session.commit()
+  return {
+    'gameState': gameInstance.gameState,
+    'lastSeenMillis': _modifiedMillis(gameInstance),
   }
 
 
@@ -52,7 +77,26 @@ def start(gameKey, gameSettings):
   gameInstance.gameSettings = gameSettings
   gameInstance.gameState = gameState
   db.session.commit()
-  return { 'gameState': gameInstance.gameState }
+  return {
+    'gameState': gameInstance.gameState,
+    'lastSeenMillis': _modifiedMillis(gameInstance),
+  }
+
+
+def poll(gameKey, lastSeenMillis):
+  gameInstance = GameInstance.get(db.session, gameKey=gameKey)
+  if not gameInstance:
+    raise BadRequest('No such game instance.')
+  modifiedMillis = _modifiedMillis(gameInstance)
+  if modifiedMillis == lastSeenMillis:
+    return {}
+  return {
+    'gameState': gameInstance.gameState,
+    'gameSettings': gameInstance.gameSettings,
+    'gamePhase': gameInstance.gamePhase,
+    'gameType': gameInstance.gameType,
+    'lastSeenMillis': modifiedMillis,
+  }
 
 
 def action(gameKey, action):
@@ -70,7 +114,14 @@ def action(gameKey, action):
   if gamePlayer.gameEndCondition(newGameState):
     gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
-  return { 'gameState': newGameState }
+  return {
+    'gameState': newGameState,
+    'lastSeenMillis': _modifiedMillis(gameInstance),
+  }
+
+
+def _modifiedMillis(gameInstance):
+  return int(gameInstance.date_modified.timestamp() * 1000)
 
 
 def _archiveGame(gameInstance):
