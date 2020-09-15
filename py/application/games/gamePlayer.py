@@ -33,6 +33,7 @@ def new(hostDomain, gameType):
   return {
     'gameState': gameState, 'gameSettingsConfig': gameSettingsConfig,
     'gameSettings': gameSettings, 'gameKey': gameKey,
+    'gamePhase': gameInstance.gamePhase,
     'lastSeenMillis': _modifiedMillis(gameInstance),
   }
 
@@ -61,6 +62,18 @@ def setSettings(gameKey, gameSettings):
   }
 
 
+def setPhase(gameKey, gamePhase):
+  gameInstance = GameInstance.get(db.session, gameKey=gameKey)
+  if not gameInstance:
+    raise BadRequest('No such game instance.')
+  gameInstance.gamePhase = gamePhase
+  message = ''
+  if gamePhase == GamePhase.POST_GAME.value:
+    message = 'Game aborted!'
+  db.session.commit()
+  return { 'gamePhase': gamePhase, 'message': message }
+
+
 def start(gameKey, gameSettings):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
@@ -79,8 +92,18 @@ def start(gameKey, gameSettings):
   db.session.commit()
   return {
     'gameState': gameInstance.gameState,
+    'gamePhase': gameInstance.gamePhase,
     'lastSeenMillis': _modifiedMillis(gameInstance),
   }
+
+
+def query(gameKey):
+  gameInstance = GameInstance.get(db.session, gameKey=gameKey)
+  if not gameInstance:
+    return {
+      'gameType': None,
+    }
+  return poll(gameKey, 0)
 
 
 def poll(gameKey, lastSeenMillis):
@@ -99,12 +122,14 @@ def poll(gameKey, lastSeenMillis):
   }
 
 
-def action(gameKey, action):
+def action(gameKey, clientCode, action):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
     raise BadRequest('No such game instance.')
   if gameInstance.gamePhase != GamePhase.PLAYING.value:
     raise BadRequest('Game instance is not currently playing.')
+  if not _validateClientCode(clientCode, gameInstance):
+    raise BadRequest('Client cannot perform this action.')
 
   gamePlayer = _GAME_MAP[gameInstance.gameType]()
   newGameState = gamePlayer.action(
@@ -118,6 +143,12 @@ def action(gameKey, action):
     'gameState': newGameState,
     'lastSeenMillis': _modifiedMillis(gameInstance),
   }
+
+
+def _validateClientCode(clientCode, gameInstance):
+  currentTurnPlayerNumber = gameInstance.gameState['activePlayer']
+  player = gameInstance.gameSettings['players'][currentTurnPlayerNumber - 1]
+  return (not player['owner'] or player['owner'] == clientCode)
 
 
 def _modifiedMillis(gameInstance):

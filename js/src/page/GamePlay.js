@@ -24,11 +24,13 @@ const GamePlay = props => {
     gameManager.setGamePhaseChangeHandler(setGamePhase);
     gameManager.setGameSettingsChangeHandler(setGameSettings);
     gameManager.setMessageHandler(m => setMessages(ms => ms.concat(m)));
+    if (!gameManager.getGameKey()) {
+      gameManager.newGame();
+    }
   }, [game, gameManager]);
 
   const onStartGame = () => gameManager.startGame();
-  const onEndGame = () =>
-    gameManager.setGamePhase(GamePhase.POST_GAME, 'Game aborted!');
+  const onEndGame = () => gameManager.setGamePhase(GamePhase.POST_GAME);
 
   const renderInstructions = () =>
       <GameInstructionsDialog

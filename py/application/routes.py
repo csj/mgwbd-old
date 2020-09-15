@@ -49,11 +49,24 @@ def gameplay_setsettings():
       request.json['gameKey'], request.json['gameSettings'])
   return jsonify(result)
 
+@main_blueprint.route('/gameplay/setphase', methods=['POST'])
+@cross_origin()
+def gameplay_setphase():
+  result = gamePlayer.setPhase(
+      request.json['gameKey'], request.json['gamePhase'])
+  return jsonify(result)
+
 @main_blueprint.route('/gameplay/start', methods=['POST'])
 @cross_origin()
 def gameplay_start():
   result = gamePlayer.start(
       request.json['gameKey'], request.json['gameSettings'])
+  return jsonify(result)
+
+@main_blueprint.route('/gameplay/query', methods=['GET'])
+@cross_origin()
+def gameplay_query():
+  result = gamePlayer.query(request.args['gameKey'])
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/poll', methods=['GET'])
@@ -66,7 +79,9 @@ def gameplay_poll():
 @main_blueprint.route('/gameplay/action', methods=['POST'])
 @cross_origin()
 def gameplay_action():
-  result = gamePlayer.action(request.json['gameKey'], request.json['action'])
+  result = gamePlayer.action(
+      request.json['gameKey'], request.json['clientCode'],
+      request.json['action'])
   return jsonify(result)
 
 # TODO make this admin-protected

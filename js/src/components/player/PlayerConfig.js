@@ -6,7 +6,6 @@ import PlayerHelper from 'players/PlayerHelper';
 import React, {useEffect, useState} from 'react';
 import {Accordion, AccordionTab} from 'primereact/accordion';
 import {Button} from 'primereact/button';
-import {Dropdown} from 'primereact/dropdown';
 import {InputText} from 'primereact/inputtext';
 import {OverlayPanel} from 'primereact/overlaypanel';
 
@@ -28,17 +27,16 @@ const playerWaiting = <InfoBubble
 const PlayerConfig = props => {
   const [editPlayerNum, setEditPlayerNum] = useState(null);
   const [editedName, setEditedName] = useState(null);
-  const [editedNameTimer, setEditedNameTimer] = useState(null);
   let avatarPanelRef = null;
   let gameManager = new GameManager.Factory().create();
 
   useEffect(() => { // Debounce name typing.
-    clearTimeout(editedNameTimer);
+    let timerId = null;
     if (editedName && editPlayerNum != null) {
-      setEditedNameTimer(setTimeout(() => onCommitName(editedName), 500));
+      timerId = setTimeout(() => onCommitName(editedName), 500);
     }
-    return clearTimeout(editedNameTimer);
-  }, [editPlayerNum, editedName]);
+    return () => clearTimeout(timerId);
+  });
 
   const onSwap = (index1, index2) => {
     let tempPlayer = props.players[index1];
@@ -54,8 +52,11 @@ const PlayerConfig = props => {
   };
 
   const onCommitName = name => {
-    props.players[editPlayerNum].name = name;
-    props.onCommit && props.onCommit(props.players);
+    let player = props.players[editPlayerNum];
+    if (player.name !== name) {
+      props.players[editPlayerNum].name = name;
+      props.onCommit && props.onCommit(props.players);
+    }
   };
 
   const onCommitToggleType = () => {

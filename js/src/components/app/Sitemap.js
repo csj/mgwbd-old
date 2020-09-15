@@ -1,11 +1,9 @@
-import Dandelions from 'games/dandelions/Dandelions';
-// import Default from 'page/Default';
 import Environment from 'page/internal/Environment';
 import GamesList from 'page/GamesList';
 import GamePlay from 'page/GamePlay';
+import GameTypeMap from 'games/GameTypeMap';
 import JoinGame from 'page/JoinGame';
 import Icons from 'page/internal/Icons';
-import Sequencium from 'games/sequencium/Sequencium';
 
 
 const NAV_LINKS = Object.freeze([
@@ -25,7 +23,7 @@ const NAV_LINKS = Object.freeze([
         path: '/games/dandelions',
         component: GamePlay,
         componentProps: {
-          game: new Dandelions(),
+          game: new GameTypeMap['dandelions'](),
         },
       },
       {
@@ -33,7 +31,7 @@ const NAV_LINKS = Object.freeze([
         path: '/games/sequencium',
         component: GamePlay,
         componentProps: {
-          game: new Sequencium(),
+          game: new GameTypeMap['sequencium'](),
         },
       },
     ],

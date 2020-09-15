@@ -1,7 +1,6 @@
 import './GameSettingsDialog.scss';
 import InfoDialog from 'components/chrome/InfoDialog';
 import LabelValue from 'components/chrome/LabelValue';
-import PlayerConfig from 'components/player/PlayerConfig';
 import React from 'react';
 import {Button} from 'primereact/button';
 import {Dropdown} from 'primereact/dropdown';
