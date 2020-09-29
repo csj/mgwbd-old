@@ -3,13 +3,13 @@ import PlayerHelper from 'players/PlayerHelper';
 import React from 'react';
 
 
-class PlayerArea extends React.Component {
+const PlayerArea = props => {
   
-  renderPlayer(index) {
-    let player = this.props.players[index];
+  const renderPlayer = index => {
+    let player = props.players[index];
     let playerNumber = index + 1;
     let extraClasses = PlayerHelper.getStyleClass(player);
-    if (this.props.activePlayer === playerNumber) {
+    if (props.activePlayer === playerNumber) {
       extraClasses += ' active';
     }
     return (
@@ -24,17 +24,19 @@ class PlayerArea extends React.Component {
         <div className='name'>{player.name}</div>
       </div>
     );
-  }
+  };
 
-  render() {
+  const render = () => {
     let content;
-    if (!this.props.players || this.props.players.length === 0) {
+    if (!props.players || props.players.length === 0) {
       content = '';
     }
-    else if (this.props.players.length === 2) {
+    else if (props.players.length === 2) {
+      let classes =
+          'playersHolder ' + props.activePlayer ? 'playerActive' : '';
       content = (
-        <div className='playersHolder'>
-          {this.props.players.map((p, i) => this.renderPlayer(i))}
+        <div className={`playersHolder ${classes}`}>
+          {props.players.map((p, i) => renderPlayer(i))}
         </div>
       );
     } else {
@@ -46,7 +48,9 @@ class PlayerArea extends React.Component {
         {content}
       </div>
     );
-  }
+  };
+
+  return render();
 }
 
 

@@ -18,7 +18,10 @@
     }
 
     &.gamePhase3 .square {
-      @include playerStyles('.maxScore', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
+      @include playerStyles('.maxScore', 'border', '5px solid COLOR');
+      .maxScore {
+        border-radius: 50%;
+      }
     }
 
     .row {

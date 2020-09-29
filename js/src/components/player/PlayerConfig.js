@@ -38,6 +38,12 @@ const PlayerConfig = props => {
     return () => clearTimeout(timerId);
   });
 
+  useEffect(() => {
+    if (props.readOnly) {
+      setEditPlayerNum(null);
+    }
+  }, [props.readOnly]);
+
   const onSwap = (index1, index2) => {
     let tempPlayer = props.players[index1];
     props.players[index1] = props.players[index2];

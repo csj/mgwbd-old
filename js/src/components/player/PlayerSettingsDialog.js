@@ -20,7 +20,7 @@ const PlayerSettingsDialog = props => {
 
   const renderContent = () =>
       <PlayerConfig
-          players={props.settings.players || []}
+          players={(props.settings && props.settings.players) || []}
           readOnly={props.readOnly}
           onCommit={onCommit}
           />;

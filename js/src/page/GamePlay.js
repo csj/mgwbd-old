@@ -4,30 +4,30 @@ import GameInstructionsDialog from 'components/game/GameInstructionsDialog';
 import GameManager from 'games/GameManager';
 import GamePhase from 'games/GamePhase';
 import GameSettingsDialog from 'components/game/GameSettingsDialog';
+import GameStatusDisplay from 'components/game/GameStatusDisplay';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
 import PlayerSettingsDialog from 'components/player/PlayerSettingsDialog';
 import React, { useState, useEffect } from 'react';
+import { withRouter } from 'react-router';
 
 
 const GamePlay = props => {
-  const game = props.game;
   const gameManager = new GameManager.Factory().create();
-  const [gameState, setGameState] = useState({});
-  const [gamePhase, setGamePhase] = useState(GamePhase.PRE_GAME);
-  const [gameSettings, setGameSettings] = useState({});
-  const [messages, setMessages] = useState([]);
+  const game = gameManager.getGame();
+  const gameState = gameManager.getGameState();
+  const gamePhase = gameManager.getGamePhase();
+  const gameSettings = gameManager.getGameSettings();
+  const [changeWatcher, setChangeWatcher] = useState({});
 
   useEffect(() => {
-    gameManager.setGame(game);
-    gameManager.setGameStateChangeHandler(setGameState);
-    gameManager.setGamePhaseChangeHandler(setGamePhase);
-    gameManager.setGameSettingsChangeHandler(setGameSettings);
-    gameManager.setMessageHandler(m => setMessages(ms => ms.concat(m)));
-    if (!gameManager.getGameKey()) {
+    gameManager.setChangeHandler(setChangeWatcher);
+    let joinGameKey = props.location.state && props.location.state.join;
+    if (!joinGameKey) {
+      gameManager.setGame(props.game);
       gameManager.newGame();
     }
-  }, [game, gameManager]);
+  }, [gameManager, props.game, props.location.state]);
 
   const onStartGame = () => gameManager.startGame();
   const onEndGame = () => gameManager.setGamePhase(GamePhase.POST_GAME);
@@ -82,8 +82,8 @@ const GamePlay = props => {
           value={
             <div>
               {renderPlayerSettings()}
-              {renderInstructions()}
-              {renderGameSettings()}
+              {game ? renderInstructions() : null}
+              {game ? renderGameSettings() : null}
             </div>
           }
           styles={LabelValue.Style.LEFT_RIGHT} />;
@@ -96,22 +96,20 @@ const GamePlay = props => {
         <div className='gameCanvas'>
           {game.renderCanvas(gameState, gameSettings, gamePhase)}
         </div>
+        <GameStatusDisplay {...{gameState, gameSettings, gamePhase}} />
         <PlayerArea
             players={gameSettings && gameSettings.players}
-            activePlayer={gameState.activePlayer} />
-        <div className='section log'>
-          {messages.map(
-              (m, i) => <div key={i} className='message'>{m}</div>)}
-        </div>
+            activePlayer={
+                gamePhase === GamePhase.PLAYING && gameState.activePlayer} />
       </div>;
 
   const render = () => {
     return (
       <div className='GamePlay page'>
         <div className='section subtitle'>
-          {game.getDisplayName()}
+          {gameManager.isReady() ? game.getDisplayName() : 'Loading…'}
         </div>
-        {Object.keys(gameState).length ? renderLoaded() : renderLoading()}
+        {gameManager.isReady() ? renderLoaded() : renderLoading()}
       </div>
     );
   };
@@ -120,4 +118,4 @@ const GamePlay = props => {
 }
 
 
-export default GamePlay;
+export default withRouter(GamePlay);

@@ -1,0 +1,14 @@
+@import 'styles/common.scss';
+
+
+.GameStatusDisplay {
+  margin: 8px;
+  text-align: center;
+
+  em {
+    color: $color_secondary;
+    font-style: initial;
+    font-weight: bold;
+  }
+} /* .GameStatusDisplay */
+

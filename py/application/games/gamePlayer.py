@@ -67,11 +67,8 @@ def setPhase(gameKey, gamePhase):
   if not gameInstance:
     raise BadRequest('No such game instance.')
   gameInstance.gamePhase = gamePhase
-  message = ''
-  if gamePhase == GamePhase.POST_GAME.value:
-    message = 'Game aborted!'
   db.session.commit()
-  return { 'gamePhase': gamePhase, 'message': message }
+  return {'gamePhase': gamePhase}
 
 
 def start(gameKey, gameSettings):
@@ -100,9 +97,7 @@ def start(gameKey, gameSettings):
 def query(gameKey):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
-    return {
-      'gameType': None,
-    }
+    return {'gameType': None}
   return poll(gameKey, 0)
 
 
@@ -140,6 +135,7 @@ def action(gameKey, clientCode, action):
     gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
   return {
+    'gamePhase': gameInstance.gamePhase,
     'gameState': newGameState,
     'lastSeenMillis': _modifiedMillis(gameInstance),
   }

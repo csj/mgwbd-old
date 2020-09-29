@@ -1,4 +1,5 @@
 import GamePhase from './GamePhase';
+import GameTypeMap from 'games/GameTypeMap';
 import Http from 'components/http/Http';
 import PlayerHelper from 'players/PlayerHelper';
 
@@ -32,66 +33,43 @@ class GameManager {
         .then(this.onActionResponse.bind(this), this.onError);
   }
 
-  setGame(game) {
-    this.game = game;
-    this.game.setMoveHandler(this.onAction.bind(this));
+  isReady() {
+    return !!(this.game && this.gameState && this.gameSettings);
   }
 
-  setGameStateChangeHandler(fn) {
-    this.gameStateChangeHandler = fn;
-    if (fn && this.gameState) {
-      this.gameStateChangeHandler(this.gameState);
-    }
+  setChangeHandler(fn) {
+    this.changeHandler = fn;
+  }
+
+  onChanged() {
+    this.changeHandler && this.changeHandler({});
+  }
+
+  setGame(game) {
+    this.game = game;
+    this.gameState = null;
+    this.gameSettings = null;
+    this.gameSettingsConfig = null;
+    // TODO this should work a different way.
+    this.game.setMoveHandler(this.onAction.bind(this));
+    this.onChanged();
   }
 
   setGameState(gameState) {
     this.gameState = gameState;
-    if (this.gameStateChangeHandler) {
-      this.gameStateChangeHandler(this.gameState);
-    }
-  }
-
-  setGamePhaseChangeHandler(fn) {
-    this.gamePhaseChangeHandler = fn;
-    if (fn && this.gamePhase) {
-      this.gamePhaseChangeHandler(this.gamePhase);
-    }
   }
 
   setGamePhase(gamePhase, fromServer) {
     this.gamePhase = gamePhase;
-    if (this.gamePhaseChangeHandler) {
-      this.gamePhaseChangeHandler(this.gamePhase);
-    }
     if (!fromServer) {
       this.onGamePhase(this.gamePhase);
     }
   }
 
-  setGameSettingsChangeHandler(fn) {
-    this.gameSettingsChangeHandler = fn;
-    if (fn && this.gameSettings) {
-      this.gameSettingsChangeHandler(this.gameSettings);
-    }
-  }
-
   setGameSettings(gameSettings, fromServer) {
     this.gameSettings = gameSettings;
-    if (this.gameSettingsChangeHandler) {
-      this.gameSettingsChangeHandler(this.gameSettings);
-    }
     if (!fromServer) {
       this.onGameSettings(this.gameSettings);
-    }
-  }
-
-  setMessageHandler(fn) {
-    this.messageHandler = fn;
-  }
-
-  sendMessage(msg) {
-    if (this.messageHandler) {
-      this.messageHandler(msg);
     }
   }
 
@@ -140,8 +118,11 @@ class GameManager {
         .query({gameKey})
         .then(
             rsp => {
+              let canonicalName = rsp.body.gameType;
+              let game = new GameTypeMap[canonicalName]();
+              this.setGame(game);
               this.onNewGameResponse(rsp);
-              callbackFn(rsp.body);
+              callbackFn && callbackFn(rsp.body);
             },
             this.onError);
     this.gameKey = gameKey;
@@ -149,32 +130,31 @@ class GameManager {
 
   startGame() {
     this.http.post('/gameplay/start')
-        .send({
-          gameKey: this.gameKey,
-          gameSettings: this.gameSettings,
-        })
-        .then(this.onStartGameResponse.bind(this), this.onError);
+        .send({gameKey: this.gameKey, gameSettings: this.gameSettings})
+        .then(this.onActionResponse.bind(this), this.onError);
   }
 
   onNewGameResponse(rsp) {
-    if (rsp.body && rsp.body.gameSettings) {
-      let players = rsp.body.gameSettings.players || [];
+    this.onActionResponse(rsp);
+    this.claimUnownedPlayers();
+  }
+
+  claimUnownedPlayers() {
+    let playersModified = false;
+    if (this.gameSettings) {
+      let players = this.gameSettings.players || [];
       players.forEach(
         player => {
           if (!player.owner) {
             PlayerHelper.claimPlayer(player);
+            playersModified = true;
           }
         }
       );
     }
-    this.onActionResponse(rsp);
-    this.setGameSettings(this.gameSettings);
-  }
-
-  onStartGameResponse(rsp) {
-    this.onActionResponse(rsp);
-    let firstPlayerName = this.gameSettings.players[0].name;
-    this.sendMessage(`Here we go! ${firstPlayerName} moves first.`);
+    if (playersModified) {
+      this.setGameSettings(this.gameSettings);
+    }
   }
 
   onGameSettings(gameSettings) {
@@ -196,7 +176,7 @@ class GameManager {
     this.http.post('/gameplay/action')
         .send({
             gameKey: this.gameKey,
-            clientCode: PlayerHelper.clientCode,  // TODO verify this server-side
+            clientCode: PlayerHelper.clientCode,
             action,
         })
         .then(this.onActionResponse.bind(this), this.onError);
@@ -207,28 +187,16 @@ class GameManager {
       return;
     }
     if (rsp.body.gameState) {
-      let gameState = rsp.body.gameState;
-      this.setGameState(gameState);
-      if (gameState.gameEnd) {
-        this.setGamePhase(GamePhase.POST_GAME);
-        if (gameState.gameEnd.tie) {
-          this.sendMessage("Incredible, it's a tie! How about another?");
-        } else {
-          let winningPlayerName =
-              this.gameSettings.players[gameState.gameEnd.win - 1].name;
-          this.sendMessage(
-              `Wow! ${winningPlayerName} is the winner! How about another?`);
-        }
-      }
+      this.setGameState(rsp.body.gameState);
     }
     if (rsp.body.gameKey) {
       this.gameKey = rsp.body.gameKey;
     }
-    if (rsp.body.gamePhase) {
-      this.setGamePhase(rsp.body.gamePhase, true);
-    }
     if (rsp.body.gameSettingsConfig) {
       this.gameSettingsConfig = rsp.body.gameSettingsConfig;
+    }
+    if (rsp.body.gamePhase) {
+      this.setGamePhase(rsp.body.gamePhase, true);
     }
     if (rsp.body.gameSettings) {
       this.setGameSettings(rsp.body.gameSettings, true);
@@ -236,9 +204,7 @@ class GameManager {
     if (rsp.body.lastSeenMillis) {
       this.lastSeenMillis = rsp.body.lastSeenMillis;
     }
-    if (rsp.body.message) {
-      this.sendMessage(rsp.body.message);
-    }
+    this.onChanged();
   }
 
   onError(error) {

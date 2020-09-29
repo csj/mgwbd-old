@@ -24,7 +24,7 @@ const JoinGame = props => {
 
   if (gameType) {
     return (
-      <Redirect to={`/games/${gameType}`} />
+      <Redirect to={{pathname: `/games/${gameType}`, state: {join: gameKey}}} />
     );
   }
 

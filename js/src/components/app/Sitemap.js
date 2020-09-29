@@ -6,6 +6,17 @@ import JoinGame from 'page/JoinGame';
 import Icons from 'page/internal/Icons';
 
 
+const makeGamePage = canonicalName => {
+  let game = new GameTypeMap[canonicalName]();
+  return {
+    label: game.getDisplayName(),
+    path: `/games/${canonicalName}`,
+    component: GamePlay,
+    componentProps: {game},
+  };
+};
+
+
 const NAV_LINKS = Object.freeze([
   {
     label: 'Games',
@@ -18,22 +29,8 @@ const NAV_LINKS = Object.freeze([
         path: '/join/:gameKey',
         component: JoinGame,
       },
-      {
-        label: 'Dandelions',
-        path: '/games/dandelions',
-        component: GamePlay,
-        componentProps: {
-          game: new GameTypeMap['dandelions'](),
-        },
-      },
-      {
-        label: 'Sequencium',
-        path: '/games/sequencium',
-        component: GamePlay,
-        componentProps: {
-          game: new GameTypeMap['sequencium'](),
-        },
-      },
+      makeGamePage('dandelions'),
+      makeGamePage('sequencium'),
     ],
   },
   {

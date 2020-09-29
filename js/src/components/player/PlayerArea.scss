@@ -1,6 +1,7 @@
 @import 'styles/common.scss';
 @import 'styles/players.scss';
 
+$_scale: 0.7;
 
 .PlayerArea {
 
@@ -32,7 +33,7 @@
 
     &:not(.active) {
       transform-origin: top left;
-      transform: scaleX(.7) scaleY(.7);
+      transform: scaleX($_scale) scaleY($_scale);
 
       &.player2 {
         transform-origin: bottom right;
