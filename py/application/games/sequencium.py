@@ -59,8 +59,7 @@ class Sequencium(Game):
   def getDirection(self, rowFrom, colFrom, rowTo, colTo):
     return _directionHelper[rowTo - rowFrom][colTo - colFrom]
 
-  def opposingPlayerHasAvailableMove(self, playerNumber, grid):
-    oppPlayer = 3 - playerNumber
+  def playerHasAvailableMove(self, playerNumber, grid):
     for r in range(len(grid)):
       for c in range(len(grid[0])):
         if grid[r][c]:
@@ -71,7 +70,7 @@ class Sequencium(Game):
                 c + dc < 0 or c + dc >= len(grid[0])):
               continue
             if (grid[r + dr][c + dc] and
-                grid[r + dr][c + dc]['playerNumber'] == oppPlayer):
+                grid[r + dr][c + dc]['playerNumber'] == playerNumber):
               return True
     return False
 
@@ -81,7 +80,10 @@ class Sequencium(Game):
       Game.nextPlayerTurn(self, gameState)
       return
     grid = gameState['grid']
-    if not self.opposingPlayerHasAvailableMove(playerNumber, grid):
+    if not self.playerHasAvailableMove(3 - playerNumber, grid):
+      return
+    if not self.playerHasAvailableMove(playerNumber, grid):
+      Game.nextPlayerTurn(self, gameState)
       return
     if not gameSettings or not gameSettings['doubleMoves']:
       Game.nextPlayerTurn(self, gameState)
