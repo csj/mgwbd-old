@@ -18,10 +18,10 @@ const GamePlay = props => {
   const gameState = gameManager.getGameState();
   const gamePhase = gameManager.getGamePhase();
   const gameSettings = gameManager.getGameSettings();
-  const [changeWatcher, setChangeWatcher] = useState({});
+  const [, forceUpdate] = useState({});
 
   useEffect(() => {
-    gameManager.setChangeHandler(setChangeWatcher);
+    gameManager.setChangeHandler(() => forceUpdate({}));
     let joinGameKey = props.location.state && props.location.state.join;
     if (!joinGameKey) {
       gameManager.setGame(props.game);
@@ -94,7 +94,8 @@ const GamePlay = props => {
       <div className='section'>
         {renderGameMenu()}
         <div className='gameCanvas'>
-          {game.renderCanvas(gameState, gameSettings, gamePhase)}
+          {game.renderCanvas(
+              gameState, gameSettings, gamePhase, gameManager.canMove())}
         </div>
         <GameStatusDisplay {...{gameState, gameSettings, gamePhase}} />
         <PlayerArea

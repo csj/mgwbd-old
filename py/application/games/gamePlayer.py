@@ -105,13 +105,15 @@ def poll(gameKey, lastSeenMillis):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
     raise BadRequest('No such game instance.')
+  game = _GAME_MAP[gameInstance.gameType]()
   modifiedMillis = _modifiedMillis(gameInstance)
   if modifiedMillis == lastSeenMillis:
     return {}
   return {
-    'gameState': gameInstance.gameState,
-    'gameSettings': gameInstance.gameSettings,
     'gamePhase': gameInstance.gamePhase,
+    'gameSettings': gameInstance.gameSettings,
+    'gameSettingsConfig': game.getSettingsConfig(),
+    'gameState': gameInstance.gameState,
     'gameType': gameInstance.gameType,
     'lastSeenMillis': modifiedMillis,
   }

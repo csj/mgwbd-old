@@ -21,11 +21,13 @@ class Dandelions extends Game {
     return <DandelionsInstructions />;
   }
 
-  renderCanvas(gameState, gameSettings) {
+  renderCanvas(gameState, gameSettings, gamePhase, canMove) {
     return (
       <DandelionsCanvas
           gameState={gameState}
           gameSettings={gameSettings}
+          gamePhase={gamePhase}
+          canMove={canMove}
           onChooseMove={this.onChooseMove.bind(this)} />
     );
   }

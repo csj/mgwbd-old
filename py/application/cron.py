@@ -3,7 +3,7 @@ from application.models import ArchivedGameInstance, GameInstance
 from datetime import datetime, timedelta
 
 
-_STALE_AGE = timedelta(minutes=30)
+_STALE_AGE = timedelta(hours=3)
 
 
 def archiveStaleGames():

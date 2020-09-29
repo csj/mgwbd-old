@@ -1,13 +1,10 @@
 import React from 'react';
+import {Redirect} from 'react-router';
 
 
 class Landing extends React.Component {
   render() {
-    return (
-      <div className='Landing'>
-        Landing page.
-      </div>
-    );
+    return <Redirect to='/games' />;
   }
 }
 

@@ -69,7 +69,7 @@ const PlayerConfig = props => {
     // if i don't own this player, own it
     // if i do own this player, set it to null
     let player = props.players[editPlayerNum];
-    PlayerHelper.isClaimedByMe(player) ?
+    PlayerHelper.isOwnedByMe(player) ?
         PlayerHelper.unclaimPlayer(player) :
         PlayerHelper.claimPlayer(player);
     props.onCommit && props.onCommit(props.players);

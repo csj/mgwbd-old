@@ -24,7 +24,7 @@ class GameManager {
     }
     let allLocal =
         this.gameSettings.players.reduce(
-            (result, p) => PlayerHelper.isClaimedByMe(p) && result, true);
+            (result, p) => PlayerHelper.isOwnedByMe(p) && result, true);
     if (allLocal) {
       return; // No need to poll.
     }
@@ -100,6 +100,17 @@ class GameManager {
   getJoinLink() {
     // TODO may want to move this to a helper/util/manager class.
     return `${document.location.origin}/join/${this.gameKey}`;
+  }
+
+  canMove() {
+    let activePlayer = this.gameState.activePlayer;
+    if (this.gamePhase !== GamePhase.PLAYING || !activePlayer) {
+      return false;
+    }
+    let player = this.gameSettings.players[activePlayer - 1];
+    let canMove =
+        PlayerHelper.isOwnedByMe(player) || PlayerHelper.isUnowned(player);
+    return canMove;
   }
 
   newGame() {

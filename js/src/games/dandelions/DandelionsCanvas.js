@@ -16,6 +16,13 @@ const Move = Object.freeze({
 });
 
 
+/**
+ * props:
+ *   gameState: Object
+ *   gameSettings: Object
+ *   gamePhase: Object
+ *   canMove: boolean, Whether this client may make a move now.
+ */
 class DandelionsCanvas extends React.Component {
 
   constructor() {
@@ -40,9 +47,10 @@ class DandelionsCanvas extends React.Component {
 
   renderGridSquare(data, rowIndex, colIndex) {
     let highlight = false;
-    let isClickable = (
-        data !== SquareStates.FLWR &&
-        this.props.gameState.activePlayer === 1);
+    let isClickable =
+        this.props.canMove &&
+        this.props.gameState.activePlayer === 1 &&
+        data !== SquareStates.FLWR;
     if (this.props.gameState.lasMove &&
         this.props.gameState.lastMove.grid[rowIndex][colIndex] != null) {
       data = this.props.gameState.lastMove.grid[rowIndex][colIndex];
@@ -95,7 +103,8 @@ class DandelionsCanvas extends React.Component {
 
   renderCompassTouchTarget(direction) {
     if (this.props.gameState.compass.directions.indexOf(direction) >= 0 ||
-        this.props.gameState.activePlayer !== 2) {
+        this.props.gameState.activePlayer !== 2 ||
+        !this.props.canMove) {
       return null;
     }
 
@@ -123,7 +132,7 @@ class DandelionsCanvas extends React.Component {
         highlightLastTurn = this.renderCompassPoint('last', direction, true);
       }
     }
-    if (this.state.hover.compass) {
+    if (this.state.hover.compass && this.props.canMove) {
       highlightHover = this.renderCompassPoint(
           'hover', this.state.hover.compass, true);
     }
@@ -146,6 +155,8 @@ class DandelionsCanvas extends React.Component {
    * props:
    *   gameState: Object
    *   gameSettings: Object
+   *   gamePhase: Enum
+   *   canMove: boolean
    */
   render() {
     return (

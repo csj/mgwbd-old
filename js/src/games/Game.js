@@ -36,7 +36,7 @@ class Game {
     this.moveHandler = fn;
   }
 
-  renderCanvas(gameState, gameSettings, gamePhase) {
+  renderCanvas(gameState, gameSettings, gamePhase, canMove) {
     return null;
   }
 }

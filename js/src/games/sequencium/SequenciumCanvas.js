@@ -9,6 +9,7 @@ import React, { useState } from 'react';
  *   gameState: Object
  *   gameSettings: Object
  *   gamePhase: Object
+ *   canMove: boolean, Whether this client may make a move now.
  */
 const SequenciumCanvas = props => {
   const [moveFrom, setMoveFrom] = useState({}); // {row: 1, col: 1}
@@ -84,7 +85,8 @@ const SequenciumCanvas = props => {
       props.gameState.lastMove.row === row &&
       props.gameState.lastMove.col === col;
     let isMaxScore = (data && data.value) === maxScores[playerNumber];
-    let isTouchable = validFrom[row][col] || validTo[row][col];
+    let isTouchable =
+        props.canMove && (validFrom[row][col] || validTo[row][col]);
     let isActive = moveFrom.row === row && moveFrom.col === col;
     let designStyleClass =
         props.gameSettings.handDrawnGrid ? null : 'squareOutline';

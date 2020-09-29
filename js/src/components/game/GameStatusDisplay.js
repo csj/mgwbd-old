@@ -1,5 +1,6 @@
 import './GameStatusDisplay.scss';
 import GamePhase from 'games/GamePhase';
+import PlayerHelper from 'players/PlayerHelper';
 import React from 'react';
 
 
@@ -16,7 +17,11 @@ const GameStatusDisplay = props => {
     case GamePhase.PLAYING:
       players = props.gameSettings.players;
       player = players[gameState.activePlayer - 1];
-      message = <div><em>{player.name}</em> to play</div>;
+      let isLocal =
+          PlayerHelper.isOwnedByMe(player) || PlayerHelper.isUnowned(player);
+      message = isLocal ?
+          <div><em>{player.name}</em> to play</div> :
+          <div>Waiting for <em>{player.name}</em> to play</div>;
       break;
     case GamePhase.POST_GAME:
       players = props.gameSettings.players;

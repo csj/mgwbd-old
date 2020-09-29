@@ -45,7 +45,8 @@ PlayerHelper.getType = player => {
 PlayerHelper.clientCode = randomString();
 PlayerHelper.claimPlayer = player => player.owner = PlayerHelper.clientCode;
 PlayerHelper.unclaimPlayer = player => player.owner = null;
-PlayerHelper.isClaimedByMe = player => player.owner === PlayerHelper.clientCode;
+PlayerHelper.isOwnedByMe = player => player.owner === PlayerHelper.clientCode;
+PlayerHelper.isUnowned = player => player.owner === null;
 
 
 export default PlayerHelper;
