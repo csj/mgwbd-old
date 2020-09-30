@@ -44,7 +44,6 @@ def setSettings(gameKey, gameSettings):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
     raise BadRequest('No such game instance.')
-  # TODO
   if gameInstance.gamePhase == GamePhase.PLAYING.value:
     raise BadRequest('Cannot modify settings for a game in progress.')
   if gameInstance.gamePhase == GamePhase.POST_GAME.value:

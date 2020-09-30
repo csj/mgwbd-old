@@ -118,9 +118,9 @@ class Prophecies(Game):
   def calculateWinner(self, scores):
     result = {'scores': scores}
     if scores[0] > scores[1]:
-      result['winner'] = 1
+      result['win'] = 1
     elif scores[1] > scores[0]:
-      result['winner'] = 2
+      result['win'] = 2
     else:
       result['draw'] = True
     return result
@@ -129,8 +129,6 @@ class Prophecies(Game):
     grid = gameState['grid']
     for row in range(len(grid)):
       for col in range(len(grid[0])):
-        print(f'gameEndCondition: {row}, {col}')
-        print(grid[row][col])
         if not grid[row][col]:
           return None
     scores = self.calculateScores(grid)
