@@ -3,12 +3,6 @@ import GamePieceHelper from 'games/GamePieceHelper';
 import PlayerHelper from 'players/PlayerHelper';
 import React from 'react';
 import dandelionsCompass from './images/dandelions-compass.png';
-import dandelionsWindNorth from './images/dandelions-wind-north-1.png';
-import dandelionsWindNorthHighlighted from './images/dandelions-wind-north-highlighted.png';
-import gamePieceAsterisk from 'images/game-piece-asterisk.png';
-import gamePieceAsteriskHighlighted from 'images/game-piece-asterisk-highlighted.png';
-import gamePieceDot from 'images/game-piece-dot.png';
-import gamePieceDotHighlighted from 'images/game-piece-dot-highlighted.png';
 import { SquareStates, AllDirections } from './Constants.js';
 
 

@@ -31,6 +31,7 @@ const NAV_LINKS = Object.freeze([
       },
       makeGamePage('dandelions'),
       makeGamePage('sequencium'),
+      makeGamePage('prophecies'),
     ],
   },
   {

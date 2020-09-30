@@ -1,4 +1,5 @@
 from .dandelions import Dandelions
+from .prophecies import Prophecies
 from .sequencium import Sequencium
 from .constants import GamePhase
 from application import db
@@ -10,6 +11,7 @@ import random
 _GAME_MAP = {
   'dandelions': Dandelions,
   'sequencium': Sequencium,
+  'prophecies': Prophecies,
 }
 
 _GAME_KEY_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
