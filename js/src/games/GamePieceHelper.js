@@ -1,4 +1,43 @@
-import gamePieceAsterisk from 'images/game-piece-asterisk.png';
+import gamePieceAsteriskA01 from 'images/game-piece-asterisk-A-01.png';
+import gamePieceAsteriskA02 from 'images/game-piece-asterisk-A-02.png';
+import gamePieceAsteriskA03 from 'images/game-piece-asterisk-A-03.png';
+import gamePieceAsteriskA04 from 'images/game-piece-asterisk-A-04.png';
+import gamePieceAsteriskA05 from 'images/game-piece-asterisk-A-05.png';
+import gamePieceAsteriskA06 from 'images/game-piece-asterisk-A-06.png';
+import gamePieceAsteriskA07 from 'images/game-piece-asterisk-A-07.png';
+import gamePieceAsteriskA08 from 'images/game-piece-asterisk-A-08.png';
+import gamePieceAsteriskB01 from 'images/game-piece-asterisk-B-01.png';
+import gamePieceAsteriskB02 from 'images/game-piece-asterisk-B-02.png';
+import gamePieceAsteriskB03 from 'images/game-piece-asterisk-B-03.png';
+import gamePieceAsteriskB04 from 'images/game-piece-asterisk-B-04.png';
+import gamePieceAsteriskB05 from 'images/game-piece-asterisk-B-05.png';
+import gamePieceAsteriskB06 from 'images/game-piece-asterisk-B-06.png';
+import gamePieceAsteriskB07 from 'images/game-piece-asterisk-B-07.png';
+import gamePieceAsteriskB08 from 'images/game-piece-asterisk-B-08.png';
+import gamePieceAsteriskC01 from 'images/game-piece-asterisk-C-01.png';
+import gamePieceAsteriskC02 from 'images/game-piece-asterisk-C-02.png';
+import gamePieceAsteriskC03 from 'images/game-piece-asterisk-C-03.png';
+import gamePieceAsteriskC04 from 'images/game-piece-asterisk-C-04.png';
+import gamePieceAsteriskC05 from 'images/game-piece-asterisk-C-05.png';
+import gamePieceAsteriskC06 from 'images/game-piece-asterisk-C-06.png';
+import gamePieceAsteriskC07 from 'images/game-piece-asterisk-C-07.png';
+import gamePieceAsteriskC08 from 'images/game-piece-asterisk-C-08.png';
+import gamePieceAsteriskD01 from 'images/game-piece-asterisk-D-01.png';
+import gamePieceAsteriskD02 from 'images/game-piece-asterisk-D-02.png';
+import gamePieceAsteriskD03 from 'images/game-piece-asterisk-D-03.png';
+import gamePieceAsteriskD04 from 'images/game-piece-asterisk-D-04.png';
+import gamePieceAsteriskD05 from 'images/game-piece-asterisk-D-05.png';
+import gamePieceAsteriskD06 from 'images/game-piece-asterisk-D-06.png';
+import gamePieceAsteriskD07 from 'images/game-piece-asterisk-D-07.png';
+import gamePieceAsteriskD08 from 'images/game-piece-asterisk-D-08.png';
+import gamePieceAsteriskE01 from 'images/game-piece-asterisk-E-01.png';
+import gamePieceAsteriskE02 from 'images/game-piece-asterisk-E-02.png';
+import gamePieceAsteriskE03 from 'images/game-piece-asterisk-E-03.png';
+import gamePieceAsteriskE04 from 'images/game-piece-asterisk-E-04.png';
+import gamePieceAsteriskE05 from 'images/game-piece-asterisk-E-05.png';
+import gamePieceAsteriskE06 from 'images/game-piece-asterisk-E-06.png';
+import gamePieceAsteriskE07 from 'images/game-piece-asterisk-E-07.png';
+import gamePieceAsteriskE08 from 'images/game-piece-asterisk-E-08.png';
 import gamePieceDotA01 from 'images/game-piece-dot-A-01.png';
 import gamePieceDotA02 from 'images/game-piece-dot-A-02.png';
 import gamePieceDotA03 from 'images/game-piece-dot-A-03.png';
@@ -43,35 +82,55 @@ import gamePieceDotE08 from 'images/game-piece-dot-E-08.png';
 
 const _imageLibrary = {
   'A': {
-    'asterisk': [gamePieceAsterisk],
+    'asterisk': [
+      gamePieceAsteriskA01, gamePieceAsteriskA02, gamePieceAsteriskA03,
+      gamePieceAsteriskA04, gamePieceAsteriskA05, gamePieceAsteriskA06,
+      gamePieceAsteriskA07, gamePieceAsteriskA08,
+    ],
     'dot': [
       gamePieceDotA01, gamePieceDotA02, gamePieceDotA03, gamePieceDotA04,
       gamePieceDotA05, gamePieceDotA06, gamePieceDotA07, gamePieceDotA08,
     ],
   },
   'B': {
-    'asterisk': [gamePieceAsterisk],
+    'asterisk': [
+      gamePieceAsteriskB01, gamePieceAsteriskB02, gamePieceAsteriskB03,
+      gamePieceAsteriskB04, gamePieceAsteriskB05, gamePieceAsteriskB06,
+      gamePieceAsteriskB07, gamePieceAsteriskB08,
+    ],
     'dot': [
       gamePieceDotB01, gamePieceDotB02, gamePieceDotB03, gamePieceDotB04,
       gamePieceDotB05, gamePieceDotB06, gamePieceDotB07, gamePieceDotB08,
     ],
   },
   'C': {
-    'asterisk': [gamePieceAsterisk],
+    'asterisk': [
+      gamePieceAsteriskC01, gamePieceAsteriskC02, gamePieceAsteriskC03,
+      gamePieceAsteriskC04, gamePieceAsteriskC05, gamePieceAsteriskC06,
+      gamePieceAsteriskC07, gamePieceAsteriskC08,
+    ],
     'dot': [
       gamePieceDotC01, gamePieceDotC02, gamePieceDotC03, gamePieceDotC04,
       gamePieceDotC05, gamePieceDotC06, gamePieceDotC07, gamePieceDotC08,
     ],
   },
   'D': {
-    'asterisk': [gamePieceAsterisk],
+    'asterisk': [
+      gamePieceAsteriskD01, gamePieceAsteriskD02, gamePieceAsteriskD03,
+      gamePieceAsteriskD04, gamePieceAsteriskD05, gamePieceAsteriskD06,
+      gamePieceAsteriskD07, gamePieceAsteriskD08,
+    ],
     'dot': [
       gamePieceDotD01, gamePieceDotD02, gamePieceDotD03, gamePieceDotD04,
       gamePieceDotD05, gamePieceDotD06, gamePieceDotD07, gamePieceDotD08,
     ],
   },
   'E': {
-    'asterisk': [gamePieceAsterisk],
+    'asterisk': [
+      gamePieceAsteriskE01, gamePieceAsteriskE02, gamePieceAsteriskE03,
+      gamePieceAsteriskE04, gamePieceAsteriskE05, gamePieceAsteriskE06,
+      gamePieceAsteriskE07, gamePieceAsteriskE08,
+    ],
     'dot': [
       gamePieceDotE01, gamePieceDotE02, gamePieceDotE03, gamePieceDotE04,
       gamePieceDotE05, gamePieceDotE06, gamePieceDotE07, gamePieceDotE08,

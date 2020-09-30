@@ -77,7 +77,6 @@ class DandelionsCanvas extends React.Component {
       data = SquareStates.FLWR;
       highlight = true;
     }
-    //let url = this.getSquareImg(data, highlight);
     let url = this.getSquareImg(data, rowIndex, colIndex);
     let selection = {row: rowIndex, col: colIndex};
     let touchTarget = <div className='clickable'
@@ -108,16 +107,14 @@ class DandelionsCanvas extends React.Component {
 
   renderCompassPoint(keyPrefix, direction, isHighlighted) {
     let url = this.getCompassImg(direction);
+    let point = <div className='compassPoint' style={{backgroundImage: `url(${url})`}} />;
     let highlight = <div className='compassPoint highlight' />;
 
     return (
       <div
           key={`${keyPrefix} ${direction}`}
           className={`directionHolderInner dir${direction} ${keyPrefix}`}>
-        <div
-            className='compassPoint'
-            style={{backgroundImage: `url(${url})`}} />
-        {isHighlighted ? highlight : null}
+        {isHighlighted ? highlight : point}
       </div>
     );
   }
@@ -166,9 +163,9 @@ class DandelionsCanvas extends React.Component {
         <div className='compassOverlay directionHolder'>
           {directions.map(d => this.renderCompassPoint('used', d, false))}
         </div>
-        {highlightLastTurn}
-        {highlightHover}
         <div className='compassOverlay directionHolder'>
+          {highlightLastTurn}
+          {highlightHover}
           {AllDirections.map(
               d => this.renderCompassTouchTarget(d))}
         </div>

@@ -9,7 +9,7 @@
     flex-basis: 33%;
     position: relative;
 
-    @include playerStyles('.highlight', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
+    @include playerStyles('.highlight', 'background', 'radial-gradient(COLOR70, #ffffff00 75%)');
   }
 
   .compassOverlay {
@@ -59,11 +59,16 @@
         width: 24px;
         height: 24px;
         background-size: contain;
+
+        &.highlight {
+          width: 48px;
+          height: 48px;
+          left: -210%;
+        }
       }
 
       .touchTarget {
         border-radius: 50%;
-        border: 1px solid black;
         cursor: pointer;
         display: inline-block;
         position: relative;
