@@ -8,6 +8,8 @@
   .compass {
     flex-basis: 33%;
     position: relative;
+
+    @include playerStyles('.highlight', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
   }
 
   .compassOverlay {
@@ -35,7 +37,7 @@
       height: 100%;
     }
 
-    &.touchTargetHolder {
+    &.directionHolder {
       left: 0;
       right: 0;
       margin: auto;
@@ -44,14 +46,24 @@
       align-items: center;
       transform: rotate(90deg);
 
-      .touchTargetHolderInner {
+      .directionHolderInner {
         position: absolute;
         width: 100%;
         margin: auto;
       }
 
+      .compassPoint {
+        display: inline-block;
+        position: relative;
+        left: -180%;
+        width: 24px;
+        height: 24px;
+        background-size: contain;
+      }
+
       .touchTarget {
         border-radius: 50%;
+        border: 1px solid black;
         cursor: pointer;
         display: inline-block;
         position: relative;
@@ -72,19 +84,24 @@
     z-index: 1;
 
     transition-duration: 0s;
-    @include playerStyles('.square', 'filter', 'hue-rotate(HUE)');
+    @include playerStyles('.highlight', 'background', 'radial-gradient(COLOR80, #ffffff00 75%)');
 
     .row {
       display: flex;
 
       .square {
+
         background: white;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
         border: 1px solid black;
         flex: 1 1;
         margin: 2px;
+        position: relative;
+
+        &>* {
+          height: 100%;
+          width: 100%;
+          position: absolute;
+        }
 
         &:after {
           content: '';
@@ -92,7 +109,13 @@
           padding-top: 100%;
         }
 
-        &.clickable {
+        .image {
+          background-size: initial;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+
+        .clickable {
           cursor: pointer;
         }
       }
