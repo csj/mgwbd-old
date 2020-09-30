@@ -1,8 +1,6 @@
 import './PropheciesCanvas.scss';
-import GamePieceHelper from 'games/GamePieceHelper';
 import PlayerHelper from 'players/PlayerHelper';
-import React, {useEffect, useState} from 'react';
-import {Button} from 'primereact/button';
+import React, {useState} from 'react';
 
 
 /**
@@ -16,9 +14,6 @@ import {Button} from 'primereact/button';
  *   owner: 1, row: 1, col: 1, value: 1,
  * },
  */
-
-
-// TODO: game-end (circle scores and stuff)
 
 
 const PropheciesCanvas = props => {
@@ -44,6 +39,44 @@ const PropheciesCanvas = props => {
     return lastMoves &&
         lastMoves.some(move => move.row === row && move.col === col);
   };
+
+  const rowWinners = (() => {
+    let rowWinners = [];
+    for (let i = 0; i < numRows; i++) {
+      let isRowFilled = true;
+      let rowScore = 0;
+      for (let j = 0; j < numCols; j++) {
+        let square = grid[i][j];
+        let value = square && square.value;
+        if (value !== null) {
+          rowScore += value ? 1 : 0;
+        } else {
+          isRowFilled = false;
+        }
+      }
+      rowWinners.push(isRowFilled ? rowScore : null);
+    }
+    return rowWinners;
+  })();
+
+  const colWinners = (() => {
+    let colWinners = [];
+    for (let j = 0; j < numCols; j++) {
+      let isColFilled = true;
+      let colScore = 0;
+      for (let i = 0; i < numRows; i++) {
+        let square = grid[i][j];
+        let value = square && square.value;
+        if (value !== null) {
+          colScore += value ? 1 : 0;
+        } else {
+          isColFilled = false;
+        }
+      }
+      colWinners.push(isColFilled ? colScore : null);
+    }
+    return colWinners;
+  })();
 
   const calculateValidNumbers = (row, col) => {
     let validNumbers = new Set(
@@ -101,8 +134,12 @@ const PropheciesCanvas = props => {
         squareData.owner === null ? '' : PlayerHelper.getStyleClass(player);
     let isLastMove = isSquareLastMove(i, j);
     let isTouchable = props.canMove && squareData.owner === undefined;
+    let isRowWinner = rowWinners[i] && rowWinners[i] === squareData.value;
+    let isColWinner = colWinners[j] && colWinners[j] === squareData.value;
 
     let highlight = <div className='highlight' />;
+    let winner = <div className='winner' />;
+    let doubleWinner = <div className='doubleWinner' />;
     let touchTarget = <div
         className='touchTarget'
         onClick={() => setTargetSquare(isSquareSelected(i, j) ? null : [i, j])}
@@ -115,6 +152,8 @@ const PropheciesCanvas = props => {
         </div>
         {isLastMove ? highlight : null}
         {isSquareSelected(i, j) ? renderNumberSelector() : null}
+        {(isRowWinner || isColWinner) ? winner : null}
+        {(isRowWinner && isColWinner) ? doubleWinner : null}
         {isTouchable ? touchTarget : null}
       </div>
     );

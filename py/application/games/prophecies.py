@@ -3,8 +3,14 @@ from .game import Game
 
 """
 Example game state:
+  {
+    grid: [ [{'owner': 2, 'value': 4'}, None, None, ], ... ],
+    activePlayer: 1, # 1 or 2
+    lastMove: [{'row': 0, 'col': 0}, ...],
+  }
 
 Example actions:
+  {owner: 2, row: 1, col: 2, value: 4}
 """
 
 class Prophecies(Game):
@@ -39,6 +45,8 @@ class Prophecies(Game):
     ]
 
   def isValidValue(self, grid, row, col, value):
+    if value == 0:
+      return True
     for i in range(len(grid)):
       if grid[i][col] and grid[i][col]['value'] == value:
         return False
@@ -84,11 +92,47 @@ class Prophecies(Game):
     self.nextPlayerTurn(newGameState)
     return newGameState
 
+  def calculateScores(self, grid):
+    rowWinners = [0] * len(grid)
+    colWinners = [0] * len(grid[0])
+    playerScores = [0] * 2  # assuming two players
+    for i in range(len(grid)):
+      for j in range(len(grid[0])):
+        if grid[i][j] and grid[i][j]['value']:
+          rowWinners[i] += 1
+          colWinners[j] += 1
+    for i in range(len(grid)):
+      for j in range(len(grid[0])):
+        square = grid[i][j]
+        if not square:
+          continue
+        value = square['value']
+        if not value:
+          continue
+        if rowWinners[i] == value:
+          playerScores[square['owner'] - 1] += value
+        if colWinners[j] == value:
+          playerScores[square['owner'] - 1] += value
+    return playerScores
+
+  def calculateWinner(self, scores):
+    result = {'scores': scores}
+    if scores[0] > scores[1]:
+      result['winner'] = 1
+    elif scores[1] > scores[0]:
+      result['winner'] = 2
+    else:
+      result['draw'] = True
+    return result
+
   def gameEndCondition(self, gameState):
     grid = gameState['grid']
     for row in range(len(grid)):
       for col in range(len(grid[0])):
+        print(f'gameEndCondition: {row}, {col}')
+        print(grid[row][col])
         if not grid[row][col]:
-          return False
-    return {'tie': True}
+          return None
+    scores = self.calculateScores(grid)
+    return self.calculateWinner(scores)
 

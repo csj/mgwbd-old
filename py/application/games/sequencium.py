@@ -53,7 +53,7 @@ class Sequencium(Game):
         i = sq['playerNumber'] - 1
         scores[i] = max(scores[i], sq['value'])
     if scores[0] == scores[1]:
-      return {'tie': True}
+      return {'draw': True}
     return {'win': 1 if scores[0] > scores[1] else 2}
 
   def getDirection(self, rowFrom, colFrom, rowTo, colTo):
