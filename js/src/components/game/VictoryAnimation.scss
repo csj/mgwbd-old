@@ -1,0 +1,33 @@
+@import 'styles/common.scss';
+@import 'styles/players.scss';
+
+
+.VictoryAnimation {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 999;
+
+  .animatedItem {
+    transition: all 1000ms ease-in-out 0s;
+    transform-origin: left top;
+    position: fixed;
+    font-family: $font_family_game_number;
+    font-size: $font_size_title;
+    font-weight: bold;
+    display: inline-block;
+    z-index: 9999;
+
+    @include playerStyles('div', 'color');
+  }
+
+  .outcome {
+    position: relative;
+    left: -50%;
+    cursor: pointer;
+  }
+} /* .VictoryAnimation */
+

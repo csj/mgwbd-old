@@ -18,11 +18,15 @@
     }
   }
 
-  .gameCanvas {
-    overflow: hidden;
-    max-height: 500px;
-    max-width: 500px;
-    margin: auto;
+  .gameArea {
+    position: relative;
+
+    .gameCanvas {
+      overflow: hidden;
+      max-height: 500px;
+      max-width: 500px;
+      margin: auto;
+    }
   }
 
   .log {

@@ -19,8 +19,15 @@ const PlayerHelper = {};
 
 PlayerHelper.getAllStyles = () => Object.keys(_avatarMap);
 
-PlayerHelper.getStyleClass = player =>
-    `playerStyle${player ? player.style : ''}`;
+PlayerHelper.getStyleClass = playerOrStyle => {
+  let suffix = '';
+  if (typeof playerOrStyle === typeof {}) {
+    suffix = playerOrStyle.style;
+  } else if (typeof playerOrStyle === typeof '') {
+    suffix = playerOrStyle;
+  }
+  return `playerStyle${suffix}`;
+};
 
 PlayerHelper.getAvatar = playerOrStyle => {
   let key = playerOrStyle;

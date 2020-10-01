@@ -9,6 +9,7 @@ import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
 import PlayerSettingsDialog from 'components/player/PlayerSettingsDialog';
 import React, { useState, useEffect } from 'react';
+import VictoryAnimation from 'components/game/VictoryAnimation';
 import { withRouter } from 'react-router';
 
 
@@ -63,13 +64,13 @@ const GamePlay = props => {
     let startGameButton = <Button label='Start Game' onClick={onStartGame} />;
     let quitGameButton = <Button label='Quit Game' onClick={onEndGame} />;
     if (gamePhase === GamePhase.PRE_GAME) {
-      return ( <div> {startGameButton} </div>);
+      return <div>{startGameButton}</div>;
     }
     if (gamePhase === GamePhase.PLAYING) {
-      return ( <div> {quitGameButton} </div>);
+      return <div>{quitGameButton}</div>;
     }
     if (gamePhase === GamePhase.POST_GAME) {
-      return ( <div> {startGameButton} </div>);
+      return <div>{startGameButton}</div>;
     }
     return null;
   };
@@ -93,9 +94,14 @@ const GamePlay = props => {
   const renderLoaded = () =>
       <div className='section'>
         {renderGameMenu()}
-        <div className='gameCanvas'>
-          {game.renderCanvas(
-              gameState, gameSettings, gamePhase, gameManager.canMove())}
+        <div className='gameArea'>
+          <div className='gameCanvas'>
+            {game.renderCanvas(
+                gameState, gameSettings, gamePhase, gameManager.canMove())}
+          </div>
+          <VictoryAnimation
+              gameEnd={gameState.gameEnd}
+              players={gameSettings.players} />
         </div>
         <GameStatusDisplay {...{gameState, gameSettings, gamePhase}} />
         <PlayerArea
