@@ -8,7 +8,7 @@ const GameInstructionsDialog = props => {
     <InfoDialog
         dialogClassName={
             `GameInstructionsDialog-dialogElement ${props.dialogClassName}`}
-        header='Play Instructions'
+        header={`${props.game.getDisplayName()} instructions`}
         footerButtons={[{label: 'Close'}]}
         {...props} />
   );

@@ -34,7 +34,7 @@ const GamePlay = props => {
 
   const renderInstructions = () =>
       <GameInstructionsDialog
-          open={/* TODO true */false} content={game.renderInstructions()} />;
+          open={true} game={game} content={game.renderInstructions()} />;
 
   const renderPlayerSettings = () => {
     return (

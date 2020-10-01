@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactMarkdown from 'react-markdown';
 import image1 from './instructions/media/image1.png';
 import image10 from './instructions/media/image10.png';
@@ -12,6 +12,7 @@ import image6 from './instructions/media/image6.png';
 import image7 from './instructions/media/image7.png';
 import image8 from './instructions/media/image8.png';
 import image9 from './instructions/media/image9.png';
+import {Carousel} from 'primereact/carousel';
 
 
 const content = `
@@ -129,15 +130,62 @@ problem!)
 `;
 
 
-class DandelionsInstructions extends React.Component {
-  render() {
-    return (
-      <div className='DandelionsInstructions'>
-        <ReactMarkdown source={content} />
-      </div>
-    );
-  }
-}
+const cardContent = [
+  `
+  I know your dreams, my friend. You wish to be a dandelion, riding the winds, borne across fields of—
+
+  No, I’m sorry. Misread that. You wish to be the wind itself, sweeping across the—
+
+  No… wait… you want to be… *both*?
+
+  Aha! I have just the game for you.
+  `,
+  `
+  So, what’s your goal?
+
+  **Dandelions**: Cover the whole meadow.
+
+  **Wind**: Leave at least one square of meadow uncovered.
+
+  ![](${image1})
+  `,
+  `
+  Throughout the game, **the Dandelions will plant seven flowers, one at a time**.
+
+  ![](${image3})
+  `,
+  `
+  **After each planting, the Wind will blow a gust in any of the eight compass directions**. Each direction can be used **only once**. One direction will go unused.
+
+  ![](${image4})
+  `,
+  `
+  When the wind blows, **it carries the seeds of every existing dandelion**. Any empty square downwind of a dandelion will become occupied by a seed.
+
+  ![](${image4})
+  `,
+];
+
+
+const DandelionsInstructions = props => {
+  const [x, setX] = useState(true);
+
+  const renderCarousel = cards => {
+    return <Carousel value={cards} itemTemplate={renderMarkdown} />;
+  };
+
+  const renderMarkdown = content => {
+    return <ReactMarkdown source={content} />;
+  };
+
+  return (
+    <div className='DandelionsInstructions'>
+      <div onClick={()=>setX(!x)}>Toggle</div>
+      {x ? renderCarousel(cardContent) : renderMarkdown(content)}
+    </div>
+  );
+};
 
 
 export default DandelionsInstructions;
+

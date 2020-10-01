@@ -8,6 +8,7 @@ import image5 from './instructions/media/image5.png';
 import image6 from './instructions/media/image6.png';
 import image7 from './instructions/media/image7.png';
 import image8 from './instructions/media/image8.png';
+import {Carousel} from 'primereact/carousel';
 
 
 const content = `
@@ -85,15 +86,26 @@ neither player.)
 `;
 
 
-class PropheciesInstructions extends React.Component {
-  render() {
-    return (
-      <div className='PropheciesInstructions'>
-        <ReactMarkdown source={content} />
-      </div>
-    );
-  }
-}
+const cardContent = [
+];
+
+
+const PropheciesInstructions = props => {
+
+  const renderCarousel = cards => {
+    return <Carousel value={cards} itemTemplate={renderMarkdown} />;
+  };
+
+  const renderMarkdown = content => {
+    return <ReactMarkdown source={content} />;
+  };
+
+  return (
+    <div className='PropheciesInstructions'>
+      {renderCarousel(cardContent)}
+    </div>
+  );
+};
 
 
 export default PropheciesInstructions;
