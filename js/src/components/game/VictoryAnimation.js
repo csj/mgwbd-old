@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import {Transition} from 'react-transition-group';
 
 
-const playerStyle = 'B'; // TODO get this from the winning player.
 const MAX_DELAY_MS = 1000;
 
 
@@ -63,18 +62,27 @@ const TransitionItem = props => {
 
 const OutcomeEl = props => {
   const [outcomeVisible, setOutcomeVisible] = useState(true);
+  let players = props.players;
+  if (players.length === 1) {
+    return (
+      <div
+          className={`outcome ${outcomeVisible ? null : 'hidden'}`}
+          onClick={() => setOutcomeVisible(false)}>
+        <div className='icon'>
+          <img src={PlayerHelper.getAvatar(players[0])} alt='avatar' />
+        </div>
+        <div className='label'>{players[0].name}</div>
+        <div className='label'>winner!</div>
+      </div>
+    );
+  }
+
   return (
     <div
         className={`outcome ${outcomeVisible ? null : 'hidden'}`}
         onClick={() => setOutcomeVisible(false)}>
-      <div className='icon'>
-        <img src={PlayerHelper.getAvatar(playerStyle)} alt='avatar' />
-      </div>
-      <div className='label'>
-      </div>
-      <div className='label'>
-        winner!
-      </div>
+      <div className='label'>{players.map(p => p.name).join(' & ')}</div>
+      <div className='label'>draw!</div>
     </div>
   );
 };
@@ -88,30 +96,36 @@ const OutcomeEl = props => {
 const VictoryAnimation = props => {
 
   const [animatedItems, setAnimatedItems] = useState([]);
+  const isWin = Number.isInteger(props.gameEnd['win']);
+  const players = isWin ?
+      [props.players[props.gameEnd['win']]] :
+      [...props.players];
+  const victoryPlayerStyles = players.map(PlayerHelper.getStyleClass);
 
   useEffect(() => { // Create animated items
-    let playerStyleClass = PlayerHelper.getStyleClass(playerStyle);
     let outcomeItem = {
-      playerStyleClass,
-      el: <OutcomeEl />,
+      playerStyleClass: isWin ? victoryPlayerStyles[0] : null,
+      el: <OutcomeEl players={players} />,
       delayMs: MAX_DELAY_MS,
       styles: {exiting: {opacity: 1}, exited: {opacity: 1}},
       in: true,
       unmountOnExit: false,
     };
     let items = [
-      ...Array(100).fill(null).map((_, i) =>
-        makeAnimatedItemFromText(playerStyleClass, i % 10)
+      ...Array(80).fill(null).map((_, i) =>
+        makeAnimatedItemFromText(
+            victoryPlayerStyles[i % victoryPlayerStyles.length], i % 10)
       ),
       outcomeItem,
     ];
     setAnimatedItems(items);
-    items.forEach(item =>
+    let timers = items.map(item =>
       setTimeout(() => {
         item.in = false;
         setAnimatedItems(items => [...items]);
       }, item.delayMs)
     );
+    return () => timers.forEach(clearTimeout);
   }, []);
 
   return (
