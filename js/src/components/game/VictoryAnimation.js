@@ -71,6 +71,8 @@ const OutcomeEl = props => {
         <img src={PlayerHelper.getAvatar(playerStyle)} alt='avatar' />
       </div>
       <div className='label'>
+      </div>
+      <div className='label'>
         winner!
       </div>
     </div>
@@ -78,6 +80,11 @@ const OutcomeEl = props => {
 };
 
 
+/**
+ * props:
+ *   gameEnd: Object
+ *   players: Array
+ */
 const VictoryAnimation = props => {
 
   const [animatedItems, setAnimatedItems] = useState([]);

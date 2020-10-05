@@ -22,8 +22,8 @@ from .game import Game
         [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
       ],
     },
-    activePlayer: None,  # 1 or 2
-    gameEnd: None,  # {win: 1} or {win: 2}
+    activePlayerIndex: None,  # 0 or 1
+    gameEnd: None,  # {win: 0} or {win: 1}
   }
 
   Example game actions:
@@ -62,10 +62,10 @@ class Dandelions(Game):
           allSquaresFilled = False
 
     if allSquaresFilled:
-      return { 'win': 1 }
+      return { 'win': 0 }
 
     if len(gameState['compass']['directions']) == 7:
-      return { 'win': 2 }
+      return { 'win': 1 }
     return None
 
   def actionGrid(self, gameState, action):
@@ -115,11 +115,11 @@ class Dandelions(Game):
     return newGameState
 
   def action(self, gameState, action, **kwargs):
-    if not gameState['activePlayer']:
+    if gameState['activePlayerIndex'] is None:
       return gameState
-    if gameState['activePlayer'] == 1 and 'grid' in action:
+    if gameState['activePlayerIndex'] == 0 and 'grid' in action:
       return self.actionGrid(gameState, action)
-    if gameState['activePlayer'] == 2 and 'compass' in action:
+    if gameState['activePlayerIndex'] == 1 and 'compass' in action:
       return self.actionCompass(gameState, action)
     return gameState
 
@@ -133,7 +133,7 @@ class Dandelions(Game):
         [None, None, None, None, None],
         [None, None, None, None, None],
       ],
-      'activePlayer': None,
+      'activePlayerIndex': None,
     }
 
   def getDefaultPlayerConfig(self):

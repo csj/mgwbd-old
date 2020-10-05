@@ -99,15 +99,17 @@ const GamePlay = props => {
             {game.renderCanvas(
                 gameState, gameSettings, gamePhase, gameManager.canMove())}
           </div>
-          <VictoryAnimation
-              gameEnd={gameState.gameEnd}
-              players={gameSettings.players} />
+          {gamePhase === GamePhase.POST_GAME ? /* TODO */
+              <VictoryAnimation
+                  gameEnd={gameState.gameEnd}
+                  players={gameSettings.players} /> : null}
         </div>
         <GameStatusDisplay {...{gameState, gameSettings, gamePhase}} />
         <PlayerArea
             players={gameSettings && gameSettings.players}
-            activePlayer={
-                gamePhase === GamePhase.PLAYING && gameState.activePlayer} />
+            activePlayerIndex={
+                gamePhase === GamePhase.PLAYING &&
+                gameState.activePlayerIndex} />
       </div>;
 
   const render = () => {

@@ -5,22 +5,21 @@ import React from 'react';
 
 const PlayerArea = props => {
   
-  const renderPlayer = index => {
-    let player = props.players[index];
-    let playerNumber = index + 1;
+  const renderPlayer = playerIndex => {
+    let player = props.players[playerIndex];
     let extraClasses = PlayerHelper.getStyleClass(player);
-    if (props.activePlayer === playerNumber) {
+    if (props.activePlayerIndex === playerIndex) {
       extraClasses += ' active';
     }
     return (
       <div
-          key={playerNumber}
+          key={playerIndex}
           className={`
-              player player${playerNumber}
+              player player${playerIndex + 1}
               ${extraClasses}`}>
         <img
             src={PlayerHelper.getAvatar(player)}
-            alt={`Player {$playerNumber} avatar`} />
+            alt='avatar' />
         <div className='name'>{player.name}</div>
       </div>
     );
@@ -33,7 +32,8 @@ const PlayerArea = props => {
     }
     else if (props.players.length === 2) {
       let classes =
-          'playersHolder ' + props.activePlayer ? 'playerActive' : '';
+          'playersHolder ' +
+          Number.isInteger(props.activePlayerIndex) ? 'playerActive' : '';
       content = (
         <div className={`playersHolder ${classes}`}>
           {props.players.map((p, i) => renderPlayer(i))}

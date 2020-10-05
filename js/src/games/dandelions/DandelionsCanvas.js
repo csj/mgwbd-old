@@ -57,7 +57,7 @@ class DandelionsCanvas extends React.Component {
     let highlight = false;
     let isClickable =
         this.props.canMove &&
-        this.props.gameState.activePlayer === 1 &&
+        this.props.gameState.activePlayerIndex === 0 &&
         data !== SquareStates.FLWR;
     if (this.props.gameState.lastMove &&
         this.props.gameState.lastMove.grid[rowIndex][colIndex] != null) {
@@ -115,7 +115,7 @@ class DandelionsCanvas extends React.Component {
 
   renderCompassTouchTarget(direction) {
     if (this.props.gameState.compass.directions.indexOf(direction) >= 0 ||
-        this.props.gameState.activePlayer !== 2 ||
+        this.props.gameState.activePlayerIndex !== 1 ||
         !this.props.canMove) {
       return null;
     }

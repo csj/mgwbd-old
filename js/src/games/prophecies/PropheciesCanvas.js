@@ -6,7 +6,7 @@ import React, {useState} from 'react';
 /**
  * Example squareData:
  *   {
- *     owner: 1, // 1, 2, or null (automatic)
+ *     owner: 1, // 0, 1, or null (automatic)
  *     value: 3, // positive integer, or 0 ("X")
  *   }
  * Example action:
@@ -26,7 +26,7 @@ const PropheciesCanvas = props => {
 
   const onAction = value => {
     let [row, col] = targetSquare;
-    props.onChooseMove({owner: gameState.activePlayer, row, col, value});
+    props.onChooseMove({owner: gameState.activePlayerIndex, row, col, value});
     setTargetSquare(null);
   };
 
@@ -128,8 +128,9 @@ const PropheciesCanvas = props => {
 
   const renderSquare = (squareData, i, j) => {
     squareData = squareData || {};
-    let playerNumber = (squareData.owner) || gameState.activePlayer;
-    let player = gameSettings.players[playerNumber - 1];
+    let playerIndex = Number.isInteger(squareData.owner) ?
+        squareData.owner : gameState.activePlayerIndex;
+    let player = gameSettings.players[playerIndex];
     let playerStyle =
         squareData.owner === null ? '' : PlayerHelper.getStyleClass(player);
     let isLastMove = isSquareLastMove(i, j);

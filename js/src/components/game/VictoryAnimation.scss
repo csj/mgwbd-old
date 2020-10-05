@@ -22,12 +22,15 @@
     z-index: 9999;
 
     @include playerStyles('div', 'color');
+    @include playerStyles('.outcome', 'filter', 'drop-shadow(0 0 5px COLOR)');
   }
 
   .outcome {
     position: relative;
     left: -50%;
     cursor: pointer;
+    background: #ffffff40;
+    border-radius: 50%;
   }
 } /* .VictoryAnimation */
 

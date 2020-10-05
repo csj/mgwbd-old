@@ -4,11 +4,11 @@ class Game():
   def nextPlayerTurn(self, gameState, **kwargs):
     # By default, assumes two players alternating
     if 'gameEnd' in gameState and gameState['gameEnd']:
-      gameState['activePlayer'] = None
-    elif gameState['activePlayer'] is None:
-      gameState['activePlayer'] = 1
+      gameState['activePlayerIndex'] = None
+    elif gameState['activePlayerIndex'] is None:
+      gameState['activePlayerIndex'] = 0
     else:
-      gameState['activePlayer'] = gameState['activePlayer'] % 2 + 1
+      gameState['activePlayerIndex'] = (gameState['activePlayerIndex'] + 1) % 2
 
   def checkGameEndCondition(self, gameState):
     gameState['gameEnd'] = self.gameEndCondition(gameState)

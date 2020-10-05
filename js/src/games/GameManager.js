@@ -103,11 +103,12 @@ class GameManager {
   }
 
   canMove() {
-    let activePlayer = this.gameState.activePlayer;
-    if (this.gamePhase !== GamePhase.PLAYING || !activePlayer) {
+    let activePlayerIndex = this.gameState.activePlayerIndex;
+    if (this.gamePhase !== GamePhase.PLAYING ||
+        !Number.isInteger(activePlayerIndex)) {
       return false;
     }
-    let player = this.gameSettings.players[activePlayer - 1];
+    let player = this.gameSettings.players[activePlayerIndex];
     let canMove =
         PlayerHelper.isOwnedByMe(player) || PlayerHelper.isUnowned(player);
     return canMove;

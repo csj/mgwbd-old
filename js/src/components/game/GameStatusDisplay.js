@@ -16,7 +16,7 @@ const GameStatusDisplay = props => {
       break;
     case GamePhase.PLAYING:
       players = props.gameSettings.players;
-      player = players[gameState.activePlayer - 1];
+      player = players[gameState.activePlayerIndex];
       let isLocal =
           PlayerHelper.isOwnedByMe(player) || PlayerHelper.isUnowned(player);
       message = isLocal ?
@@ -26,12 +26,13 @@ const GameStatusDisplay = props => {
     case GamePhase.POST_GAME:
       players = props.gameSettings.players;
       let gameEnd = gameState.gameEnd;
+      console.log(gameEnd);
       if (!gameEnd) {
         message = <div>Game over!</div>;
       } else if (gameEnd.draw) {
         message = <div>It’s a draw! How about another?</div>;
-      } else if (gameEnd.win) {
-        player = players[gameEnd.win - 1];
+      } else if (Number.isInteger(gameEnd.win)) {
+        player = players[gameEnd.win];
         message = (
             <div>
               Wow! <em>{player.name}</em> is the winner! How about another?

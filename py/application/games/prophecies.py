@@ -5,7 +5,7 @@ from .game import Game
 Example game state:
   {
     grid: [ [{'owner': 2, 'value': 4'}, None, None, ], ... ],
-    activePlayer: 1, # 1 or 2
+    activePlayerIndex: 1, # 0 or 1
     lastMove: [{'row': 0, 'col': 0}, ...],
   }
 
@@ -24,7 +24,7 @@ class Prophecies(Game):
       numRows = numRows - numCols
     row = [None for i in range(numCols)]
     grid = [row for i in range(numRows)]
-    return { 'grid': grid, 'activePlayer': None, }
+    return { 'grid': grid, 'activePlayerIndex': None, }
 
   def getSettingsConfig(self):
     return [
@@ -73,19 +73,19 @@ class Prophecies(Game):
 
   def action(self, gameState, action, gamePhase=None, gameSettings=None):
     grid = gameState['grid']
-    playerNumber = action['owner']
+    playerIndex = action['owner']
     row = action['row']
     col = action['col']
     value = action['value']
-    if not gameState['activePlayer']:
+    if gameState['activePlayerIndex'] is None:
       return gameState
-    if playerNumber != gameState['activePlayer'] or grid[row][col] is not None:
+    if (playerIndex != gameState['activePlayerIndex']) or grid[row][col] is not None:
       return gameState
     if not self.isValidValue(grid, row, col, value):
       return gameState
 
     newGameState = copy.deepcopy(gameState)
-    newGameState['grid'][row][col] = {'owner': playerNumber, 'value': value}
+    newGameState['grid'][row][col] = {'owner': playerIndex, 'value': value}
     autoXs = self.fillAutoXs(newGameState['grid'])
     newGameState['lastMove'] = [{'row': row, 'col': col}] + autoXs
     self.checkGameEndCondition(newGameState)
@@ -110,17 +110,17 @@ class Prophecies(Game):
         if not value:
           continue
         if rowWinners[i] == value:
-          playerScores[square['owner'] - 1] += value
+          playerScores[square['owner']] += value
         if colWinners[j] == value:
-          playerScores[square['owner'] - 1] += value
+          playerScores[square['owner']] += value
     return playerScores
 
   def calculateWinner(self, scores):
     result = {'scores': scores}
     if scores[0] > scores[1]:
-      result['win'] = 1
+      result['win'] = 0
     elif scores[1] > scores[0]:
-      result['win'] = 2
+      result['win'] = 1
     else:
       result['draw'] = True
     return result
