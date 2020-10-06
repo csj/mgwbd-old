@@ -11,23 +11,24 @@ import React from 'react';
  */
 const PlayerArea = props => {
   
-  const renderPlayer = playerIndex => {
+  const renderPlayer = (playerIndex, extraProps) => {
     let player = props.players[playerIndex];
-    let extraClasses = PlayerHelper.getStyleClass(player);
-    let avatar = <img src={PlayerHelper.getAvatar(player)} alt='avatar' />;
+    let avatar = (
+      <img
+          src={PlayerHelper.getAvatar(player)}
+          className={extraProps.isActive ? 'active' : ''}
+          alt='avatar' />
+    );
     let scores = props.gameEnd && props.gameEnd.scores;
+    let className = 'player ' +
+        (extraProps.className || '') + ' ' +
+        PlayerHelper.getStyleClass(player) + ' ' +
+        (extraProps.isActive ? ' active ' : ' ');
     if (scores) {
       avatar = <div className='score'>{scores[playerIndex]}</div>;
     }
-    if (props.activePlayerIndex === playerIndex) {
-      extraClasses += ' active';
-    }
     return (
-      <div
-          key={playerIndex}
-          className={`
-              player player${playerIndex + 1}
-              ${extraClasses}`}>
+      <div key={playerIndex} className={className}>
         {avatar}
         <div className='name'>{player.name}</div>
       </div>
@@ -40,15 +41,18 @@ const PlayerArea = props => {
       content = '';
     }
     else if (props.players.length === 2) {
-      let playersInOrder = [
-          ...props.players.slice(props.activePlayerIndex),
-          ...props.players.slice(0, props.activePlayerIndex)];
-      let classes =
-          'playersHolder ' +
-          Number.isInteger(props.activePlayerIndex) ? 'playerActive' : '';
+      let classes = 'playersHolder';
+      let extraProps = props.players.map((p, i) => ({className: `player${i}`}));
+
+      if (Number.isInteger(props.activePlayerIndex)) {
+        classes += ' playerActive';
+        extraProps[props.activePlayerIndex].isActive = true;
+      } else {
+        extraProps.forEach(p => p.className += ' neutral');
+      }
       content = (
-        <div className={`playersHolder ${classes}`}>
-          {playersInOrder.map((p, i) => renderPlayer(i))}
+        <div className={classes}>
+          {props.players.map((p, i) => renderPlayer(i, extraProps[i]))}
         </div>
       );
     } else {

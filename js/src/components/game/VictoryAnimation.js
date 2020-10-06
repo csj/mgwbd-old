@@ -132,7 +132,7 @@ const VictoryAnimation = props => {
       }, item.delayMs)
     );
     return () => timers.forEach(clearTimeout);
-  }, [isWin, isDraw]);
+  }, [isWin, isDraw, props.gameEnd, props.players]);
 
   return (
     <div className='VictoryAnimation'>

@@ -28,6 +28,7 @@ const GamePlay = props => {
       gameManager.setGame(props.game);
       gameManager.newGame();
     }
+    return () => gameManager.setChangeHandler(() => null);
   }, [gameManager, props.game, props.location.state]);
 
   const onStartGame = () => gameManager.startGame();
@@ -46,9 +47,12 @@ const GamePlay = props => {
     );
   };
 
-  const renderGameSettings = () => {
+  const renderGameSettings = gameManager => {
     let config = gameManager.getGameSettingsConfig() || {};
     if (Object.keys(config).length) {
+      let gamePhase = gameManager.getGamePhase();
+      let gameSettings = gameManager.getGameSettings();
+      console.log(gameSettings);
       return (
         <GameSettingsDialog
             settingsConfig={config}
@@ -84,7 +88,7 @@ const GamePlay = props => {
             <div>
               {renderPlayerSettings()}
               {game ? renderInstructions() : null}
-              {game ? renderGameSettings() : null}
+              {game ? renderGameSettings(gameManager) : null}
             </div>
           }
           styles={LabelValue.Style.LEFT_RIGHT} />;

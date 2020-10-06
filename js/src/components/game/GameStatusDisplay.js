@@ -26,7 +26,6 @@ const GameStatusDisplay = props => {
     case GamePhase.POST_GAME:
       players = props.gameSettings.players;
       let gameEnd = gameState.gameEnd;
-      console.log(gameEnd);
       if (!gameEnd) {
         message = <div>Game over!</div>;
       } else if (gameEnd.draw) {

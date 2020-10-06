@@ -128,24 +128,33 @@ const PlayerConfig = props => {
 
     return (
       <div className={`player ${editable ? 'editable' : ''}`} key={index}>
-        <InfoBubble
-            className='moveUp' icon='pi-angle-up' text='Move player up'
-            onClick={() => onSwap(index - 1, index)} />
-        <InfoBubble
-            className='moveDown' icon='pi-angle-down' text='Move player down'
-            onClick={() => onSwap(index, index + 1)} />
-        <InfoBubble
-            text='Edit name, avatar, or player type' icon='pi-user-edit'
-            className='edit'
-            onClick={() => {
-              let val = editable ? null : index;
-              setEditPlayerNum(val);
-              setEditedName(val !== null ? props.players[val].name : null);
-            }} />
-        {avatarJsx}
-        {nameJsx}
-        {typeJsx}
-        {player.owner ? playerReady : playerWaiting}
+        <div className='playerRow'>
+          <InfoBubble
+              className='moveUp' icon='pi-angle-up' text='Move player up'
+              onClick={() => onSwap(index - 1, index)} />
+          <InfoBubble
+              className='moveDown' icon='pi-angle-down' text='Move player down'
+              onClick={() => onSwap(index, index + 1)} />
+          <InfoBubble
+              text='Edit name, avatar, or player type' icon='pi-user-edit'
+              className='edit'
+              onClick={() => {
+                let val = editable ? null : index;
+                setEditPlayerNum(val);
+                setEditedName(val !== null ? props.players[val].name : null);
+              }} />
+          {avatarJsx}
+          <div className='spacer'>
+            {editable ?  <div className='desktop'>{nameJsx}</div> : nameJsx}
+          </div>
+          {typeJsx}
+          {player.owner ? playerReady : playerWaiting}
+        </div>
+        {editable ? <div className='mobile'>
+          <div className='playerRow'>
+            {nameJsx}
+          </div>
+        </div> : null}
       </div>
     );
   };

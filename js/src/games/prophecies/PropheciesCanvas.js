@@ -23,6 +23,7 @@ const PropheciesCanvas = props => {
   const numRows = grid.length;
   const numCols = grid[0].length;
   const [targetSquare, setTargetSquare] = useState(null);
+  const [isClick, setIsClick] = useState(true);
 
   const onAction = value => {
     let [row, col] = targetSquare;
@@ -142,7 +143,8 @@ const PropheciesCanvas = props => {
     let winner = <div className='winner' />;
     let doubleWinner = <div className='doubleWinner' />;
     let touchTarget = <div
-        className='touchTarget'
+        className={`touchTarget ${isClick ? 'clickable ' : ''}`}
+        touchStart={() => setIsClick(false)}
         onClick={() => setTargetSquare(isSquareSelected(i, j) ? null : [i, j])}
         />;
 
