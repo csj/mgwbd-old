@@ -52,7 +52,6 @@ const GamePlay = props => {
     if (Object.keys(config).length) {
       let gamePhase = gameManager.getGamePhase();
       let gameSettings = gameManager.getGameSettings();
-      console.log(gameSettings);
       return (
         <GameSettingsDialog
             settingsConfig={config}
