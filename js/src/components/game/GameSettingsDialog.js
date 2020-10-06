@@ -17,7 +17,7 @@ const GameSettingsDialog = props => {
   const [editedSettings, setEditedSettings] = useState({});
 
   useEffect(() => {
-    onCancel();
+    setEditedSettings({...props.settings});
   }, [props.settings]);
 
   const onCancel = () => {
