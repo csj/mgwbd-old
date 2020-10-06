@@ -12,25 +12,25 @@ const GAMES = [
   {
     name: 'Dandelions',
     path: '/games/dandelions',
-    tagline: 'This is a great tagline for game 1',
+    tagline: 'The ancient rivalry of wind and flower.',
     image: dandelionsPreviewImg,
   },
   {
     name: 'Sequencium',
     path: '/games/sequencium',
-    tagline: 'This is a great tagline for game 2',
+    tagline: 'A battle of the vines.',
     image: sequenciumPreviewImg,
   },
   {
     name: 'Prophecies',
     path: '/games/prophecies',
-    tagline: 'This is a great tagline for game 3',
+    tagline: 'A game of self-fulfilling (and self-defeating) predictions.',
     image: propheciesPreviewImg,
   },
   {
     name: 'Neighbors',
     path: '/games/neighbors',
-    tagline: 'This is a great tagline for game 4',
+    tagline: 'A numerical make-your-own sundae bar.',
     image: neighborsPreviewImg,
   },
 ];

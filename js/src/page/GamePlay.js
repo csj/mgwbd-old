@@ -35,7 +35,7 @@ const GamePlay = props => {
 
   const renderInstructions = () =>
       <GameInstructionsDialog
-          open={/* TODO true */false} content={game.renderInstructions()} />;
+          open={true} content={game.renderInstructions()} />;
 
   const renderPlayerSettings = () => {
     return (
@@ -109,7 +109,8 @@ const GamePlay = props => {
             players={gameSettings && gameSettings.players}
             activePlayerIndex={
                 gamePhase === GamePhase.PLAYING &&
-                gameState.activePlayerIndex} />
+                gameState.activePlayerIndex}
+            gameEnd={gameState.gameEnd} />
       </div>;
 
   const render = () => {

@@ -31,6 +31,15 @@
     cursor: pointer;
     background: #ffffff40;
     border-radius: 50%;
+
+    img {
+      height: 150px;
+      width: 150px;
+    }
+
+    .label {
+      font-size: 36px;
+    }
   }
 } /* .VictoryAnimation */
 

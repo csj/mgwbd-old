@@ -71,17 +71,19 @@ const OutcomeEl = props => {
         <div className='icon'>
           <img src={PlayerHelper.getAvatar(players[0])} alt='avatar' />
         </div>
-        <div className='label'>{players[0].name}</div>
         <div className='label'>winner!</div>
       </div>
     );
+  }
+
+  if (players.length === 0) {
+    return null;
   }
 
   return (
     <div
         className={`outcome ${outcomeVisible ? null : 'hidden'}`}
         onClick={() => setOutcomeVisible(false)}>
-      <div className='label'>{players.map(p => p.name).join(' & ')}</div>
       <div className='label'>draw!</div>
     </div>
   );
@@ -96,13 +98,17 @@ const OutcomeEl = props => {
 const VictoryAnimation = props => {
 
   const [animatedItems, setAnimatedItems] = useState([]);
-  const isWin = Number.isInteger(props.gameEnd['win']);
-  const players = isWin ?
-      [props.players[props.gameEnd['win']]] :
-      [...props.players];
-  const victoryPlayerStyles = players.map(PlayerHelper.getStyleClass);
+  const isWin = props.gameEnd && 'win' in props.gameEnd;
+  const isDraw = props.gameEnd && 'draw' in props.gameEnd;
 
   useEffect(() => { // Create animated items
+    if (!isWin && !isDraw) {
+      return;
+    }
+    let players = isWin ?
+        [props.players[props.gameEnd['win']]] :
+        [...props.players];
+    let victoryPlayerStyles = players.map(PlayerHelper.getStyleClass);
     let outcomeItem = {
       playerStyleClass: isWin ? victoryPlayerStyles[0] : null,
       el: <OutcomeEl players={players} />,
@@ -126,7 +132,7 @@ const VictoryAnimation = props => {
       }, item.delayMs)
     );
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [isWin, isDraw]);
 
   return (
     <div className='VictoryAnimation'>

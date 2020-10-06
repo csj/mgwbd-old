@@ -3,11 +3,22 @@ import PlayerHelper from 'players/PlayerHelper';
 import React from 'react';
 
 
+/**
+ * props:
+ *   activePlayerIndex
+ *   players
+ *   gameEnd
+ */
 const PlayerArea = props => {
   
   const renderPlayer = playerIndex => {
     let player = props.players[playerIndex];
     let extraClasses = PlayerHelper.getStyleClass(player);
+    let avatar = <img src={PlayerHelper.getAvatar(player)} alt='avatar' />;
+    let scores = props.gameEnd && props.gameEnd.scores;
+    if (scores) {
+      avatar = <div className='score'>{scores[playerIndex]}</div>;
+    }
     if (props.activePlayerIndex === playerIndex) {
       extraClasses += ' active';
     }
@@ -17,26 +28,27 @@ const PlayerArea = props => {
           className={`
               player player${playerIndex + 1}
               ${extraClasses}`}>
-        <img
-            src={PlayerHelper.getAvatar(player)}
-            alt='avatar' />
+        {avatar}
         <div className='name'>{player.name}</div>
       </div>
     );
   };
 
-  const render = () => {
+  return (() => {
     let content;
     if (!props.players || props.players.length === 0) {
       content = '';
     }
     else if (props.players.length === 2) {
+      let playersInOrder = [
+          ...props.players.slice(props.activePlayerIndex),
+          ...props.players.slice(0, props.activePlayerIndex)];
       let classes =
           'playersHolder ' +
           Number.isInteger(props.activePlayerIndex) ? 'playerActive' : '';
       content = (
         <div className={`playersHolder ${classes}`}>
-          {props.players.map((p, i) => renderPlayer(i))}
+          {playersInOrder.map((p, i) => renderPlayer(i))}
         </div>
       );
     } else {
@@ -48,9 +60,7 @@ const PlayerArea = props => {
         {content}
       </div>
     );
-  };
-
-  return render();
+  })();
 }
 
 
