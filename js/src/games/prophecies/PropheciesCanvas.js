@@ -144,7 +144,7 @@ const PropheciesCanvas = props => {
     let doubleWinner = <div className='doubleWinner' />;
     let touchTarget = <div
         className={`touchTarget ${isClick ? 'clickable ' : ''}`}
-        touchStart={() => setIsClick(false)}
+        onTouchStart={() => setIsClick(false)}
         onClick={() => setTargetSquare(isSquareSelected(i, j) ? null : [i, j])}
         />;
 
