@@ -50,11 +50,14 @@ class Sequencium(Game):
         sq = grid[r][c]
         if sq is None:
           return None
-        i = sq['playerIndex'] - 1
+        i = sq['playerIndex']
         scores[i] = max(scores[i], sq['value'])
+    result = {'scores': scores}
     if scores[0] == scores[1]:
-      return {'draw': True}
-    return {'win': 0 if scores[0] > scores[1] else 1}
+      result['draw'] = True
+    else:
+      result['win'] = 0 if scores[0] > scores[1] else 1
+    return result
 
   def getDirection(self, rowFrom, colFrom, rowTo, colTo):
     return _directionHelper[rowTo - rowFrom][colTo - colFrom]
