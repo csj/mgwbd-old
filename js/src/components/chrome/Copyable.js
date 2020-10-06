@@ -1,5 +1,6 @@
 import './Copyable.scss';
 import React, {useEffect, useState} from 'react';
+import copy from 'copy-text-to-clipboard';
 import { Button } from 'primereact/button';
 
 
@@ -14,22 +15,10 @@ const Copyable = props => {
   const [copied, setCopied] = useState(false);
   const [timerId, setTimerId] = useState(null);
 
-  const copy = () => {
-    let el = ref.current;
-    let range = document.createRange();
-    let windowSelection = window.getSelection();
-
-    el.contentEditable = true;
-    el.readOnly = false;
-    el.setSelectionRange(0, 999999);
-    range.selectNodeContents(el);
-    windowSelection.removeAllRanges();
-    windowSelection.addRange(range);
-    document.execCommand('copy');
-    windowSelection.empty();
-
+  const doCopy = () => {
+    copy(props.value);
     setCopied(true);
-    setTimerId(setTimeout(() => setCopied(false), 2000));
+    setTimerId(setTimeout(() => setCopied(false), 3000));
   };
 
   useEffect(() => (() => clearTimeout(timerId)), [timerId]);
@@ -38,7 +27,7 @@ const Copyable = props => {
     <div className={`Copyable ${props.className}`}>
       <Button
           className='copyableButton'
-          onClick={copy}
+          onClick={doCopy}
           tooltip={
             copied ?  'Copied to clipboard' : 'Click to copy value to clipboard'
           }
@@ -51,9 +40,6 @@ const Copyable = props => {
         {props.label ?
             <div className='copyableLabel'>{props.label}</div> : null}
       </div>
-      <input className='copyableInput'
-          contentEditable={true} readOnly={false}
-          value={props.value} ref={ref} onChange={() => null} />
     </div>
   );
 };
