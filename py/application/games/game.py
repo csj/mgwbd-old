@@ -5,13 +5,14 @@ class Game():
     # By default, assumes two players alternating
     if 'gameEnd' in gameState and gameState['gameEnd']:
       gameState['activePlayerIndex'] = None
-    elif gameState['activePlayerIndex'] is None:
+    elif ('activePlayerIndex' not in gameState or
+          gameState['activePlayerIndex'] is None):
       gameState['activePlayerIndex'] = 0
     else:
       gameState['activePlayerIndex'] = (gameState['activePlayerIndex'] + 1) % 2
 
-  def checkGameEndCondition(self, gameState):
-    gameState['gameEnd'] = self.gameEndCondition(gameState)
+  def checkGameEndCondition(self, gameState, **kwargs):
+    gameState['gameEnd'] = self.gameEndCondition(gameState, **kwargs)
 
   def gridDiff(self, oldGrid, newGrid):
     if len(oldGrid) != len(newGrid) or not len(oldGrid):

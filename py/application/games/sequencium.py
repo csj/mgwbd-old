@@ -115,13 +115,6 @@ class Sequencium(Game):
   def getSettingsConfig(self):
     return [
       {
-        'canonicalName': 'handDrawnGrid',
-        'displayName': 'Hand-drawn grid',
-        'description': 'Displays the game grid as a drawing.',
-        'values': [True, False],
-        'defaultValue': True,
-      },
-      {
         'canonicalName': 'doubleMoves',
         'displayName': 'Players move twice',
         'description': (

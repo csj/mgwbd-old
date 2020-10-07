@@ -24,7 +24,7 @@ const AccountPage = props => {
     document.location.href = rsp.body.oauth_url;
   };
   const logout = async () => {
-    let rsp = await http.post(paths.LOGOUT);
+    await http.post(paths.LOGOUT);
     setUserInfo(null);
   };
 

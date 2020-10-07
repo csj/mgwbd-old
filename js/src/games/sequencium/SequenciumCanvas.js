@@ -90,8 +90,7 @@ const SequenciumCanvas = props => {
     let isTouchable =
         props.canMove && (validFrom[row][col] || validTo[row][col]);
     let isActive = moveFrom.row === row && moveFrom.col === col;
-    let designStyleClass =
-        props.gameSettings.handDrawnGrid ? null : 'squareOutline';
+    let designStyleClass = null;
 
     let outerClassName = `square ${designStyleClass} `;
     if (Number.isInteger(playerIndex) && props.gameSettings.players) {
@@ -139,7 +138,7 @@ const SequenciumCanvas = props => {
   };
 
   const render = () => {
-    let gridBgUrl = props.gameSettings.handDrawnGrid ? grid66 : null;
+    let gridBgUrl = grid66;
     return (
       <div className='SequenciumCanvas'>
         <div

@@ -42,6 +42,13 @@ class Prophecies(Game):
         'values': [3, 4, 5, 6],
         'defaultValue': 5,
       },
+      {
+        'canonicalName': 'xProphecies',
+        'displayName': 'X-Prophecies',
+        'description': 'Treat each number as a prediction of the number of Xs, rather than the number of numbers.',
+        'values': [True, False],
+        'defaultValue': False,
+      },
     ]
 
   def isValidValue(self, grid, row, col, value):
@@ -88,17 +95,17 @@ class Prophecies(Game):
     newGameState['grid'][row][col] = {'owner': playerIndex, 'value': value}
     autoXs = self.fillAutoXs(newGameState['grid'])
     newGameState['lastMove'] = [{'row': row, 'col': col}] + autoXs
-    self.checkGameEndCondition(newGameState)
+    self.checkGameEndCondition(newGameState, gameSettings=gameSettings)
     self.nextPlayerTurn(newGameState)
     return newGameState
 
-  def calculateScores(self, grid):
+  def calculateScores(self, grid, matchCondition=(lambda v: v)):
     rowWinners = [0] * len(grid)
     colWinners = [0] * len(grid[0])
     playerScores = [0] * 2  # assuming two players
     for i in range(len(grid)):
       for j in range(len(grid[0])):
-        if grid[i][j] and grid[i][j]['value']:
+        if grid[i][j] and matchCondition(grid[i][j]['value']):
           rowWinners[i] += 1
           colWinners[j] += 1
     for i in range(len(grid)):
@@ -125,12 +132,15 @@ class Prophecies(Game):
       result['draw'] = True
     return result
 
-  def gameEndCondition(self, gameState):
+  def gameEndCondition(self, gameState, gameSettings=None):
     grid = gameState['grid']
     for row in range(len(grid)):
       for col in range(len(grid[0])):
         if not grid[row][col]:
           return None
-    scores = self.calculateScores(grid)
+    if gameSettings and gameSettings['xProphecies']:
+      scores = self.calculateScores(grid, matchCondition=(lambda v: not v))
+    else:
+      scores = self.calculateScores(grid)
     return self.calculateWinner(scores)
 

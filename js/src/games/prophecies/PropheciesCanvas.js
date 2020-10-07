@@ -50,7 +50,11 @@ const PropheciesCanvas = props => {
         let square = grid[i][j];
         let value = square && square.value;
         if (value !== null) {
-          rowScore += value ? 1 : 0;
+          if (gameSettings.xProphecies) {
+            rowScore += value ? 0 : 1;
+          } else {
+            rowScore += value ? 1 : 0;
+          }
         } else {
           isRowFilled = false;
         }
@@ -69,7 +73,11 @@ const PropheciesCanvas = props => {
         let square = grid[i][j];
         let value = square && square.value;
         if (value !== null) {
-          colScore += value ? 1 : 0;
+          if (gameSettings.xProphecies) {
+            colScore += value ? 0 : 1;
+          } else {
+            colScore += value ? 1 : 0;
+          }
         } else {
           isColFilled = false;
         }
