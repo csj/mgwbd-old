@@ -1,6 +1,7 @@
 from datetime import timedelta
 from flask import Flask, session
 from flask_cors import CORS
+from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
@@ -8,6 +9,7 @@ from config import Config
 
 # Globally accessible libraries
 db = SQLAlchemy()
+login_manager = LoginManager()
 migrate = Migrate()
 
 
@@ -44,8 +46,8 @@ def create_app():
 
   # Initialize Plugins
   db.init_app(app)
+  login_manager.init_app(app)
   migrate.init_app(app, db)
-  # todo this is a problem
   cors_init_app(app)
   session_timeout_init_app(app)
 

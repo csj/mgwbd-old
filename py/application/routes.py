@@ -2,9 +2,11 @@
 import os
 from flask import Blueprint, jsonify, redirect, render_template, request
 from flask_cors import cross_origin
+from flask_login import current_user, login_required
 from werkzeug.exceptions import BadRequest
 from application.games import gamePlayer
 from application import cron
+from application import oauth
 
 
 MAIN_GROUP = 'main'
@@ -23,7 +25,8 @@ def register_blueprints(app):
 @main_blueprint.route('/<path:path>')  # catch-all route  # TODO allow static pass-through
 def landing(path=''):
   if 'localhost:' in request.host:
-    return 'On localhost, access index.html by running frontend server separately'
+    host = os.environ.get('FRONTEND_CLIENT_HOST')
+    return redirect(request.scheme + '://' + host + request.path)
   return render_template('index.html')
 
 @main_blueprint.route('/favicon.ico')
@@ -35,6 +38,33 @@ def static_redirect():
 def cron_archive_stale_games():
   cron.archiveStaleGames()
   return jsonify({'result': 'success'})
+
+@main_blueprint.route('/account/info')
+@cross_origin()
+def account_info():
+  if current_user.is_authenticated:
+    result = current_user.json()
+  return jsonify(result)
+
+@main_blueprint.route('/account/login')
+@cross_origin()
+def account_login():
+  request_uri = oauth.getOauthUrl(request.base_url + '/callback')
+  return jsonify({'oauth_url': request_uri})
+
+@main_blueprint.route('/account/login/callback')
+@cross_origin()
+def account_login_callback():
+  oauth.handleOauthCallback(
+      request.args.get('code'), request.url, request.base_url)
+  return redirect('/account')
+
+@main_blueprint.route('/account/logout', methods=['POST'])
+@cross_origin()
+@login_required
+def account_logout():
+  oauth.logoutUser()
+  return jsonify({'success': True})
 
 @main_blueprint.route('/gameplay/new', methods=['POST'])
 @cross_origin()
@@ -87,11 +117,14 @@ def gameplay_action():
 # TODO make this admin-protected
 @main_blueprint.route('/admin/internal/environment')
 @cross_origin()
+@login_required
 def internal_environment():
-  return jsonify({
-    'result': 'success',
-    'os.environ': dict(**os.environ),
-  })
+  if current_user and current_user.is_admin():
+    return jsonify({
+      'result': 'success',
+      'os.environ': dict(**os.environ),
+    })
+  return jsonify({})
 
 @main_blueprint.route('/test', methods=['GET', 'POST'])
 @cross_origin()

@@ -11,7 +11,6 @@ import { Button } from 'primereact/button';
  *   className
  */
 const Copyable = props => {
-  const ref = React.createRef();
   const [copied, setCopied] = useState(false);
   const [timerId, setTimerId] = useState(null);
 

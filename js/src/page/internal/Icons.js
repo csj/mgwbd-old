@@ -9,8 +9,8 @@ const NAMES = [
 const MAP = {
 };
 
-class Icons extends React.Component {
-  renderIcon(name) {
+const Icons = props => {
+  const renderIcon = name => {
     return (
       <div className='container p-col-2' key={name}>
         <Card
@@ -19,18 +19,16 @@ class Icons extends React.Component {
             />
       </div>
     );
-  }
+  };
 
-  render() {
-    return (
-      <div className='section'>
-        <div className='p-grid'>
-          {NAMES.map(this.renderIcon)}
-        </div>
+  return (
+    <div className='section'>
+      <div className='p-grid'>
+        {NAMES.map(renderIcon)}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 
 export default Icons;
