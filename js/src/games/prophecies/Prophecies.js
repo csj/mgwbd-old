@@ -13,9 +13,9 @@ class Prophecies extends Game {
     return 'Prophecies';
   }
 
-  renderInstructions() {
-    return <PropheciesInstructions />;
-  }
+  getInstructionCards() {
+    return PropheciesInstructions.getInstructionCards();
+  };
 
   renderCanvas(gameState, gameSettings, gamePhase, canMove) {
     return (

@@ -28,6 +28,19 @@ class InfoDialog extends React.Component {
     this.setState({visible: this.props.open});
   }
 
+  onHide() {
+    this.setState({visible: false});
+    if (this.props.onHide) {
+      this.props.onHide();
+    }
+  }
+
+  onShow() {
+    if (this.props.onShow) {
+      this.props.onShow();
+    }
+  }
+
   show() {
     this.setState({visible: true});
   }
@@ -52,6 +65,7 @@ class InfoDialog extends React.Component {
           {this.props.footerButtons.map(b =>
               <Button
                   key={b.label} label={b.label} className={b.className}
+                  disabled={b.disabled}
                   onClick={() => this.customButtonClick(b)} />)
           }
         </div>
@@ -82,7 +96,8 @@ class InfoDialog extends React.Component {
             visible={this.state.visible}
             header={this.props.header || 'Information'}
             footer={this.renderFooter()}
-            onHide={() => this.setState({visible: false})}>
+            onHide={this.onHide.bind(this)}
+            onShow={this.onShow.bind(this)}>
           <div onClick={e => e.stopPropagation()}>
             {this.state.visible ? this.props.content : ''}
           </div>

@@ -5,20 +5,31 @@
 } /* .GameInstructionsDialog */
 
 .GameInstructionsDialog-dialogElement {
+  width: 100%;
   max-width: 800px;
+  height: 80%;
+  min-height: 80%;
+  max-height: 80%;
 
-  h2 {
+  div.p-dialog-content {
+    height: 100%;
+    padding-bottom: 8px;
+    & > * {
+      height: 100%;
+    }
+  }
+
+  .p-dialog-header .p-dialog-title {
     font-family: $font_family_title;
-    color: $color_1;
+    color: $color_primary;
   }
 
-  img {
-    max-width: 80%;
-    margin: auto;
-    display: block;
-  }
+  .Card {
+    margin: 2px 0;
+    min-height: 100%;
 
-  @include desktop {
-    max-height: 80%;
+    .img {
+      height: 240px;
+    }
   }
 } /* .GameInstructionsDialog-dialogElement */

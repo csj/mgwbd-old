@@ -13,8 +13,8 @@ class Sequencium extends Game {
     return 'Sequencium';
   }
 
-  renderInstructions() {
-    return <SequenciumInstructions />;
+  getInstructionCards() {
+    return SequenciumInstructions.getInstructionCards();
   }
 
   renderCanvas(gameState, gameSettings, gamePhase, canMove) {

@@ -15,6 +15,7 @@
     "random-string": "^0.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-keyboard-event-handler": "^1.5.4",
     "react-markdown": "^4.3.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",

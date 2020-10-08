@@ -17,9 +17,9 @@ class Dandelions extends Game {
     return [ 'Dandelions', 'Wind', ];
   }
 
-  renderInstructions() {
-    return <DandelionsInstructions />;
-  }
+  getInstructionCards() {
+    return DandelionsInstructions.getInstructionCards();
+  };
 
   renderCanvas(gameState, gameSettings, gamePhase, canMove) {
     return (

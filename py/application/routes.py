@@ -22,7 +22,7 @@ def register_blueprints(app):
 
 
 @main_blueprint.route('/')
-@main_blueprint.route('/<path:path>')  # catch-all route  # TODO allow static pass-through
+@main_blueprint.route('/<path:path>')
 def landing(path=''):
   if 'localhost:' in request.host:
     host = os.environ.get('FRONTEND_CLIENT_HOST')
@@ -114,7 +114,6 @@ def gameplay_action():
       request.json['action'])
   return jsonify(result)
 
-# TODO make this admin-protected
 @main_blueprint.route('/admin/internal/environment')
 @cross_origin()
 @login_required

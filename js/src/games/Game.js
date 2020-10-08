@@ -12,6 +12,10 @@ class Game {
     return [ 'Player 1', 'Player 2', ];
   }
 
+  getInstructionCards() {
+    return [];
+  }
+
   renderInstructions() {
     return (
       <div>Instructions</div>

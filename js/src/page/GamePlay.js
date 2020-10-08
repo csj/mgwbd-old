@@ -35,8 +35,7 @@ const GamePlay = props => {
   const onEndGame = () => gameManager.setGamePhase(GamePhase.POST_GAME);
 
   const renderInstructions = () =>
-      <GameInstructionsDialog
-          open={true} game={game} content={game.renderInstructions()} />;
+      <GameInstructionsDialog open={true} game={game} />;
 
   const renderPlayerSettings = () => {
     return (
