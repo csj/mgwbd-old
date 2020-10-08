@@ -1,3 +1,4 @@
+import AccountPage from 'page/AccountPage';
 import Environment from 'page/internal/Environment';
 import GamesList from 'page/GamesList';
 import GamePlay from 'page/GamePlay';
@@ -37,6 +38,12 @@ const NAV_LINKS = Object.freeze([
   {
     label: 'Blog',
     path: 'https://mathwithbaddrawings.com',
+  },
+  {
+    label: 'Account',
+    path: '/account',
+    component: AccountPage,
+    showIf: _ => false,
   },
   {
     label: 'Internal',

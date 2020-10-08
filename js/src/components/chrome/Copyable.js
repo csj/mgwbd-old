@@ -1,5 +1,6 @@
 import './Copyable.scss';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import copy from 'copy-text-to-clipboard';
 import { Button } from 'primereact/button';
 
 
@@ -9,57 +10,38 @@ import { Button } from 'primereact/button';
  *   label
  *   className
  */
-class Copyable extends React.Component {
-  constructor() {
-    super();
-    this.ref = React.createRef();
-    this.state = { copied: false };
-  }
+const Copyable = props => {
+  const [copied, setCopied] = useState(false);
+  const [timerId, setTimerId] = useState(null);
 
-  copy() {
-    const range = document.createRange();
-    range.selectNode(this.ref.current);
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().empty();
-    this.setState({ copied: true });
-    setTimeout(() => this.setState({ copied: false }), 2000);
-  }
+  const doCopy = () => {
+    copy(props.value);
+    setCopied(true);
+    setTimerId(setTimeout(() => setCopied(false), 3000));
+  };
 
-  renderLabel() {
-    if (this.props.label) {
-      return (
-        <div className='copyableLabel'>
-          {this.props.label}
-        </div>
-      );
-    }
-  }
+  useEffect(() => (() => clearTimeout(timerId)), [timerId]);
 
-  render() {
-    return (
-      <div className={`Copyable ${this.props.className}`}>
-        <Button
-            className='copyableButton'
-            onClick={this.copy.bind(this)}
-            tooltip={
-              this.state.copied ?
-                  'Copied to clipboard' : 'Click to copy value to clipboard'
-            }
-            tooltipOptions={{
-              className: 'Copyable-tooltip',
-              position: this.props.position || 'bottom',
-            }} />
-        <div className='copyableInner'>
-          <div className='copyableValue' ref={this.ref}>
-            {this.props.value}
-          </div>
-          {this.renderLabel()}
-        </div>
+  return (
+    <div className={`Copyable ${props.className}`}>
+      <Button
+          className='copyableButton'
+          onClick={doCopy}
+          tooltip={
+            copied ?  'Copied to clipboard' : 'Click to copy value to clipboard'
+          }
+          tooltipOptions={{
+            className: 'Copyable-tooltip',
+            position: props.position || 'bottom',
+          }} />
+      <div className='copyableInner'>
+        <div className='copyableValue'>{props.value}</div>
+        {props.label ?
+            <div className='copyableLabel'>{props.label}</div> : null}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 
 export default Copyable;

@@ -145,8 +145,8 @@ def action(gameKey, clientCode, action):
 
 
 def _validateClientCode(clientCode, gameInstance):
-  currentTurnPlayerNumber = gameInstance.gameState['activePlayer']
-  player = gameInstance.gameSettings['players'][currentTurnPlayerNumber - 1]
+  currentTurnPlayerIndex = gameInstance.gameState['activePlayerIndex']
+  player = gameInstance.gameSettings['players'][currentTurnPlayerIndex]
   return (not player['owner'] or player['owner'] == clientCode)
 
 

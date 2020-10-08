@@ -5,7 +5,7 @@ from .game import Game
 Example game state:
   {
     grid: [ [{'owner': 2, 'value': 4'}, None, None, ], ... ],
-    activePlayer: 1, # 1 or 2
+    activePlayerIndex: 1, # 0 or 1
     lastMove: [{'row': 0, 'col': 0}, ...],
   }
 
@@ -24,7 +24,7 @@ class Prophecies(Game):
       numRows = numRows - numCols
     row = [None for i in range(numCols)]
     grid = [row for i in range(numRows)]
-    return { 'grid': grid, 'activePlayer': None, }
+    return { 'grid': grid, 'activePlayerIndex': None, }
 
   def getSettingsConfig(self):
     return [
@@ -42,11 +42,23 @@ class Prophecies(Game):
         'values': [3, 4, 5, 6],
         'defaultValue': 5,
       },
+      {
+        'canonicalName': 'xProphecies',
+        'displayName': 'X-Prophecies',
+        'description': 'Treat each number as a prediction of the number of Xs, rather than the number of numbers.',
+        'values': [True, False],
+        'defaultValue': False,
+      },
     ]
 
-  def isValidValue(self, grid, row, col, value):
+  def isValidValue(self, grid, row, col, value, gameSettings=None):
     if value == 0:
       return True
+    if value > len(grid) and value > len(grid[0]):
+      return False
+    if (gameSettings['xProphecies'] and
+        value >= len(grid) and value >= len(grid[0])):
+      return False
     for i in range(len(grid)):
       if grid[i][col] and grid[i][col]['value'] == value:
         return False
@@ -55,8 +67,10 @@ class Prophecies(Game):
         return False
     return True
 
-  def fillAutoXs(self, grid):
+  def fillAutoXs(self, grid, gameSettings=None):
     maxValue = max(len(grid), len(grid[0]))
+    if gameSettings['xProphecies']:
+      maxValue -= 1
     autoXs = []
     for row in range(len(grid)):
       for col in range(len(grid[0])):
@@ -64,7 +78,8 @@ class Prophecies(Game):
           continue
         validMove = False
         for value in range(1, maxValue + 1):
-          if self.isValidValue(grid, row, col, value):
+          if self.isValidValue(
+              grid, row, col, value, gameSettings=gameSettings):
             validMove = True
         if not validMove:
           grid[row][col] = {'owner': None, 'value': 0}
@@ -73,32 +88,32 @@ class Prophecies(Game):
 
   def action(self, gameState, action, gamePhase=None, gameSettings=None):
     grid = gameState['grid']
-    playerNumber = action['owner']
+    playerIndex = action['owner']
     row = action['row']
     col = action['col']
     value = action['value']
-    if not gameState['activePlayer']:
+    if gameState['activePlayerIndex'] is None:
       return gameState
-    if playerNumber != gameState['activePlayer'] or grid[row][col] is not None:
+    if (playerIndex != gameState['activePlayerIndex']) or grid[row][col] is not None:
       return gameState
-    if not self.isValidValue(grid, row, col, value):
+    if not self.isValidValue(grid, row, col, value, gameSettings=gameSettings):
       return gameState
 
     newGameState = copy.deepcopy(gameState)
-    newGameState['grid'][row][col] = {'owner': playerNumber, 'value': value}
-    autoXs = self.fillAutoXs(newGameState['grid'])
+    newGameState['grid'][row][col] = {'owner': playerIndex, 'value': value}
+    autoXs = self.fillAutoXs(newGameState['grid'], gameSettings=gameSettings)
     newGameState['lastMove'] = [{'row': row, 'col': col}] + autoXs
-    self.checkGameEndCondition(newGameState)
+    self.checkGameEndCondition(newGameState, gameSettings=gameSettings)
     self.nextPlayerTurn(newGameState)
     return newGameState
 
-  def calculateScores(self, grid):
+  def calculateScores(self, grid, matchCondition=(lambda v: v)):
     rowWinners = [0] * len(grid)
     colWinners = [0] * len(grid[0])
     playerScores = [0] * 2  # assuming two players
     for i in range(len(grid)):
       for j in range(len(grid[0])):
-        if grid[i][j] and grid[i][j]['value']:
+        if grid[i][j] and matchCondition(grid[i][j]['value']):
           rowWinners[i] += 1
           colWinners[j] += 1
     for i in range(len(grid)):
@@ -110,27 +125,30 @@ class Prophecies(Game):
         if not value:
           continue
         if rowWinners[i] == value:
-          playerScores[square['owner'] - 1] += value
+          playerScores[square['owner']] += value
         if colWinners[j] == value:
-          playerScores[square['owner'] - 1] += value
+          playerScores[square['owner']] += value
     return playerScores
 
   def calculateWinner(self, scores):
     result = {'scores': scores}
     if scores[0] > scores[1]:
-      result['win'] = 1
+      result['win'] = 0
     elif scores[1] > scores[0]:
-      result['win'] = 2
+      result['win'] = 1
     else:
       result['draw'] = True
     return result
 
-  def gameEndCondition(self, gameState):
+  def gameEndCondition(self, gameState, gameSettings=None):
     grid = gameState['grid']
     for row in range(len(grid)):
       for col in range(len(grid[0])):
         if not grid[row][col]:
           return None
-    scores = self.calculateScores(grid)
+    if gameSettings and gameSettings['xProphecies']:
+      scores = self.calculateScores(grid, matchCondition=(lambda v: not v))
+    else:
+      scores = self.calculateScores(grid)
     return self.calculateWinner(scores)
 

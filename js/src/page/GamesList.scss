@@ -3,5 +3,9 @@
 .GamesList {
   .gameCardWrapper {
     color: initial;
+
+    .Card {
+      height: 100%;
+    }
   }
 } /* .GamesList */

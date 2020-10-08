@@ -21,14 +21,14 @@ from .game import Game
   }
  
   typedef Square = {
-    playerNumber: 1, // or 2
+    playerIndex: 0, // or 1
     value: 1, // 2, 3, 4, ...
     from: 'SW', // N, NE, E, SE, S, SW, W, NW, None
   }
 
   Example action:
   {
-    playerNumber: 1,
+    playerIndex: 0,
     rowFrom: 1,
     colFrom: 1,
     rowTo: 2,
@@ -50,16 +50,19 @@ class Sequencium(Game):
         sq = grid[r][c]
         if sq is None:
           return None
-        i = sq['playerNumber'] - 1
+        i = sq['playerIndex']
         scores[i] = max(scores[i], sq['value'])
+    result = {'scores': scores}
     if scores[0] == scores[1]:
-      return {'draw': True}
-    return {'win': 1 if scores[0] > scores[1] else 2}
+      result['draw'] = True
+    else:
+      result['win'] = 0 if scores[0] > scores[1] else 1
+    return result
 
   def getDirection(self, rowFrom, colFrom, rowTo, colTo):
     return _directionHelper[rowTo - rowFrom][colTo - colFrom]
 
-  def playerHasAvailableMove(self, playerNumber, grid):
+  def playerHasAvailableMove(self, playerIndex, grid):
     for r in range(len(grid)):
       for c in range(len(grid[0])):
         if grid[r][c]:
@@ -70,19 +73,19 @@ class Sequencium(Game):
                 c + dc < 0 or c + dc >= len(grid[0])):
               continue
             if (grid[r + dr][c + dc] and
-                grid[r + dr][c + dc]['playerNumber'] == playerNumber):
+                grid[r + dr][c + dc]['playerIndex'] == playerIndex):
               return True
     return False
 
   def nextPlayerTurn(self, gameState, gameSettings):
-    playerNumber = gameState['activePlayer']
-    if not playerNumber:
+    playerIndex = gameState['activePlayerIndex']
+    if playerIndex is None:
       Game.nextPlayerTurn(self, gameState)
       return
     grid = gameState['grid']
-    if not self.playerHasAvailableMove(3 - playerNumber, grid):
+    if not self.playerHasAvailableMove(1 - playerIndex, grid):
       return
-    if not self.playerHasAvailableMove(playerNumber, grid):
+    if not self.playerHasAvailableMove(playerIndex, grid):
       Game.nextPlayerTurn(self, gameState)
       return
     if not gameSettings or not gameSettings['doubleMoves']:
@@ -98,26 +101,19 @@ class Sequencium(Game):
   def getInitialGameState(self, gameSettings=None):
     return {
       'grid': [
-        [_sq(1, 1, None), None, None, None, None, None],
-        [None, _sq(1, 2, 'NW'), None, None, None, None],
-        [None, None, _sq(1, 3, 'NW'), None, None, None],
-        [None, None, None, _sq(2, 3, 'SE'), None, None],
-        [None, None, None, None, _sq(2, 2, 'SE'), None],
-        [None, None, None, None, None, _sq(2, 1, None)],
+        [_sq(0, 1, None), None, None, None, None, None],
+        [None, _sq(0, 2, 'NW'), None, None, None, None],
+        [None, None, _sq(0, 3, 'NW'), None, None, None],
+        [None, None, None, _sq(1, 3, 'SE'), None, None],
+        [None, None, None, None, _sq(1, 2, 'SE'), None],
+        [None, None, None, None, None, _sq(1, 1, None)],
       ],
       'lastMove': {}, # row: 3, col: 3,
-      'activePlayer': None,
+      'activePlayerIndex': None,
     }
  
   def getSettingsConfig(self):
     return [
-      {
-        'canonicalName': 'handDrawnGrid',
-        'displayName': 'Hand-drawn grid',
-        'description': 'Displays the game grid as a drawing.',
-        'values': [True, False],
-        'defaultValue': True,
-      },
       {
         'canonicalName': 'doubleMoves',
         'displayName': 'Players move twice',
@@ -131,25 +127,25 @@ class Sequencium(Game):
 
   def action(self, gameState, action, gamePhase=None, gameSettings=None):
     grid = gameState['grid']
-    playerNumber = action['playerNumber']
+    playerIndex = action['playerIndex']
     rowFrom = action['rowFrom']
     colFrom = action['colFrom']
     rowTo = action['rowTo']
     colTo = action['colTo']
-    if not gameState['activePlayer']:
+    if gameState['activePlayerIndex'] is None:
       return gameState
-    if (playerNumber != gameState['activePlayer'] or
+    if (playerIndex != gameState['activePlayerIndex'] or
         rowFrom - rowTo < -1 or rowFrom - rowTo > 1 or
         colFrom - colTo < -1 or colFrom - colTo > 1 or
         grid[rowFrom][colFrom] is None or
-        grid[rowFrom][colFrom]['playerNumber'] != playerNumber or
+        grid[rowFrom][colFrom]['playerIndex'] != playerIndex or
         grid[rowTo][colTo]):
       return gameState
     direction = self.getDirection(rowFrom, colFrom, rowTo, colTo)
     value = grid[rowFrom][colFrom]['value'] + 1
     newGameState = copy.deepcopy(gameState)
     newGameState['grid'][rowTo][colTo] = {
-        'playerNumber': playerNumber, 'value': value, 'from': direction}
+        'playerIndex': playerIndex, 'value': value, 'from': direction}
     newGameState['lastMove'] = {'row': rowTo, 'col': colTo}
     self.checkGameEndCondition(newGameState)
     self.nextPlayerTurn(newGameState, gameSettings)
@@ -157,6 +153,6 @@ class Sequencium(Game):
 
 
 
-def _sq(playerNumber, value, direction):
-	return {'playerNumber': playerNumber, 'value': value, 'from': direction}
+def _sq(playerIndex, value, direction):
+	return {'playerIndex': playerIndex, 'value': value, 'from': direction}
 

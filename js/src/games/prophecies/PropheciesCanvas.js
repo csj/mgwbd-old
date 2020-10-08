@@ -6,7 +6,7 @@ import React, {useState} from 'react';
 /**
  * Example squareData:
  *   {
- *     owner: 1, // 1, 2, or null (automatic)
+ *     owner: 1, // 0, 1, or null (automatic)
  *     value: 3, // positive integer, or 0 ("X")
  *   }
  * Example action:
@@ -23,10 +23,11 @@ const PropheciesCanvas = props => {
   const numRows = grid.length;
   const numCols = grid[0].length;
   const [targetSquare, setTargetSquare] = useState(null);
+  const [isClick, setIsClick] = useState(true);
 
   const onAction = value => {
     let [row, col] = targetSquare;
-    props.onChooseMove({owner: gameState.activePlayer, row, col, value});
+    props.onChooseMove({owner: gameState.activePlayerIndex, row, col, value});
     setTargetSquare(null);
   };
 
@@ -49,7 +50,11 @@ const PropheciesCanvas = props => {
         let square = grid[i][j];
         let value = square && square.value;
         if (value !== null) {
-          rowScore += value ? 1 : 0;
+          if (gameSettings.xProphecies) {
+            rowScore += value ? 0 : 1;
+          } else {
+            rowScore += value ? 1 : 0;
+          }
         } else {
           isRowFilled = false;
         }
@@ -68,7 +73,11 @@ const PropheciesCanvas = props => {
         let square = grid[i][j];
         let value = square && square.value;
         if (value !== null) {
-          colScore += value ? 1 : 0;
+          if (gameSettings.xProphecies) {
+            colScore += value ? 0 : 1;
+          } else {
+            colScore += value ? 1 : 0;
+          }
         } else {
           isColFilled = false;
         }
@@ -81,6 +90,9 @@ const PropheciesCanvas = props => {
   const calculateValidNumbers = (row, col) => {
     let validNumbers = new Set(
         new Array(Math.max(numRows, numCols)).fill().map((v, i) => i + 1));
+    if (gameSettings.xProphecies) {
+      validNumbers.delete(Math.max(numRows, numCols));
+    }
     for (let i = 0; i < numRows; i++) {
       let sq = grid[i][col];
       if (sq && sq.value) {
@@ -97,8 +109,11 @@ const PropheciesCanvas = props => {
   };
 
   const renderNumberSelector = () => {
-    let allNumbers =
-        new Array(Math.max(numRows, numCols)).fill().map((v, i) => i + 1);
+    let max = Math.max(numRows, numCols);
+    if (gameSettings.xProphecies) {
+      max--;
+    }
+    let allNumbers = new Array(max).fill().map((v, i) => i + 1);
     let validNumbers = calculateValidNumbers(...targetSquare);
     return (
       <div className='numberSelector shadow'>
@@ -128,8 +143,9 @@ const PropheciesCanvas = props => {
 
   const renderSquare = (squareData, i, j) => {
     squareData = squareData || {};
-    let playerNumber = (squareData.owner) || gameState.activePlayer;
-    let player = gameSettings.players[playerNumber - 1];
+    let playerIndex = Number.isInteger(squareData.owner) ?
+        squareData.owner : gameState.activePlayerIndex;
+    let player = gameSettings.players[playerIndex];
     let playerStyle =
         squareData.owner === null ? '' : PlayerHelper.getStyleClass(player);
     let isLastMove = isSquareLastMove(i, j);
@@ -141,7 +157,8 @@ const PropheciesCanvas = props => {
     let winner = <div className='winner' />;
     let doubleWinner = <div className='doubleWinner' />;
     let touchTarget = <div
-        className='touchTarget'
+        className={`touchTarget ${isClick ? 'clickable ' : ''}`}
+        onTouchStart={() => setIsClick(false)}
         onClick={() => setTargetSquare(isSquareSelected(i, j) ? null : [i, j])}
         />;
 

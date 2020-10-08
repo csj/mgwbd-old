@@ -9,6 +9,7 @@ import LabelValue from 'components/chrome/LabelValue';
 import PlayerArea from 'components/player/PlayerArea';
 import PlayerSettingsDialog from 'components/player/PlayerSettingsDialog';
 import React, { useState, useEffect } from 'react';
+import VictoryAnimation from 'components/game/VictoryAnimation';
 import { withRouter } from 'react-router';
 
 
@@ -27,6 +28,7 @@ const GamePlay = props => {
       gameManager.setGame(props.game);
       gameManager.newGame();
     }
+    return () => gameManager.setChangeHandler(() => null);
   }, [gameManager, props.game, props.location.state]);
 
   const onStartGame = () => gameManager.startGame();
@@ -45,9 +47,11 @@ const GamePlay = props => {
     );
   };
 
-  const renderGameSettings = () => {
+  const renderGameSettings = gameManager => {
     let config = gameManager.getGameSettingsConfig() || {};
     if (Object.keys(config).length) {
+      let gamePhase = gameManager.getGamePhase();
+      let gameSettings = gameManager.getGameSettings();
       return (
         <GameSettingsDialog
             settingsConfig={config}
@@ -63,13 +67,13 @@ const GamePlay = props => {
     let startGameButton = <Button label='Start Game' onClick={onStartGame} />;
     let quitGameButton = <Button label='Quit Game' onClick={onEndGame} />;
     if (gamePhase === GamePhase.PRE_GAME) {
-      return ( <div> {startGameButton} </div>);
+      return <div>{startGameButton}</div>;
     }
     if (gamePhase === GamePhase.PLAYING) {
-      return ( <div> {quitGameButton} </div>);
+      return <div>{quitGameButton}</div>;
     }
     if (gamePhase === GamePhase.POST_GAME) {
-      return ( <div> {startGameButton} </div>);
+      return <div>{startGameButton}</div>;
     }
     return null;
   };
@@ -83,7 +87,7 @@ const GamePlay = props => {
             <div>
               {renderPlayerSettings()}
               {game ? renderInstructions() : null}
-              {game ? renderGameSettings() : null}
+              {game ? renderGameSettings(gameManager) : null}
             </div>
           }
           styles={LabelValue.Style.LEFT_RIGHT} />;
@@ -93,15 +97,23 @@ const GamePlay = props => {
   const renderLoaded = () =>
       <div className='section'>
         {renderGameMenu()}
-        <div className='gameCanvas'>
-          {game.renderCanvas(
-              gameState, gameSettings, gamePhase, gameManager.canMove())}
+        <div className='gameArea'>
+          <div className='gameCanvas'>
+            {game.renderCanvas(
+                gameState, gameSettings, gamePhase, gameManager.canMove())}
+          </div>
+          {gamePhase === GamePhase.POST_GAME ?
+              <VictoryAnimation
+                  gameEnd={gameState.gameEnd}
+                  players={gameSettings.players} /> : null}
         </div>
         <GameStatusDisplay {...{gameState, gameSettings, gamePhase}} />
         <PlayerArea
             players={gameSettings && gameSettings.players}
-            activePlayer={
-                gamePhase === GamePhase.PLAYING && gameState.activePlayer} />
+            activePlayerIndex={
+                gamePhase === GamePhase.PLAYING &&
+                gameState.activePlayerIndex}
+            gameEnd={gameState.gameEnd} />
       </div>;
 
   const render = () => {

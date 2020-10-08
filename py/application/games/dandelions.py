@@ -22,8 +22,8 @@ from .game import Game
         [sq.NULL, sq.NULL, sq.NULL, sq.NULL, sq.NULL],
       ],
     },
-    activePlayer: None,  # 1 or 2
-    gameEnd: None,  # {win: 1} or {win: 2}
+    activePlayerIndex: None,  # 0 or 1
+    gameEnd: None,  # {win: 0} or {win: 1}
   }
 
   Example game actions:
@@ -39,19 +39,27 @@ sq = {
 
 all_directions = ('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW')
 
-blankLastMove = {
-  'compass': {'directions': []},
-  'grid': [
-    [sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL']],
-    [sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL']],
-    [sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL']],
-    [sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL']],
-    [sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL'], sq['NULL']],
-  ],
-}
-
  
 class Dandelions(Game):
+
+  def getSettingsConfig(self):
+    return [
+      {
+        'canonicalName': 'gridSize',
+        'displayName': 'Grid size',
+        'values': ['5 by 5', '6 by 6'],
+        'defaultValue': '5 by 5',
+      },
+      {
+        'canonicalName': 'doublePlanting',
+        'displayName': 'Double planting',
+        'description': (
+            'Dandelions begin with a “double turn” (i.e., two Dandelions are '
+            'planted), while the Wind ends the game with a “double turn.”'),
+        'values': [True, False],
+        'defaultValue': False,
+      },
+    ]
 
   def gameEndCondition(self, gameState):
     grid = gameState['grid']
@@ -62,13 +70,28 @@ class Dandelions(Game):
           allSquaresFilled = False
 
     if allSquaresFilled:
-      return { 'win': 1 }
+      return { 'win': 0 }
 
     if len(gameState['compass']['directions']) == 7:
-      return { 'win': 2 }
+      return { 'win': 1 }
     return None
 
-  def actionGrid(self, gameState, action):
+  def nextPlayerTurn(self, gameState, gameSettings):
+    if gameSettings['doublePlanting']:
+      numDanTurns = 0
+      grid = gameState['grid']
+      for row in range(len(grid)):
+        for col in range(len(grid[0])):
+          if grid[row][col] == sq['FLWR']:
+            numDanTurns += 1
+      numWindTurns = len(gameState['compass']['directions'])
+      if numDanTurns == 1:
+        return
+      if numWindTurns == 6:
+        return
+    Game.nextPlayerTurn(self, gameState)
+
+  def actionGrid(self, gameState, action, gameSettings=None):
     row = action['grid']['row']
     col = action['grid']['col']
     curSquare = gameState['grid'][row][col]
@@ -76,10 +99,10 @@ class Dandelions(Game):
       return gameState
     newGameState = copy.deepcopy(gameState)
     newGameState['grid'][row][col] = sq['FLWR']
-    newGameState['lastMove'] = copy.deepcopy(blankLastMove)
+    newGameState['lastMove'] = self.getInitialGameState(gameSettings)
     newGameState['lastMove']['grid'][row][col] = sq['FLWR']
     self.checkGameEndCondition(newGameState)
-    self.nextPlayerTurn(newGameState)
+    self.nextPlayerTurn(newGameState, gameSettings)
     return newGameState
 
   def blowSeed(self, grid, direction, row, col):
@@ -99,41 +122,43 @@ class Dandelions(Game):
         if grid[row][col] == sq['FLWR']:
           self.blowSeed(grid, direction, row, col)
 
-  def actionCompass(self, gameState, action):
+  def actionCompass(self, gameState, action, gameSettings=None):
     direction = action['compass']
     if direction in gameState['compass']['directions']:
       return gameState
     newGameState = copy.deepcopy(gameState)
     newGameState['compass']['directions'].append(direction)
     self.blowAllSeeds(newGameState['grid'], direction)
-    newGameState['lastMove'] = copy.deepcopy(blankLastMove)
+    newGameState['lastMove'] = self.getInitialGameState(gameSettings)
     newGameState['lastMove']['compass']['directions'].append(direction)
     newGameState['lastMove']['grid'] = self.gridDiff(
         gameState['grid'], newGameState['grid'])
     self.checkGameEndCondition(newGameState)
-    self.nextPlayerTurn(newGameState)
+    self.nextPlayerTurn(newGameState, gameSettings)
     return newGameState
 
-  def action(self, gameState, action, **kwargs):
-    if not gameState['activePlayer']:
+  def action(self, gameState, action, gameSettings=None, **kwargs):
+    if gameState['activePlayerIndex'] is None:
       return gameState
-    if gameState['activePlayer'] == 1 and 'grid' in action:
-      return self.actionGrid(gameState, action)
-    if gameState['activePlayer'] == 2 and 'compass' in action:
-      return self.actionCompass(gameState, action)
+    if gameState['activePlayerIndex'] == 0 and 'grid' in action:
+      return self.actionGrid(gameState, action,  gameSettings=gameSettings)
+    if gameState['activePlayerIndex'] == 1 and 'compass' in action:
+      return self.actionCompass(gameState, action,  gameSettings=gameSettings)
     return gameState
 
-  def getInitialGameState(self, gameSettings=None):
+  def getInitialGameState(self, gameSettings):
+    if gameSettings:
+      numRows = int(gameSettings['gridSize'][0])
+      numCols = int(gameSettings['gridSize'][-1])
+    else:
+      numRows = 4
+      numCols = 4
+    row = [None for i in range(numCols)]
+    grid = [copy.copy(row) for i in range(numRows)]
     return {
       'compass': { 'directions': [] },
-      'grid': [
-        [None, None, None, None, None],
-        [None, None, None, None, None],
-        [None, None, None, None, None],
-        [None, None, None, None, None],
-        [None, None, None, None, None],
-      ],
-      'activePlayer': None,
+      'grid': grid,
+      'activePlayerIndex': None,
     }
 
   def getDefaultPlayerConfig(self):

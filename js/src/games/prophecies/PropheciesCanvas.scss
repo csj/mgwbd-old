@@ -28,7 +28,7 @@
           '.highlight', 'background',
           'radial-gradient(COLOR70, #ffffff00 75%)');
       @include playerStyles(
-          '.touchTarget:hover', 'background',
+          '.touchTarget.clickable:hover', 'background',
           'radial-gradient(COLOR70, #ffffff00 75%)');
 
       background: white;

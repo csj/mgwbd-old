@@ -25,6 +25,10 @@
       padding: 4px;
       text-overflow: ellipsis;
       overflow: hidden;
+      border: none;
+      background: initial;
+      font-family: $font_family_serif;
+      font-size: $font_size_button;
     }
 
     .copyableLabel {

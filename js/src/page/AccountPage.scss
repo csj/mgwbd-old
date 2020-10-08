@@ -1,0 +1,10 @@
+@import 'styles/common.scss';
+
+
+.AccountPage {
+  @include page;
+
+  .info {
+    margin-bottom: 24px;
+  }
+} /* .AccountPage */

@@ -33,13 +33,21 @@
       height: 64px;
       width: 64px;
       margin-right: 12px;
+      margin-top: 4px;
+      margin-bottom: 4px;
       &:last-child {
         margin-right: 0;
       }
     }
   }
 
-  .player {
+  .player.editable {
+    .avatar {
+      cursor: pointer;
+    }
+  }
+
+  .playerRow {
     display: flex;
     align-items: center;
     min-height: 48px;
@@ -50,15 +58,13 @@
       margin: 0 8px;
     }
 
-    &.editable {
-      .avatar {
-        cursor: pointer;
-      }
+    .spacer {
+      flex-grow: 1;
+      flex-shrink: 1;
     }
 
     .playerName {
       flex-grow: 1;
-      flex-shrink: 1;
       font-weight: bold;
       @include playerStyles('*', 'color');
       .p-inputtext {
@@ -72,7 +78,9 @@
       height: 32px;
       width: 32px;
     }
+  }
 
+  .player {
     &:first-child .moveUp {
       display: none;
     }
@@ -101,6 +109,10 @@
     .p-accordion-header-text i {
       margin-right: 12px;
     }
+  }
+
+  .p-overlaypanel-content {
+    text-align: center;
   }
 
 } /* .PlayerConfig */

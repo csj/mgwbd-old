@@ -14,24 +14,25 @@ import React, { useState } from 'react';
 const SequenciumCanvas = props => {
   const [moveFrom, setMoveFrom] = useState({}); // {row: 1, col: 1}
 
-  const activePlayer = props.gameState.activePlayer;
+  const activePlayerIndex = props.gameState.activePlayerIndex;
   const grid = props.gameState.grid;
   const numRows = grid.length;
   const numCols = grid[0].length;
   const validFrom = [...Array(numRows)].map(r => Array(numCols).fill(null));
   const validTo = [...Array(numRows)].map(r => Array(numCols).fill(null));
-  let maxScores = {1: 0, 2: 0};
+  let maxScores = [0, 0];
 
   (() => { // Populate grid metadata (validFrom, validTo, maxScores)
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[0].length; col++) {
         let square = grid[row][col];
         let value = square && square.value;
-        let playerNumber = square && square.playerNumber;
-        if (playerNumber) {
-          maxScores[playerNumber] = Math.max(maxScores[playerNumber], value);
+        let playerIndex = square && square.playerIndex;
+        if (Number.isInteger(playerIndex)) {
+          maxScores[playerIndex] = Math.max(maxScores[playerIndex], value);
         }
-        if (playerNumber && playerNumber === activePlayer) {
+        if (Number.isInteger(playerIndex) &&
+            playerIndex === activePlayerIndex) {
           for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
               if (row + i < 0 || row + i >= numRows ||
@@ -52,8 +53,8 @@ const SequenciumCanvas = props => {
     }
   })();
 
-  const chooseMove = (playerNumber, rowFrom, colFrom, rowTo, colTo) => {
-    props.onChooseMove({ playerNumber, rowFrom, colFrom, rowTo, colTo });
+  const chooseMove = (playerIndex, rowFrom, colFrom, rowTo, colTo) => {
+    props.onChooseMove({ playerIndex, rowFrom, colFrom, rowTo, colTo });
   };
 
   const onMouseUp = (rowTo, colTo) => {
@@ -75,26 +76,26 @@ const SequenciumCanvas = props => {
       colFrom = validTo[rowTo][colTo].fromCol;
     }
     setMoveFrom({});
-    chooseMove(props.gameState.activePlayer, rowFrom, colFrom, rowTo, colTo);
+    chooseMove(
+        props.gameState.activePlayerIndex, rowFrom, colFrom, rowTo, colTo);
   };
 
   const renderGridSquare = (data, row, col) => {
-    let playerNumber = (data && data.playerNumber) ||
-        props.gameState.activePlayer;
+    let playerIndex = Number.isInteger(data && data.playerIndex) ?
+        data.playerIndex : props.gameState.activePlayerIndex;
     let isLastMove =
       props.gameState.lastMove.row === row &&
       props.gameState.lastMove.col === col;
-    let isMaxScore = (data && data.value) === maxScores[playerNumber];
+    let isMaxScore = (data && data.value) === maxScores[playerIndex];
     let isTouchable =
         props.canMove && (validFrom[row][col] || validTo[row][col]);
     let isActive = moveFrom.row === row && moveFrom.col === col;
-    let designStyleClass =
-        props.gameSettings.handDrawnGrid ? null : 'squareOutline';
+    let designStyleClass = null;
 
     let outerClassName = `square ${designStyleClass} `;
-    if (playerNumber && props.gameSettings.players) {
+    if (Number.isInteger(playerIndex) && props.gameSettings.players) {
       let playerStyleClass = PlayerHelper.getStyleClass(
-          props.gameSettings.players[playerNumber - 1]);
+          props.gameSettings.players[playerIndex]);
       outerClassName += `${playerStyleClass} `;
     }
     return (
@@ -137,7 +138,7 @@ const SequenciumCanvas = props => {
   };
 
   const render = () => {
-    let gridBgUrl = props.gameSettings.handDrawnGrid ? grid66 : null;
+    let gridBgUrl = grid66;
     return (
       <div className='SequenciumCanvas'>
         <div

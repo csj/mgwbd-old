@@ -1,6 +1,9 @@
 import './InfoBubble.scss';
 import React from 'react';
-import { Button } from 'primereact/button';
+import {Button} from 'primereact/button';
+
+
+const TIMEOUT_MS = 3000;
 
 
 /**
@@ -11,49 +14,46 @@ import { Button } from 'primereact/button';
  *   className
  *   onClick
  */
-class InfoBubble extends React.Component {
+const InfoBubble = props => {
 
-  constructor() {
-    super();
-    this.buttonRef = React.createRef();
-  }
+  const buttonRef = React.createRef();
 
-  defaultOnClick() {
+  const onClick = () => {
     let evtEnter = new MouseEvent(
         'mouseenter', {'view': window, 'bubbles': true, 'cancelable': true,});
     let evtLeave = new MouseEvent(
         'mouseleave', {'view': window, 'bubbles': true, 'cancelable': true,});
-    this.buttonRef.current.element.dispatchEvent(evtEnter);
-    setTimeout(() => {
-      if (this.buttonRef.current) {
-        this.buttonRef.current.element.dispatchEvent(evtLeave);
-      }
-    }, 3000);
-  }
+    let el = buttonRef.current.element;
+    el.dispatchEvent(evtEnter);
+    setTimeout(
+        () => el && el.offsetParent && el.dispatchEvent(evtLeave), TIMEOUT_MS);
 
-  renderButton() {
+    if (props.onClick) {
+      props.onClick();
+    }
+  };
+
+  const renderButton = () => {
     return (
       <Button
           label=''
           icon='pi'
-          onClick={this.props.onClick || this.defaultOnClick.bind(this)}
-          ref={this.buttonRef}
-          tooltip={this.props.text}
+          onClick={onClick}
+          ref={buttonRef}
+          tooltip={props.text}
           tooltipOptions={{
             className: 'InfoBubble-tooltip',
-            position: this.props.position || 'right',
+            position: props.position || 'right',
           }} />
     );
-  }
+  };
 
-  render() {
-    return (
-      <div className={`InfoBubble ${this.props.className}`}>
-        <i className={`pi ${this.props.icon || 'pi-info-circle'}`} />
-        {this.renderButton()}
-      </div>
-    );
-  }
+  return (
+    <div className={`InfoBubble ${props.className}`}>
+      <i className={`pi ${props.icon || 'pi-info-circle'}`} />
+      {renderButton()}
+    </div>
+  );
 }
 
 
