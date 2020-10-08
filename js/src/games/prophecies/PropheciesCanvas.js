@@ -90,6 +90,9 @@ const PropheciesCanvas = props => {
   const calculateValidNumbers = (row, col) => {
     let validNumbers = new Set(
         new Array(Math.max(numRows, numCols)).fill().map((v, i) => i + 1));
+    if (gameSettings.xProphecies) {
+      validNumbers.delete(Math.max(numRows, numCols));
+    }
     for (let i = 0; i < numRows; i++) {
       let sq = grid[i][col];
       if (sq && sq.value) {
@@ -106,8 +109,11 @@ const PropheciesCanvas = props => {
   };
 
   const renderNumberSelector = () => {
-    let allNumbers =
-        new Array(Math.max(numRows, numCols)).fill().map((v, i) => i + 1);
+    let max = Math.max(numRows, numCols);
+    if (gameSettings.xProphecies) {
+      max--;
+    }
+    let allNumbers = new Array(max).fill().map((v, i) => i + 1);
     let validNumbers = calculateValidNumbers(...targetSquare);
     return (
       <div className='numberSelector shadow'>

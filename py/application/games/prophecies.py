@@ -51,9 +51,14 @@ class Prophecies(Game):
       },
     ]
 
-  def isValidValue(self, grid, row, col, value):
+  def isValidValue(self, grid, row, col, value, gameSettings=None):
     if value == 0:
       return True
+    if value > len(grid) and value > len(grid[0]):
+      return False
+    if (gameSettings['xProphecies'] and
+        value >= len(grid) and value >= len(grid[0])):
+      return False
     for i in range(len(grid)):
       if grid[i][col] and grid[i][col]['value'] == value:
         return False
@@ -62,8 +67,10 @@ class Prophecies(Game):
         return False
     return True
 
-  def fillAutoXs(self, grid):
+  def fillAutoXs(self, grid, gameSettings=None):
     maxValue = max(len(grid), len(grid[0]))
+    if gameSettings['xProphecies']:
+      maxValue -= 1
     autoXs = []
     for row in range(len(grid)):
       for col in range(len(grid[0])):
@@ -71,7 +78,8 @@ class Prophecies(Game):
           continue
         validMove = False
         for value in range(1, maxValue + 1):
-          if self.isValidValue(grid, row, col, value):
+          if self.isValidValue(
+              grid, row, col, value, gameSettings=gameSettings):
             validMove = True
         if not validMove:
           grid[row][col] = {'owner': None, 'value': 0}
@@ -88,12 +96,12 @@ class Prophecies(Game):
       return gameState
     if (playerIndex != gameState['activePlayerIndex']) or grid[row][col] is not None:
       return gameState
-    if not self.isValidValue(grid, row, col, value):
+    if not self.isValidValue(grid, row, col, value, gameSettings=gameSettings):
       return gameState
 
     newGameState = copy.deepcopy(gameState)
     newGameState['grid'][row][col] = {'owner': playerIndex, 'value': value}
-    autoXs = self.fillAutoXs(newGameState['grid'])
+    autoXs = self.fillAutoXs(newGameState['grid'], gameSettings=gameSettings)
     newGameState['lastMove'] = [{'row': row, 'col': col}] + autoXs
     self.checkGameEndCondition(newGameState, gameSettings=gameSettings)
     self.nextPlayerTurn(newGameState)

@@ -1,17 +1,38 @@
 import faceA from 'images/faceA.png';
+import faceAvictory from 'images/faceA-victory.png';
 import faceB from 'images/faceB.png';
+import faceBvictory from 'images/faceB-victory.png';
 import faceC from 'images/faceC.png';
+import faceCvictory from 'images/faceC-victory.png';
 import faceD from 'images/faceD.png';
+import faceDvictory from 'images/faceD-victory.png';
 import faceE from 'images/faceE.png';
+import faceEvictory from 'images/faceE-victory.png';
 import randomString from 'random-string';
 
 
+const AvatarType = { DEFAULT: 0, VICTORY: 1, };
 const _avatarMap = {
-  'A': faceA,
-  'B': faceB,
-  'C': faceC,
-  'D': faceD,
-  'E': faceE,
+  'A': {
+    [AvatarType.DEFAULT]: faceA,
+    [AvatarType.VICTORY]: faceAvictory,
+  },
+  'B': {
+    [AvatarType.DEFAULT]: faceB,
+    [AvatarType.VICTORY]: faceBvictory,
+  },
+  'C': {
+    [AvatarType.DEFAULT]: faceC,
+    [AvatarType.VICTORY]: faceCvictory,
+  },
+  'D': {
+    [AvatarType.DEFAULT]: faceD,
+    [AvatarType.VICTORY]: faceDvictory,
+  },
+  'E': {
+    [AvatarType.DEFAULT]: faceE,
+    [AvatarType.VICTORY]: faceEvictory,
+  },
 };
 
 
@@ -29,13 +50,15 @@ PlayerHelper.getStyleClass = playerOrStyle => {
   return `playerStyle${suffix}`;
 };
 
-PlayerHelper.getAvatar = playerOrStyle => {
+PlayerHelper.getAvatar = (playerOrStyle, flavor=AvatarType.DEFAULT) => {
   let key = playerOrStyle;
   if (typeof playerOrStyle === typeof {}) {
     key = playerOrStyle.style;
   }
-  return _avatarMap[key];
+  return _avatarMap[key][flavor];
 }
+
+PlayerHelper.AvatarType = AvatarType;
 
 PlayerHelper.getType = player => {
   // We only support human players for now.

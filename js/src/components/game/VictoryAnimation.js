@@ -69,7 +69,11 @@ const OutcomeEl = props => {
           className={`outcome ${outcomeVisible ? null : 'hidden'}`}
           onClick={() => setOutcomeVisible(false)}>
         <div className='icon'>
-          <img src={PlayerHelper.getAvatar(players[0])} alt='avatar' />
+          <img
+              src={
+                  PlayerHelper.getAvatar(
+                      players[0], PlayerHelper.AvatarType.VICTORY)}
+              alt='avatar' />
         </div>
         <div className='label'>winner!</div>
       </div>
