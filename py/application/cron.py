@@ -13,6 +13,6 @@ def archiveStaleGames():
       .filter(GameInstance.date_modified < date) \
       .all()
   for gi in results:
-    archive.archiveGameInstance(gi)
+    archive.archiveGameInstance(gi, defaultResult='timeout')
   db.session.commit()
 

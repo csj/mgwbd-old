@@ -19,6 +19,7 @@ class ArchivedGameInstance(BaseModel):
   """Represents a game in the past."""
   hostDomain = db.Column(db.String(60))
   gameType = db.Column(db.String(40))
+  gameSettings = db.Column(MutableDict.as_mutable(JSONEncodedDict))
   gamePhase = db.Column(db.Integer())
   gameStart = db.Column(db.DateTime)
   gameEnd = db.Column(db.DateTime)

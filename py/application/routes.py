@@ -42,6 +42,7 @@ def cron_archive_stale_games():
 @main_blueprint.route('/account/info')
 @cross_origin()
 def account_info():
+  result = None
   if current_user.is_authenticated:
     result = current_user.json()
   return jsonify(result)
