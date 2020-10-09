@@ -1,27 +1,20 @@
-from .dandelions import Dandelions
-from .prophecies import Prophecies
-from .sequencium import Sequencium
 from .constants import GamePhase
 from application import db
+from application.games import archive, gameMap
 from application.models import ArchivedGameInstance, GameInstance
 from werkzeug.exceptions import BadRequest
 import random
 
-
-_GAME_MAP = {
-  'dandelions': Dandelions,
-  'sequencium': Sequencium,
-  'prophecies': Prophecies,
-}
 
 _GAME_KEY_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
 _GAME_KEY_LEN = 8
 
 
 def new(hostDomain, gameType):
-  if gameType not in _GAME_MAP:
+  gameCls = gameMap.get(gameType)
+  if not gameCls:
     raise BadRequest('Unknown game.')
-  game = _GAME_MAP[gameType]()
+  game = gameCls()
   gameSettingsConfig = game.getSettingsConfig()
   playerConfig = game.getDefaultPlayerConfig()
   gameSettings = _makeDefaultGameSettings(playerConfig, gameSettingsConfig)
@@ -47,11 +40,11 @@ def setSettings(gameKey, gameSettings):
   if gameInstance.gamePhase == GamePhase.PLAYING.value:
     raise BadRequest('Cannot modify settings for a game in progress.')
   if gameInstance.gamePhase == GamePhase.POST_GAME.value:
-    _archiveGame(gameInstance)
+    archive.archiveGameInstance(gameInstance)
     gameInstance = GameInstance.create(
         db.session, hostDomain=gameInstance.hostDomain, gameKey=gameKey,
         gameType=gameInstance.gameType)
-  game = _GAME_MAP[gameInstance.gameType]()
+  game = gameMap.get(gameInstance.gameType)()
   gameState = game.getInitialGameState(gameSettings)
   game.nextPlayerTurn(gameState, gameSettings=gameSettings)
   gameInstance.gameSettings = gameSettings
@@ -77,11 +70,11 @@ def start(gameKey, gameSettings):
   if not gameInstance:
     raise BadRequest('No such game instance.')
   if gameInstance.gamePhase != GamePhase.PRE_GAME.value:
-    _archiveGame(gameInstance)
+    archive.archiveGameInstance(gameInstance)
     gameInstance = GameInstance.create(
         db.session, hostDomain=gameInstance.hostDomain, gameKey=gameKey,
         gameType=gameInstance.gameType)
-  game = _GAME_MAP[gameInstance.gameType]()
+  game = gameMap.get(gameInstance.gameType)()
   gameState = game.getInitialGameState(gameSettings)
   game.nextPlayerTurn(gameState, gameSettings=gameSettings)
   gameInstance.gamePhase = GamePhase.PLAYING.value
@@ -106,7 +99,7 @@ def poll(gameKey, lastSeenMillis):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
     raise BadRequest('No such game instance.')
-  game = _GAME_MAP[gameInstance.gameType]()
+  game = gameMap.get(gameInstance.gameType)()
   modifiedMillis = _modifiedMillis(gameInstance)
   if modifiedMillis == lastSeenMillis:
     return {}
@@ -129,12 +122,12 @@ def action(gameKey, clientCode, action):
   if not _validateClientCode(clientCode, gameInstance):
     raise BadRequest('Client cannot perform this action.')
 
-  gamePlayer = _GAME_MAP[gameInstance.gameType]()
-  newGameState = gamePlayer.action(
+  game = gameMap.get(gameInstance.gameType)()
+  newGameState = game.action(
       gameInstance.gameState, action, gamePhase=gameInstance.gamePhase,
       gameSettings=gameInstance.gameSettings)
   gameInstance.gameState = newGameState
-  if gamePlayer.gameEndCondition(newGameState):
+  if game.gameEndCondition(newGameState):
     gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
   return {
@@ -152,14 +145,6 @@ def _validateClientCode(clientCode, gameInstance):
 
 def _modifiedMillis(gameInstance):
   return int(gameInstance.date_modified.timestamp() * 1000)
-
-
-def _archiveGame(gameInstance):
-  ArchivedGameInstance.create(
-      db.session, hostDomain=gameInstance.hostDomain,
-      gameType=gameInstance.gameType, gamePhase=gameInstance.gamePhase,
-      gameStart=gameInstance.date_created, gameEnd=gameInstance.date_modified)
-  db.session.delete(gameInstance)
 
 
 def _generateGameKey():
