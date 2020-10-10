@@ -56,9 +56,6 @@ class GamesList extends React.Component {
         <div className='subtitle'>
           Games List
         </div>
-        <p>
-          Here are some games.
-        </p>
         <div className='section'>
           <div className='p-grid'>
             {GAMES.map(this.renderGameCard)}

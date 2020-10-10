@@ -1,0 +1,131 @@
+@import 'styles/common.scss';
+@import 'styles/players.scss';
+
+
+.NeighborsCanvas {
+
+  display: flex;
+
+  .playerTab {
+
+    height: 48px;
+    width: 48px;
+    padding: 2px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% 0 0 50%;
+    cursor: pointer;
+    font-family: $font_family_game_number;
+    margin: 4px 0 16px 4px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    @include shadow();
+    border: 2px solid white;
+
+    &.active {
+      @include playerStyles(':not(&)', 'border', '2px solid COLOR');
+      border: 2px solid #888888;
+      position: relative;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      filter: saturate(50%);
+    }
+  }
+
+  .grids {
+    flex-grow: 1;
+    margin-left: 4px;
+  }
+
+  .Grid {
+    @include playerStyles('.square', 'border', '1px solid COLOR');
+
+    opacity: 1;
+    &.hideGrid {
+      width: 0%;
+      opacity: 0;
+      height: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    &.p-col-6 .row .square .value {
+      font-size: 28px;
+    }
+  }
+
+  .row {
+    display: flex;
+
+
+    .square {
+      @include playerStyles('.winner', 'border', '4px solid COLOR');
+      @include playerStyles('.value', 'color');
+      @include playerStyles(
+          '.highlight', 'background',
+          'radial-gradient(COLOR70, #ffffff00 75%)');
+      @include playerStyles(
+          '.touchTarget.clickable:hover', 'background',
+          'radial-gradient(COLOR70, #ffffff00 75%)');
+
+      background: white;
+      border: 1px solid black;
+      flex: 1 1;
+      margin: 2px;
+      position: relative;
+
+      &>* {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+      }
+
+      .value {
+        align-items: center;
+        display: flex;
+        font-family: $font_family_game_number;
+        font-size: 42px;
+        justify-content: center;
+      }
+
+      .winner {
+        border-radius: 50%;
+        width: 80%;
+        height: 80%;
+        margin: 10%;
+      }
+
+      &:after {
+        content: '';
+        display: block;
+        padding-top: 100%;
+      }
+
+      .touchTarget {
+        cursor: pointer;
+      }
+    }
+  }
+
+} /* .NeighborsCanvas */
+
+
+.Die {
+  align-items: center;
+  display: flex;
+  font-family: $font_family_game_number;
+  font-size: 24px;
+  justify-content: center;
+
+  &.d10 {
+    /* TODO set the background image */
+    border: 2px solid green;
+  }
+} /* .Die */
+
