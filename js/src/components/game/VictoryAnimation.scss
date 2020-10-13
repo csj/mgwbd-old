@@ -8,6 +8,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  cursor: pointer;
   text-align: center;
   z-index: 999;
 
@@ -28,7 +29,6 @@
   .outcome {
     position: relative;
     left: -50%;
-    cursor: pointer;
     background: #ffffff40;
     border-radius: 50%;
 

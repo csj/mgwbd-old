@@ -61,13 +61,10 @@ const TransitionItem = props => {
 
 
 const OutcomeEl = props => {
-  const [outcomeVisible, setOutcomeVisible] = useState(true);
   let players = props.players;
   if (players.length === 1) {
     return (
-      <div
-          className={`outcome ${outcomeVisible ? null : 'hidden'}`}
-          onClick={() => setOutcomeVisible(false)}>
+      <div className='outcome'>
         <div className='icon'>
           <img
               src={
@@ -85,9 +82,7 @@ const OutcomeEl = props => {
   }
 
   return (
-    <div
-        className={`outcome ${outcomeVisible ? null : 'hidden'}`}
-        onClick={() => setOutcomeVisible(false)}>
+    <div className='outcome'>
       <div className='label'>draw!</div>
     </div>
   );
@@ -102,6 +97,7 @@ const OutcomeEl = props => {
 const VictoryAnimation = props => {
 
   const [animatedItems, setAnimatedItems] = useState([]);
+  const [isDismissed, setIsDismissed] = useState(false);
   const isWin = props.gameEnd && 'win' in props.gameEnd;
   const isDraw = props.gameEnd && 'draw' in props.gameEnd;
 
@@ -138,8 +134,12 @@ const VictoryAnimation = props => {
     return () => timers.forEach(clearTimeout);
   }, [isWin, isDraw, props.gameEnd, props.players]);
 
+  if (isDismissed) {
+    return null;
+  }
+
   return (
-    <div className='VictoryAnimation'>
+    <div className='VictoryAnimation' onClick={() => setIsDismissed(true)}>
       {animatedItems.map((item, i) => <TransitionItem key={i} item={item} />)}
     </div>
   );

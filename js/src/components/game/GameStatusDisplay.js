@@ -15,6 +15,9 @@ const GameStatusDisplay = props => {
       message = <div>Click <em>Start Game</em> to get going!</div>;
       break;
     case GamePhase.PLAYING:
+      if (gameState.activePlayerIndex === null) {
+        break;
+      }
       players = props.gameSettings.players;
       player = players[gameState.activePlayerIndex];
       let isLocal =

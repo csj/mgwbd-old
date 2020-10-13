@@ -158,6 +158,10 @@ $topnav_height: 48px;
   z-index: 9999;
 }
 
+.json {
+  white-space: pre;
+}
+
 @mixin shadow {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.4);
 }

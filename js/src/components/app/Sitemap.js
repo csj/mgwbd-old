@@ -1,8 +1,9 @@
 import AccountPage from 'page/AccountPage';
 import Environment from 'page/internal/Environment';
-import GamesList from 'page/GamesList';
+import GameLookup from 'page/internal/GameLookup';
 import GamePlay from 'page/GamePlay';
 import GameTypeMap from 'games/GameTypeMap';
+import GamesList from 'page/GamesList';
 import JoinGame from 'page/JoinGame';
 import Icons from 'page/internal/Icons';
 
@@ -60,6 +61,11 @@ const NAV_LINKS = Object.freeze([
         label: 'Environment',
         path: '/_i/environment',
         component: Environment,
+      },
+      {
+        label: 'Game Lookup',
+        path: '/_i/gamelookup',
+        component: GameLookup,
       },
     ],
   },

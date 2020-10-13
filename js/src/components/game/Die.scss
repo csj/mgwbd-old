@@ -1,0 +1,38 @@
+@import 'styles/common.scss';
+
+
+.Die {
+  font-family: $font_family_game_number;
+  font-size: 24px;
+
+  .label {
+    font-size: 14px;
+  }
+
+  .die {
+    align-items: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    height: 54px;
+    width: 54px;
+
+    &:not(.rollable) {
+      transform: rotate(6 * 360deg);
+      transition: 1s transform;
+    }
+
+    &.rollable {
+      cursor: pointer;
+      transition: 0s transform;
+    }
+  }
+
+  .dieValue {
+    position: relative;
+    top: -4px;
+    left: 0px;
+  }
+} /* .Die */

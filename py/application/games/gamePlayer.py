@@ -139,6 +139,8 @@ def action(gameKey, clientCode, action):
 
 def _validateClientCode(clientCode, gameInstance):
   currentTurnPlayerIndex = gameInstance.gameState['activePlayerIndex']
+  if currentTurnPlayerIndex is None:
+    return True
   player = gameInstance.gameSettings['players'][currentTurnPlayerIndex]
   return (not player['owner'] or player['owner'] == clientCode)
 
