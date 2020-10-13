@@ -136,6 +136,8 @@ const NeighborsCanvas = props => {
       gamePhase === GamePhase.PLAYING &&
       gameState.die.rolled &&
       !(data && data.value) &&
+      (PlayerHelper.isOwnedByMe(players[playerIndex]) ||
+       PlayerHelper.isUnowned(players[playerIndex])) &&
       !pendingMoves[playerIndex]
     );
   };
