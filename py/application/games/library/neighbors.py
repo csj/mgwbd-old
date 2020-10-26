@@ -1,8 +1,9 @@
 import copy
 import jwt
 import random
-from .game import Game
-from .mechanics.partialMoveEncoder import PartialMoveEncoder
+from application.games.game import Game
+from application.games.mechanics.partialMoveEncoder import PartialMoveEncoder
+
 
 """
   Example game state:
@@ -51,7 +52,12 @@ from .mechanics.partialMoveEncoder import PartialMoveEncoder
 class Neighbors(Game):
   pme = PartialMoveEncoder()
 
-  def getInitialGameState(self, gameSettings=None):
+  @classmethod
+  def getSettingsConfig(cls):
+    return []
+
+  @classmethod
+  def getInitialGameState(cls, gameSettings=None):
     numCols = 5
     numRows = 5
     grid = [[None] * numCols for i in range(numRows)]
@@ -62,36 +68,35 @@ class Neighbors(Game):
       'lastMove': {},
       'playerTurn': None,
     }
- 
-  def getSettingsConfig(self):
-    return []
 
-  def nextPlayerTurn(self, gameState, **kwargs):
-    gameState['activePlayerIndex'] = None # Players move simultaneously in this game.
+  def nextPlayerTurn(self):
+    # Players move simultaneously in this game.
+    self.gameState['activePlayerIndex'] = None
 
-  def rollAction(self, gameState):
-    newGameState = copy.deepcopy(gameState)
+  def rollAction(self):
+    newGameState = copy.deepcopy(self.gameState)
     value = random.randint(1, 10)
     newGameState['die'] = { 'rolled': True, 'value': value }
     newGameState['lastMove'] = {'die': value}
-    return newGameState
+    self._gameState = newGameState
+    return True
 
-  def gridAction(self, gameState, action, gameSettings=None):
-    newGameState = copy.deepcopy(gameState)
+  def gridAction(self, action):
+    newGameState = copy.deepcopy(self.gameState)
     playerIndex = action.get('playerIndex')
-    grid = gameState['grids'][playerIndex]
+    grid = self.gameState['grids'][playerIndex]
     row = action.get('row')
     col = action.get('col')
     if grid[row][col]:
-      return newGameState # invalid selection
+      return False  # invalid selection
     if str(playerIndex) in newGameState['pendingMove']:
-      return newGameState # player already made a selection
+      return False  # player already made a selection
     newGameState['pendingMove'][str(playerIndex)] = self.pme.encode(
         { 'row': row, 'col': col })
     if set(newGameState['pendingMove'].keys()).issuperset(
-        set([str(i) for i in range(len(gameSettings['players']))])):
+        set([str(i) for i in range(len(self.gameSettings['players']))])):
       lastMove = []
-      for i in range(len(gameSettings['players'])):
+      for i in range(len(self.gameSettings['players'])):
         encodedMove = newGameState['pendingMove'][str(i)]
         move = self.pme.decode(encodedMove)
         grid = newGameState['grids'][i]
@@ -103,26 +108,25 @@ class Neighbors(Game):
       newGameState['die'] = {
           'rolled': False, 'value': newGameState['die']['value']}
       newGameState['lastMove'] = {'players': lastMove}
-    return newGameState
+    self._gameState = newGameState
+    return True
 
-  def action(self, gameState, action, gamePhase=None, gameSettings=None):
-    if 'roll' in action and not gameState['die']['rolled']:
-      newGameState = self.rollAction(gameState)
+  def action(self, action):
+    result = False
+    if 'roll' in action and not self.gameState['die']['rolled']:
+      result = self.rollAction()
+    if 'playerIndex' in action and self.gameState['die']['rolled']:
+      result = self.gridAction(action)
+    self.checkGameEndCondition()
+    return result
 
-    if 'playerIndex' in action and gameState['die']['rolled']:
-      newGameState = self.gridAction(
-          gameState, action, gameSettings=gameSettings)
-
-    self.checkGameEndCondition(newGameState, gameSettings=gameSettings)
-    return newGameState
-
-  def gameEndCondition(self, gameState, gameSettings=None):
-    grid = gameState['grids'][0]
+  def gameEndCondition(self):
+    grid = self.gameState['grids'][0]
     for row in range(len(grid)):
       for col in range(len(grid[0])):
         if not grid[row][col]:
           return None
-    scores = self.calculateScores(gameState['grids'])
+    scores = self.calculateScores(self.gameState['grids'])
     return self.calculateWinner(scores)
 
   def calculateScores(self, grids):

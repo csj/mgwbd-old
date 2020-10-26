@@ -17,31 +17,34 @@ def archiveGameInstance(gameInstance, defaultResult='quit'):
   player4Type = None
   isMultiDevice = False
 
-  if gamePhase == GamePhase.POST_GAME.value:
-    gameEnd = gi.gameState.get('gameEnd', {})
-    if 'win' in gameEnd:
-      result = 'win'
-    elif 'draw' in gameEnd:
-      result = 'draw'
-    scores = gameEnd.get('scores', [])
-    scores.sort()
-    if len(scores) > 0:
-      winningScore = scores[-1]
-    if len(scores) > 1:
-      secondPlaceScore = scores[-2]
+  try:
+    if gamePhase == GamePhase.POST_GAME.value and gi.gameState:
+      gameEnd = gi.gameState.get('gameEnd', {})
+      if 'win' in gameEnd:
+        result = 'win'
+      elif 'draw' in gameEnd:
+        result = 'draw'
+      scores = gameEnd.get('scores', [])
+      scores.sort()
+      if len(scores) > 0:
+        winningScore = scores[-1]
+      if len(scores) > 1:
+        secondPlaceScore = scores[-2]
 
-  players = gi.gameSettings.get('players', [])
-  if len(players) > 0:
-    player1Type = players[0].get('playerType')
-  if len(players) > 1:
-    player2Type = players[1].get('playerType')
-  if len(players) > 2:
-    player3Type = players[2].get('playerType')
-  if len(players) > 3:
-    player4Type = players[3].get('playerType')
+    players = gi.gameSettings.get('players', [])
+    if len(players) > 0:
+      player1Type = players[0].get('playerType')
+    if len(players) > 1:
+      player2Type = players[1].get('playerType')
+    if len(players) > 2:
+      player3Type = players[2].get('playerType')
+    if len(players) > 3:
+      player4Type = players[3].get('playerType')
 
-  if len(set(filter(lambda o: o, [p.get('owner') for p in players]))) > 1:
-    isMultiDevice = True
+    if len(set(filter(lambda o: o, [p.get('owner') for p in players]))) > 1:
+      isMultiDevice = True
+  except:
+    pass
 
   agi = ArchivedGameInstance.create(
       db.session,

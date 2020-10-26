@@ -1,49 +1,62 @@
+from .constants import GamePhase
 
 
 class Game():
-  def nextPlayerTurn(self, gameState, **kwargs):
-    # By default, assumes two players alternating
-    if 'gameEnd' in gameState and gameState['gameEnd']:
-      gameState['activePlayerIndex'] = None
-    elif ('activePlayerIndex' not in gameState or
-          gameState['activePlayerIndex'] is None):
-      gameState['activePlayerIndex'] = 0
-    else:
-      gameState['activePlayerIndex'] = (gameState['activePlayerIndex'] + 1) % 2
 
-  def checkGameEndCondition(self, gameState, **kwargs):
-    gameState['gameEnd'] = self.gameEndCondition(gameState, **kwargs)
+  def __init__(self, gameSettings=None, gameState=None, gamePhase=None):
+    self._gameSettings = gameSettings
+    self._gameState = gameState
+    self._gamePhase = gamePhase
 
-  def gridDiff(self, oldGrid, newGrid):
-    if len(oldGrid) != len(newGrid) or not len(oldGrid):
-      return [[]]
-    if len(oldGrid[0]) != len(newGrid[0]) or not len(oldGrid[0]):
-      return [[]]
-    diffGrid = []
-    for row in range(len(oldGrid)):
-      diffRow = []
-      for col in range(len(oldGrid[row])):
-        oldVal = oldGrid[row][col]
-        newVal = newGrid[row][col]
-        diffRow.append(None if oldVal == newVal else newVal)
-      diffGrid.append(diffRow)
-    return diffGrid
+  @property
+  def gameSettings(self):
+    return self._gameSettings
 
-  def gameEndCondition(self, gameState):
-    return None
+  @property
+  def gameState(self):
+    return self._gameState
 
-  def getDefaultPlayerConfig(self):
+  @property
+  def gamePhase(self):
+    return self._gamePhase
+
+  @classmethod
+  def getDefaultPlayerConfig(cls):
     return [
       {'playerType': 'human', 'owner': None, 'name': 'Player 1', 'style': 'A'},
       {'playerType': 'human', 'owner': None, 'name': 'Player 2', 'style': 'B'},
     ]
 
-  def getSettingsConfig(self):
+  @classmethod
+  def getSettingsConfig(cls):
     return []
 
-  def getInitialGameState(self, gameSettings):
+  @classmethod
+  def getInitialGameState(cls, gameSettings=None):
     return {}
 
-  def action(self, gameState, action, **kwargs):
-    return gameState
+  def start(self):
+    self._gamePhase = GamePhase.PLAYING.value
+    self.nextPlayerTurn()
+
+  def nextPlayerTurn(self):
+    # By default, assumes two players alternating
+    if 'gameEnd' in self._gameState and self._gameState['gameEnd']:
+      self._gameState['activePlayerIndex'] = None
+    elif ('activePlayerIndex' not in self._gameState or
+          self._gameState['activePlayerIndex'] is None):
+      self._gameState['activePlayerIndex'] = 0
+    else:
+      self._gameState['activePlayerIndex'] = (
+          self._gameState['activePlayerIndex'] + 1) % 2
+
+  def checkGameEndCondition(self):
+    self._gameState['gameEnd'] = self.gameEndCondition()
+
+  def gameEndCondition(self):
+    return None
+
+  def action(self, action):
+    return None
+
 

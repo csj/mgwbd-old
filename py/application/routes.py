@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, redirect, render_template, request
 from flask_cors import cross_origin
 from flask_login import current_user, login_required
 from werkzeug.exceptions import BadRequest
-from application.games import gamePlayer
+from application.games import driver
 from application import cron
 from application import oauth
 
@@ -70,47 +70,47 @@ def account_logout():
 @main_blueprint.route('/gameplay/new', methods=['POST'])
 @cross_origin()
 def gameplay_new():
-  result = gamePlayer.new(request.json['hostDomain'], request.json['gameType'])
+  result = driver.new(request.json['hostDomain'], request.json['gameType'])
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/setsettings', methods=['POST'])
 @cross_origin()
 def gameplay_setsettings():
-  result = gamePlayer.setSettings(
+  result = driver.setSettings(
       request.json['gameKey'], request.json['gameSettings'])
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/setphase', methods=['POST'])
 @cross_origin()
 def gameplay_setphase():
-  result = gamePlayer.setPhase(
+  result = driver.setPhase(
       request.json['gameKey'], request.json['gamePhase'])
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/start', methods=['POST'])
 @cross_origin()
 def gameplay_start():
-  result = gamePlayer.start(
+  result = driver.start(
       request.json['gameKey'], request.json['gameSettings'])
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/query', methods=['GET'])
 @cross_origin()
 def gameplay_query():
-  result = gamePlayer.query(request.args['gameKey'])
+  result = driver.query(request.args['gameKey'])
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/poll', methods=['GET'])
 @cross_origin()
 def gameplay_poll():
-  result = gamePlayer.poll(
+  result = driver.poll(
       request.args['gameKey'], int(request.args['lastSeenMillis']))
   return jsonify(result)
 
 @main_blueprint.route('/gameplay/action', methods=['POST'])
 @cross_origin()
 def gameplay_action():
-  result = gamePlayer.action(
+  result = driver.action(
       request.json['gameKey'], request.json['clientCode'],
       request.json['action'])
   return jsonify(result)

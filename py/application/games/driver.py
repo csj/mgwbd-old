@@ -11,26 +11,21 @@ _GAME_KEY_LEN = 8
 
 
 def new(hostDomain, gameType):
-  gameCls = gameMap.get(gameType)
-  if not gameCls:
+  cls = gameMap.get(gameType)
+  if not cls:
     raise BadRequest('Unknown game.')
-  game = gameCls()
-  gameSettingsConfig = game.getSettingsConfig()
-  playerConfig = game.getDefaultPlayerConfig()
+  gameSettingsConfig = cls.getSettingsConfig()
+  playerConfig = cls.getDefaultPlayerConfig()
   gameSettings = _makeDefaultGameSettings(playerConfig, gameSettingsConfig)
-  gameState = game.getInitialGameState(gameSettings)
+  gameState = cls.getInitialGameState(gameSettings=gameSettings)
   gameKey = _generateGameKey()
   gameInstance = GameInstance.create(
       db.session, hostDomain=hostDomain, gameKey=gameKey, gameType=gameType,
       gameSettings=gameSettings, gameState=gameState,
       gamePhase=GamePhase.PRE_GAME.value)
   db.session.commit()
-  return {
-    'gameState': gameState, 'gameSettingsConfig': gameSettingsConfig,
-    'gameSettings': gameSettings, 'gameKey': gameKey,
-    'gamePhase': gameInstance.gamePhase,
-    'lastSeenMillis': _modifiedMillis(gameInstance),
-  }
+  return _toDict(
+      gameInstance, extraKeys={ 'gameSettingsConfig': gameSettingsConfig, })
 
 
 def setSettings(gameKey, gameSettings):
@@ -44,16 +39,12 @@ def setSettings(gameKey, gameSettings):
     gameInstance = GameInstance.create(
         db.session, hostDomain=gameInstance.hostDomain, gameKey=gameKey,
         gameType=gameInstance.gameType)
-  game = gameMap.get(gameInstance.gameType)()
-  gameState = game.getInitialGameState(gameSettings)
-  game.nextPlayerTurn(gameState, gameSettings=gameSettings)
+  game = _fromGameInstance(gameInstance)
+  gameState = game.getInitialGameState(gameSettings=gameSettings)
   gameInstance.gameSettings = gameSettings
   gameInstance.gameState = gameState
   db.session.commit()
-  return {
-    'gameState': gameInstance.gameState,
-    'lastSeenMillis': _modifiedMillis(gameInstance),
-  }
+  return _toDict(gameInstance)
 
 
 def setPhase(gameKey, gamePhase):
@@ -62,7 +53,7 @@ def setPhase(gameKey, gamePhase):
     raise BadRequest('No such game instance.')
   gameInstance.gamePhase = gamePhase
   db.session.commit()
-  return {'gamePhase': gamePhase}
+  return _toDict(gameInstance)
 
 
 def start(gameKey, gameSettings):
@@ -74,18 +65,15 @@ def start(gameKey, gameSettings):
     gameInstance = GameInstance.create(
         db.session, hostDomain=gameInstance.hostDomain, gameKey=gameKey,
         gameType=gameInstance.gameType)
-  game = gameMap.get(gameInstance.gameType)()
-  gameState = game.getInitialGameState(gameSettings)
-  game.nextPlayerTurn(gameState, gameSettings=gameSettings)
-  gameInstance.gamePhase = GamePhase.PLAYING.value
+  cls = gameMap.get(gameInstance.gameType)
   gameInstance.gameSettings = gameSettings
-  gameInstance.gameState = gameState
+  gameInstance.gameState = cls.getInitialGameState(gameSettings=gameSettings)
+  game = _fromGameInstance(gameInstance)
+  game.start()
+  gameInstance.gamePhase = game.gamePhase
+  gameInstance.gameState = game.gameState
   db.session.commit()
-  return {
-    'gameState': gameInstance.gameState,
-    'gamePhase': gameInstance.gamePhase,
-    'lastSeenMillis': _modifiedMillis(gameInstance),
-  }
+  return _toDict(gameInstance)
 
 
 def query(gameKey):
@@ -103,14 +91,8 @@ def poll(gameKey, lastSeenMillis):
   modifiedMillis = _modifiedMillis(gameInstance)
   if modifiedMillis == lastSeenMillis:
     return {}
-  return {
-    'gamePhase': gameInstance.gamePhase,
-    'gameSettings': gameInstance.gameSettings,
-    'gameSettingsConfig': game.getSettingsConfig(),
-    'gameState': gameInstance.gameState,
-    'gameType': gameInstance.gameType,
-    'lastSeenMillis': modifiedMillis,
-  }
+  return _toDict(
+      gameInstance, extraKeys={'gameSettingsConfig': game.getSettingsConfig()})
 
 
 def action(gameKey, clientCode, action):
@@ -122,19 +104,22 @@ def action(gameKey, clientCode, action):
   if not _validateClientCode(clientCode, gameInstance):
     raise BadRequest('Client cannot perform this action.')
 
-  game = gameMap.get(gameInstance.gameType)()
-  newGameState = game.action(
-      gameInstance.gameState, action, gamePhase=gameInstance.gamePhase,
-      gameSettings=gameInstance.gameSettings)
-  gameInstance.gameState = newGameState
-  if game.gameEndCondition(newGameState):
+  game = _fromGameInstance(gameInstance)
+  game.action(action)
+  gameInstance.gameState = game.gameState
+  if game.gameEndCondition():
     gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
-  return {
-    'gamePhase': gameInstance.gamePhase,
-    'gameState': newGameState,
-    'lastSeenMillis': _modifiedMillis(gameInstance),
-  }
+  return _toDict(gameInstance)
+
+
+def _fromGameInstance(gameInstance):
+  """Returns a Game object."""
+  cls = gameMap.get(gameInstance.gameType)
+  return cls(
+      gameState=gameInstance.gameState,
+      gameSettings=gameInstance.gameSettings,
+      gamePhase=gameInstance.gamePhase)
 
 
 def _validateClientCode(clientCode, gameInstance):
@@ -157,4 +142,16 @@ def _makeDefaultGameSettings(players, settingsConfig):
   settings = {s['canonicalName']: s['defaultValue'] for s in settingsConfig}
   settings['players'] = players
   return settings
+
+
+def _toDict(gameInstance, extraKeys=None):
+  result = {
+      key: val for key, val in gameInstance.json().items() if key in [
+          'gameKey', 'hostDomain', 'gameType', 'gameSettings', 'gameState',
+          'gamePhase', ]}
+  if not result['gameState']:
+    print('OH DAMN')
+  result['lastSeenMillis'] = _modifiedMillis(gameInstance)
+  result.update(extraKeys or {})
+  return result
 

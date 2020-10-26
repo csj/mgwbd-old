@@ -1,7 +1,7 @@
-from .dandelions import Dandelions
-from .neighbors import Neighbors
-from .prophecies import Prophecies
-from .sequencium import Sequencium
+from .library.dandelions import Dandelions
+from .library.neighbors import Neighbors
+from .library.prophecies import Prophecies
+from .library.sequencium import Sequencium
 
 
 _GAME_MAP = {

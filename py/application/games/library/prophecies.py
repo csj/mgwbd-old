@@ -1,5 +1,6 @@
 import copy
-from .game import Game
+from application.games.game import Game
+
 
 """
 Example game state:
@@ -13,20 +14,11 @@ Example actions:
   {owner: 2, row: 1, col: 2, value: 4}
 """
 
+
 class Prophecies(Game):
 
-  def getInitialGameState(self, gameSettings=None):
-    numRows = gameSettings['numRows']
-    numCols = gameSettings['numCols']
-    if numRows > numCols: # swap the values
-      numRows = numRows + numCols
-      numCols = numRows - numCols
-      numRows = numRows - numCols
-    row = [None for i in range(numCols)]
-    grid = [row for i in range(numRows)]
-    return { 'grid': grid, 'activePlayerIndex': None, }
-
-  def getSettingsConfig(self):
+  @classmethod
+  def getSettingsConfig(cls):
     return [
       {
         'canonicalName': 'numRows',
@@ -51,12 +43,24 @@ class Prophecies(Game):
       },
     ]
 
-  def isValidValue(self, grid, row, col, value, gameSettings=None):
+  @classmethod
+  def getInitialGameState(cls, gameSettings=None):
+    numRows = gameSettings['numRows']
+    numCols = gameSettings['numCols']
+    if numRows > numCols: # swap the values
+      numRows = numRows + numCols
+      numCols = numRows - numCols
+      numRows = numRows - numCols
+    row = [None for i in range(numCols)]
+    grid = [row for i in range(numRows)]
+    return { 'grid': grid, 'activePlayerIndex': None, }
+
+  def isValidValue(self, grid, row, col, value):
     if value == 0:
       return True
     if value > len(grid) and value > len(grid[0]):
       return False
-    if (gameSettings['xProphecies'] and
+    if (self.gameSettings['xProphecies'] and
         value >= len(grid) and value >= len(grid[0])):
       return False
     for i in range(len(grid)):
@@ -67,9 +71,9 @@ class Prophecies(Game):
         return False
     return True
 
-  def fillAutoXs(self, grid, gameSettings=None):
+  def fillAutoXs(self, grid):
     maxValue = max(len(grid), len(grid[0]))
-    if gameSettings['xProphecies']:
+    if self.gameSettings['xProphecies']:
       maxValue -= 1
     autoXs = []
     for row in range(len(grid)):
@@ -78,34 +82,36 @@ class Prophecies(Game):
           continue
         validMove = False
         for value in range(1, maxValue + 1):
-          if self.isValidValue(
-              grid, row, col, value, gameSettings=gameSettings):
+          if self.isValidValue(grid, row, col, value):
             validMove = True
         if not validMove:
           grid[row][col] = {'owner': None, 'value': 0}
           autoXs.append({'row': row, 'col': col})
     return autoXs
 
-  def action(self, gameState, action, gamePhase=None, gameSettings=None):
-    grid = gameState['grid']
+  def action(self, action):
+    grid = self.gameState['grid']
     playerIndex = action['owner']
     row = action['row']
     col = action['col']
     value = action['value']
-    if gameState['activePlayerIndex'] is None:
-      return gameState
-    if (playerIndex != gameState['activePlayerIndex']) or grid[row][col] is not None:
-      return gameState
-    if not self.isValidValue(grid, row, col, value, gameSettings=gameSettings):
-      return gameState
+    if self.gameState['activePlayerIndex'] is None:
+      return False
+    if (playerIndex != self.gameState['activePlayerIndex']):
+      return False
+    if grid[row][col] is not None:
+      return False
+    if not self.isValidValue(grid, row, col, value):
+      return False
 
-    newGameState = copy.deepcopy(gameState)
+    newGameState = copy.deepcopy(self.gameState)
     newGameState['grid'][row][col] = {'owner': playerIndex, 'value': value}
-    autoXs = self.fillAutoXs(newGameState['grid'], gameSettings=gameSettings)
+    autoXs = self.fillAutoXs(newGameState['grid'])
     newGameState['lastMove'] = [{'row': row, 'col': col}] + autoXs
-    self.checkGameEndCondition(newGameState, gameSettings=gameSettings)
-    self.nextPlayerTurn(newGameState)
-    return newGameState
+    self._gameState = newGameState
+    self.checkGameEndCondition()
+    self.nextPlayerTurn()
+    return True
 
   def calculateScores(self, grid, matchCondition=(lambda v: v)):
     rowWinners = [0] * len(grid)
@@ -140,13 +146,13 @@ class Prophecies(Game):
       result['draw'] = True
     return result
 
-  def gameEndCondition(self, gameState, gameSettings=None):
-    grid = gameState['grid']
+  def gameEndCondition(self):
+    grid = self.gameState['grid']
     for row in range(len(grid)):
       for col in range(len(grid[0])):
         if not grid[row][col]:
           return None
-    if gameSettings and gameSettings['xProphecies']:
+    if self.gameSettings and self.gameSettings['xProphecies']:
       scores = self.calculateScores(grid, matchCondition=(lambda v: not v))
     else:
       scores = self.calculateScores(grid)
