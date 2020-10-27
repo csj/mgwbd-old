@@ -7,20 +7,34 @@ import React from 'react';
 /**
  * props:
  *   settings
+ *   settingsConfig
  *   onSettingsChange
  *   readOnly
  */
 const PlayerSettingsDialog = props => {
 
+  const settings = props.settings || {};
+  const settingsConfig = props.settingsConfig || [];
+
   const onCommit = players => {
     if (props.onSettingsChange) {
-      props.onSettingsChange(Object.assign({}, props.settings, {players}));
+      props.onSettingsChange(Object.assign({}, settings, {players}));
     }
+  };
+
+  const getAllowedPlayerCounts = () => {
+    const playerCountConfig =
+        settingsConfig.find(i => i.canonicalName === 'players:playerCount');
+    if (!playerCountConfig) {
+      return null;
+    }
+    return playerCountConfig.values;
   };
 
   const renderContent = () =>
       <PlayerConfig
-          players={(props.settings && props.settings.players) || []}
+          players={settings.players || []}
+          allowedPlayerCounts={getAllowedPlayerCounts()}
           readOnly={props.readOnly}
           onCommit={onCommit}
           />;

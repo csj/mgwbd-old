@@ -19,6 +19,7 @@ const GamePlay = props => {
   const gameState = gameManager.getGameState();
   const gamePhase = gameManager.getGamePhase();
   const gameSettings = gameManager.getGameSettings();
+  const gameSettingsConfig = gameManager.getGameSettingsConfig() || [];
   const [, forceUpdate] = useState({});
 
   useEffect(() => {
@@ -38,22 +39,24 @@ const GamePlay = props => {
       <GameInstructionsDialog open={true} game={game} />;
 
   const renderPlayerSettings = () => {
+    let filteredSettingsConfig = gameSettingsConfig
+        .filter(i => i.canonicalName.startsWith('players:'));
     return (
       <PlayerSettingsDialog
           settings={gameSettings}
+          settingsConfig={filteredSettingsConfig}
           readOnly={gamePhase === GamePhase.PLAYING}
           onSettingsChange={s => gameManager.setGameSettings(s)} />
     );
   };
 
   const renderGameSettings = gameManager => {
-    let config = gameManager.getGameSettingsConfig() || {};
-    if (Object.keys(config).length) {
+    if (Object.keys(gameSettingsConfig).length) {
       let gamePhase = gameManager.getGamePhase();
       let gameSettings = gameManager.getGameSettings();
       return (
         <GameSettingsDialog
-            settingsConfig={config}
+            settingsConfig={gameSettingsConfig}
             settings={gameSettings}
             readOnly={gamePhase === GamePhase.PLAYING}
             onSettingsChange={s => gameManager.setGameSettings(s)} />

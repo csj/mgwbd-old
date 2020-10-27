@@ -2,6 +2,7 @@ import './PlayerConfig.scss';
 import Copyable from 'components/chrome/Copyable';
 import GameManager from 'games/GameManager';
 import InfoBubble from 'components/chrome/InfoBubble';
+import LabelValue from 'components/chrome/LabelValue';
 import PlayerHelper from 'players/PlayerHelper';
 import React, {useEffect, useState} from 'react';
 import {Accordion, AccordionTab} from 'primereact/accordion';
@@ -17,10 +18,14 @@ const playerWaiting = <InfoBubble
     icon='pi-exclamation-triangle'
     position='left' />;
 
+const defaultNewPlayer = {
+    'playerType': 'human', 'owner': null, 'name': 'Player 1', 'style': 'A'};
+   
 
 /**
  * props:
  *   players
+ *   allowedPlayerCounts
  *   onCommit(players)
  *   readOnly
  */
@@ -50,6 +55,25 @@ const PlayerConfig = props => {
     props.players[index2] = tempPlayer;
     setEditPlayerNum(null);
     props.onCommit && props.onCommit(props.players);
+  };
+
+  const onSetPlayerCount = n => {
+    let newPlayers = props.players;
+    let usedStyles = props.players.map(p => p.style);
+    let availableStyles =
+        PlayerHelper.getAllStyles().filter(s => usedStyles.indexOf(s) === -1);
+    if (n < props.players.length) {
+      newPlayers = props.players.slice(0, n);
+    }
+    for (let i = props.players.length; i < n; i++) {
+      let style = availableStyles.shift() || defaultNewPlayer.style;
+      let name = `Player ${i + 1}`;
+      let player = {...defaultNewPlayer, name, style};
+      PlayerHelper.claimPlayer(player);
+      newPlayers.push(player);
+    }
+    setEditPlayerNum(null);
+    props.onCommit && props.onCommit(newPlayers);
   };
 
   const onCommitStyle = style => {
@@ -127,7 +151,12 @@ const PlayerConfig = props => {
     }
 
     return (
-      <div className={`player ${editable ? 'editable' : ''}`} key={index}>
+      <div
+          className={`
+              player ${editable ? 'editable' : ''}
+              ${props.players.length >= 3 ? 'threeOrMorePlayers' : null}
+          `}
+          key={index}>
         <div className='playerRow'>
           <InfoBubble
               className='moveUp' icon='pi-angle-up' text='Move player up'
@@ -175,6 +204,36 @@ const PlayerConfig = props => {
     );
   };
 
+  const renderSetPlayerCountButton = n => {
+    return (
+      <div
+          className={`
+              setPlayerCountButton
+              ${props.readOnly ? 'readOnly' : 'clickable'}
+              ${n === props.players.length ? 'selected' : null}`}
+          key={n} onClick={props.readOnly ? null : () => onSetPlayerCount(n)}>
+        {n}
+      </div>
+    );
+  };
+
+  const renderPlayerCount = () => {
+    if (!props.allowedPlayerCounts) {
+      return null;
+    }
+    let buttons = (
+      <div className='playerCountButtons'>
+        {props.allowedPlayerCounts.map(renderSetPlayerCountButton)}
+      </div>
+    );
+    return (
+      <LabelValue
+          className='playerCountSelector'
+          label='Player count' value={buttons}
+          styles={LabelValue.Style.LEFT_RIGHT} />
+    );
+  };
+
   const renderMoreInfo = () => (
     <Accordion className='moreInfo'>
       <AccordionTab header={
@@ -199,6 +258,7 @@ const PlayerConfig = props => {
           PlayerConfig ${props.className} ${props.readOnly ? 'readOnly' : ''}`}>
       {renderReadOnlyMessage()}
       {renderAvatarSelector()}
+      {renderPlayerCount()}
       <div className='players'>
         {props.players.map(renderPlayer)}
       </div>

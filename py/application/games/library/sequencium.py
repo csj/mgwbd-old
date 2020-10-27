@@ -55,19 +55,25 @@ class Sequencium(Game):
         'values': [True, False],
         'defaultValue': False,
       },
+      {
+        'canonicalName': 'gridSize',
+        'displayName': 'Grid size',
+        'values': [6, 8],
+        'defaultValue': 6,
+      },
+      {
+        'canonicalName': 'players:playerCount',
+        'displayName': 'Player count',
+        'values': [2, 4],
+        'defaultValue': 2,
+      },
     ]
 
   @classmethod
   def getInitialGameState(cls, gameSettings=None):
     return {
-      'grid': [
-        [_sq(0, 1, None), None, None, None, None, None],
-        [None, _sq(0, 2, 'NW'), None, None, None, None],
-        [None, None, _sq(0, 3, 'NW'), None, None, None],
-        [None, None, None, _sq(1, 3, 'SE'), None, None],
-        [None, None, None, None, _sq(1, 2, 'SE'), None],
-        [None, None, None, None, None, _sq(1, 1, None)],
-      ],
+      'grid': _makeGrid(
+          gameSettings['gridSize'], len(gameSettings['players'])),
       'lastMove': {}, # row: 3, col: 3,
       'activePlayerIndex': None,
     }
@@ -159,4 +165,21 @@ def _sq(playerIndex, value, direction):
 
 def _getDirection(rowFrom, colFrom, rowTo, colTo):
   return _directionHelper[rowTo - rowFrom][colTo - colFrom]
+
+
+def _makeGrid(gridSize, playerCount):
+  #grid = copy.deepcopy([[None] * gridSize] * gridSize)
+  grid = [[None for i in range(gridSize)] for j in range(gridSize)]
+  if playerCount == 2:
+    playerCorners = ['NW', 'SE']
+  if playerCount == 4:
+    playerCorners = ['NW', 'NE', 'SE', 'SW']
+  for i, corner in enumerate(playerCorners):
+    row = 0 if corner[0] == 'N' else -1
+    col = 0 if corner[1] == 'W' else -1
+    for val in range(1, int(gridSize / 2) + 1):
+      grid[row][col] = _sq(i, val, corner if val > 1 else None)
+      row += (1 if corner[0] == 'N' else -1)
+      col += (1 if corner[1] == 'W' else -1)
+  return grid
 

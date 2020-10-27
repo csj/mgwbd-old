@@ -56,6 +56,7 @@ const PlayerArea = props => {
         </div>
       );
     } else {
+      // TODO here
       content = 'Don\'t know how to render this yet!';
       // But it's probably not too hard to do later.
     }

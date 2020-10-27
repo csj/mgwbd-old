@@ -56,7 +56,16 @@ const GameSettingsDialog = props => {
     );
   };
 
+  const isHidden = settingConfig => {
+    if (settingConfig.canonicalName.startsWith('players:')) {
+      return true;
+    }
+  };
+
   const renderSetting = settingConfig => {
+    if (isHidden(settingConfig)) {
+      return null;
+    }
     let label = (
       <LabelValue
           label={settingConfig.displayName}
