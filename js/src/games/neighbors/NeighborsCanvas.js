@@ -79,6 +79,10 @@ const NeighborsCanvas = props => {
     }
   }, [gameState, gamePhase]);
 
+  useEffect(() => { // Reset view when player count changes.
+    setTab(players.length);
+  }, [players.length]);
+
   const onAction = value => {
     props.onChooseMove(value);
   };

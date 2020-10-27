@@ -52,7 +52,14 @@ class Neighbors(Game):
 
   @classmethod
   def getSettingsConfig(cls):
-    return []
+    return [
+      {
+        'canonicalName': 'players:playerCount',
+        'displayName': 'Player count',
+        'values': [2, 3, 4],
+        'defaultValue': 2,
+      },
+    ]
 
   @classmethod
   def getInitialGameState(cls, gameSettings=None):
