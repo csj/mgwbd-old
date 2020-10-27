@@ -96,13 +96,13 @@ const NeighborsCanvas = props => {
             Object.assign(chain, {colTo: col, size: chain.size + 1});
           } else {
             if (chain.size > 1) {
-              circleData.push({...chain, key: `r${chain.value}`});
+              circleData.push({...chain, key: `r-${row}-${chain.value}`});
             }
             Object.assign(chain, {colFrom: col, value, size: 1});
           }
         }
         if (chain.size > 1) {
-          circleData.push({...chain, key: `r${chain.value}`});
+          circleData.push({...chain, key: `r-${row}-${chain.value}`});
         }
       }
       for (let col = 0; col < numCols; col++) {
@@ -113,13 +113,13 @@ const NeighborsCanvas = props => {
             Object.assign(chain, {rowTo: row, size: chain.size + 1});
           } else {
             if (chain.size > 1) {
-              circleData.push({...chain, key: `c${chain.value}`});
+              circleData.push({...chain, key: `c-${col}-${chain.value}`});
             }
             Object.assign(chain, {rowFrom: row, value, size: 1});
           }
         }
         if (chain.size > 1) {
-          circleData.push({...chain, key: `c${chain.value}`});
+          circleData.push({...chain, key: `c-${col}-${chain.value}`});
         }
       }
       circlesData.push(circleData);
