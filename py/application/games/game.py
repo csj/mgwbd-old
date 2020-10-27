@@ -47,8 +47,9 @@ class Game():
           self._gameState['activePlayerIndex'] is None):
       self._gameState['activePlayerIndex'] = 0
     else:
+      numPlayers = len(self._gameSettings['players'])
       self._gameState['activePlayerIndex'] = (
-          self._gameState['activePlayerIndex'] + 1) % 2
+          self._gameState['activePlayerIndex'] + 1) % numPlayers
 
   def checkGameEndCondition(self):
     self._gameState['gameEnd'] = self.gameEndCondition()

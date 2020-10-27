@@ -41,6 +41,12 @@ class Prophecies(Game):
         'values': [True, False],
         'defaultValue': False,
       },
+      {
+        'canonicalName': 'players:playerCount',
+        'displayName': 'Player count',
+        'values': [2, 3, 4],
+        'defaultValue': 2,
+      },
     ]
 
   @classmethod
@@ -116,7 +122,7 @@ class Prophecies(Game):
   def calculateScores(self, grid, matchCondition=(lambda v: v)):
     rowWinners = [0] * len(grid)
     colWinners = [0] * len(grid[0])
-    playerScores = [0] * 2  # assuming two players
+    playerScores = [0] * len(self._gameSettings['players'])
     for i in range(len(grid)):
       for j in range(len(grid[0])):
         if grid[i][j] and matchCondition(grid[i][j]['value']):
@@ -138,12 +144,11 @@ class Prophecies(Game):
 
   def calculateWinner(self, scores):
     result = {'scores': scores}
-    if scores[0] > scores[1]:
-      result['win'] = 0
-    elif scores[1] > scores[0]:
-      result['win'] = 1
-    else:
+    winners = list(filter(lambda i: i[1] == max(scores), enumerate(scores)))
+    if len(winners) > 1:
       result['draw'] = True
+    else:
+      result['win'] = winners[0][0]
     return result
 
   def gameEndCondition(self):
