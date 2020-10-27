@@ -37,7 +37,7 @@ const Die = props => {
   return (
     <div className={`Die ${props.className}`} onClick={props.onTouch}>
       <LabelValue
-          label={`Die (d${sides})`}
+          label={`d${sides}`}
           value={<div
               className={`die d${sides} ${props.rolled ? '' : 'rollable'}`}
               style={{backgroundImage: `url(${die6})`}}>
