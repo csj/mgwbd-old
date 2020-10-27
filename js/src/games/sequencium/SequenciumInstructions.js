@@ -4,28 +4,27 @@ import image2 from './instructions/media/image2.png';
 import image3 from './instructions/media/image3.png';
 import image4 from './instructions/media/image4.png';
 import image5 from './instructions/media/image5.png';
+import image6 from './instructions/media/image6.png';
 
 
 const instructionCards = [
   {
     img: image1,
     content: <div>
-      <p> The mad visionary Walter Joris has created more than 150 games. Of these dozen dozens, he considers Sequencium his masterpiece. </p>
-      <p> The goal is simple: <strong>reach a higher maximum number than your opponent</strong>. </p>
-      <p> But that’s easier said than done… </p>
+      <p> Walter Joris has created more than 150 games. He considers Sequencium his masterpiece. </p>
+      <p> The goal is simple: <strong>reach a higher maximum number than your opponent.</strong> </p>
     </div>,
   },
   {
     img: image2,
     content: <div>
-      <p> On each turn, you add a new number. <strong>It must be adjacent to an existing number of yours, and must equal this number plus 1</strong>. Diagonals count as adjacent. </p>
+      <p> On each turn, choose a square <strong>adjacent to one of your existing numbers.</strong> (Diagonals count.) A <strong>new number, 1 greater</strong> than its same-color neighbor, will be built there. </p>
     </div>,
   },
   {
     img: image3,
     content: <div>
-      <p> You may <strong>build off of any of your existing numbers</strong>, even lower ones. </p>
-      <p> Also, it’s <strong>okay to cross an existing path</strong> along a diagonal. </p>
+      <p> You may <strong>build off of any of your existing numbers</strong>, even lower ones. Also, it’s <strong>okay to cross an existing path</strong> along a diagonal. </p>
     </div>,
   },
   {
@@ -41,10 +40,9 @@ const instructionCards = [
     </div>,
   },
   {
-    img: image5,
+    img: image6,
     content: <div>
-      <p> Advanced players may wish to change the rules slightly. </p>
-      <p> After the first player’s opening move (which unfolds as usual), <strong>each player moves twice per turn</strong>. </p>
+      <p> Advanced players may wish to change the rules slightly. After the first player’s opening move (which unfolds as usual), <strong>each player moves twice per turn</strong>. </p>
       <p> You may adopt this rule under “settings.” </p>
     </div>,
   },
