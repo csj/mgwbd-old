@@ -1,8 +1,7 @@
 import copy
-import jwt
 import random
 from application.games.game import Game
-from application.games.mechanics.partialMoveEncoder import PartialMoveEncoder
+from application.games.mechanics.simultaneousMove import simultaneousMove
 
 
 """
@@ -50,7 +49,6 @@ from application.games.mechanics.partialMoveEncoder import PartialMoveEncoder
 
 
 class Neighbors(Game):
-  pme = PartialMoveEncoder()
 
   @classmethod
   def getSettingsConfig(cls):
@@ -81,7 +79,32 @@ class Neighbors(Game):
     self._gameState = newGameState
     return True
 
-  def gridAction(self, action):
+  def isValidGridAction(self, action):
+    playerIndex = action.get('playerIndex')
+    grid = self.gameState['grids'][playerIndex]
+    row = action.get('row')
+    col = action.get('col')
+    if grid[row][col]:
+      return False  # invalid selection
+    return True
+
+  @simultaneousMove(isValidFn='isValidGridAction')
+  def gridAction(self, actionList):
+    newGameState = copy.deepcopy(self.gameState)
+    lastMove = []
+    for i, action in enumerate(actionList):
+      grid = newGameState['grids'][i]
+      row = action.get('row')
+      col = action.get('col')
+      grid[row][col] = {'value': newGameState['die']['value']}
+      lastMove.append({'row': row, 'col': col})
+    newGameState['die'] = {
+        'rolled': False, 'value': newGameState['die']['value']}
+    newGameState['lastMove'] = {'players': lastMove}
+    self._gameState = newGameState
+    return True
+
+  def gridActionOld(self, action):
     newGameState = copy.deepcopy(self.gameState)
     playerIndex = action.get('playerIndex')
     grid = self.gameState['grids'][playerIndex]
