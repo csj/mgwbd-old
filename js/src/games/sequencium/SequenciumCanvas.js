@@ -1,5 +1,6 @@
 import './SequenciumCanvas.scss';
 import grid66 from 'images/grid-6-6.png';
+import Grid from 'components/game/Grid';
 import PlayerHelper from 'players/PlayerHelper';
 import React, { useState } from 'react';
 
@@ -12,9 +13,16 @@ import React, { useState } from 'react';
  *   canMove: boolean, Whether this client may make a move now.
  */
 const SequenciumCanvas = props => {
-  const [moveFrom, setMoveFrom] = useState({}); // {row: 1, col: 1}
+  const [moveFrom, setMoveFrom] = useState({}); // {i: 1, j: 1}
+
+  // refactor TODO:
+  //   show circles (maxScores) at the end
+  //   show connecting lines
+  //   allow drag-to-connect
 
   const activePlayerIndex = props.gameState.activePlayerIndex;
+  const players = props.gameSettings.players;
+  const activePlayer = players[activePlayerIndex];
   const grid = props.gameState.grid;
   const numRows = grid.length;
   const numCols = grid[0].length;
@@ -62,8 +70,8 @@ const SequenciumCanvas = props => {
       setMoveFrom({});
       return;
     }
-    let rowFrom = moveFrom.row === undefined ?  rowTo : moveFrom.row;
-    let colFrom = moveFrom.col === undefined ?  colTo : moveFrom.col;
+    let rowFrom = moveFrom.i === undefined ?  rowTo : moveFrom.i;
+    let colFrom = moveFrom.j === undefined ?  colTo : moveFrom.j;
     if (rowFrom - rowTo < -1 || rowFrom - rowTo > 1 ||
         colFrom - colTo < -1 || colFrom - colTo > 1 ||
         !validTo[rowTo][colTo] ||
@@ -80,72 +88,40 @@ const SequenciumCanvas = props => {
         props.gameState.activePlayerIndex, rowFrom, colFrom, rowTo, colTo);
   };
 
-  const renderGridSquare = (data, row, col) => {
-    let playerIndex = Number.isInteger(data && data.playerIndex) ?
-        data.playerIndex : props.gameState.activePlayerIndex;
-    let isLastMove =
-      props.gameState.lastMove.row === row &&
-      props.gameState.lastMove.col === col;
-    let isMaxScore = (data && data.value) === maxScores[playerIndex];
-    let isTouchable =
-        props.canMove && (validFrom[row][col] || validTo[row][col]);
-    let isActive = moveFrom.row === row && moveFrom.col === col;
-    let designStyleClass = null;
-
-    let outerClassName = `square ${designStyleClass} `;
-    if (Number.isInteger(playerIndex) && props.gameSettings.players) {
-      let playerStyleClass = PlayerHelper.getStyleClass(
-          props.gameSettings.players[playerIndex]);
-      outerClassName += `${playerStyleClass} `;
+  const getSquareStyle = data => {
+    if (!data) {
+      return PlayerHelper.getStyleClass(activePlayer);
     }
-    return (
-      <div key={`r${row}c${col}`} className={outerClassName}>
-        <div className={`squareOverlay ${isLastMove ? 'lastMove' : ''}`}>
-          {(data && data.value) || ''}
-        </div>
-        <div className={`squareOverlay ${isMaxScore ? 'maxScore' : ''}`} />
-        <div className={`squareOverlay linkLineHolder ${data && data.from}`}>
-          <div className='linkLine' />
-        </div>
-        <div
-            className={`squareOverlay ${isActive ? 'active' : ''} ${isTouchable ? 'touchable' : ''}`}
-            data-row={row}
-            data-col={col}
-            onMouseDown={() => setMoveFrom({row, col})}
-            onMouseUp={() => onMouseUp(row, col)}
-            onTouchStart={() => setMoveFrom({row, col})}
-            onTouchEnd={e => {
-                let endTouch = e.changedTouches[e.changedTouches.length - 1];
-                let el = document.elementFromPoint(
-                    endTouch.pageX, endTouch.pageY);
-                if ('row' in el.dataset && 'col' in el.dataset) {
-                  onMouseUp(
-                      parseInt(el.dataset.row, 10),
-                      parseInt(el.dataset.col, 10));
-                }
-              }
-            } />
-      </div>
-    );
+    return PlayerHelper.getStyleClass(players[data.playerIndex]);
   };
 
-  const renderGridRow = (rowData, row) => {
-    return (
-      <div className='row' key={row}>
-        {rowData.map((data, col) => renderGridSquare(data, row, col))}
-      </div>
-    );
+  const isSquareTouchable = (data, i, j) => {
+    return validFrom[i][j] || validTo[i][j];
+  };
+
+  const isHighlighted = (data, i, j) => {
+    let lastMove = props.gameState.lastMove;
+    return lastMove.row === i && lastMove.col === j;
+  };
+
+  const onSquareTouch = (data, i, j) => {
+    if (data) {
+      setMoveFrom({i, j});
+    } else {
+      onMouseUp(i, j);
+    }
   };
 
   const render = () => {
     let gridBgUrl = grid66;
     return (
       <div className='SequenciumCanvas'>
-        <div
-            className={`grid gamePhase${props.gamePhase}`}
-            style={{backgroundImage: `url(${gridBgUrl})`}}>
-          {grid.map(renderGridRow)}
-        </div>
+        <Grid className={`grid gamePhase${props.gamePhase}`}
+            grid={grid}
+            getSquareStyle={getSquareStyle}
+            isTouchable={isSquareTouchable}
+            isHighlighted={isHighlighted}
+            onTouch={onSquareTouch} />
       </div>
     );
   };

@@ -2,6 +2,16 @@ import './Grid.scss';
 import React, {forwardRef, useState} from 'react';
 
 
+/**
+ * props:
+ *   className
+ *   grid
+ *   children
+ *   getSquareStyle: function(squareData)
+ *   onTouch: function(squareData, rowIndex, colIndex)
+ *   isHighlighted: function(squareData, rowIndex, colIndex)
+ *   isTouchable: function(squareData, rowIndex, colIndex)
+ */
 const Grid = forwardRef((props, ref) => {
   const [isClick, setIsClick] = useState(true);
 
@@ -19,7 +29,7 @@ const Grid = forwardRef((props, ref) => {
         <div className='value'>
           {squareData && squareData.value}
         </div>
-        {props.isTouchable && props.isTouchable(squareData) ? 
+        {props.isTouchable && props.isTouchable(squareData, i, j) ? 
             touchTarget : null}
       </div>
     );
