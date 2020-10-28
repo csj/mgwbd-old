@@ -40,7 +40,7 @@ const PlayerArea = props => {
     if (!props.players || props.players.length === 0) {
       content = '';
     }
-    else if (props.players.length === 2) {
+    else if (props.players.length >= 2) {
       let classes = 'playersHolder';
       let extraProps = props.players.map((p, i) => ({className: `player${i}`}));
 
@@ -55,10 +55,6 @@ const PlayerArea = props => {
           {props.players.map((p, i) => renderPlayer(i, extraProps[i]))}
         </div>
       );
-    } else {
-      // TODO here
-      content = 'Don\'t know how to render this yet!';
-      // But it's probably not too hard to do later.
     }
     return (
       <div className='PlayerArea'>
