@@ -23,7 +23,7 @@ const instructionCards = [
   {
     img: image3,
     content: <div>
-      <p> Roll the die, then place this number in an empty spot somewhere on your grid. </p>
+      <p> Roll the ten-sided die, then place this number in an empty spot somewhere on your grid. </p>
     </div>,
   },
   {
