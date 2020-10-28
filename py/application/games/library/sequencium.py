@@ -13,16 +13,16 @@ from application.games.game import Game
       [None, None, None, None, Square, None],
       [None, None, None, None, None, Square],
     ],
+    turnSequence: [],  # keeps track of playerIndex for each turn
     lastMove: {
       row: rowId,
       col: colId,
     },
-    playerTurn: 1, // None, 1 or 2
     gameEnd: None,  # {win: 1}, {win: 2}, {draw: True}
   }
  
   typedef Square = {
-    playerIndex: 0, // or 1
+    playerIndex: 0, // or 1, 2, 3
     value: 1, // 2, 3, 4, ...
     from: 'SW', // N, NE, E, SE, S, SW, W, NW, None
   }
@@ -55,12 +55,12 @@ class Sequencium(Game):
         'values': [True, False],
         'defaultValue': False,
       },
-      {
-        'canonicalName': 'gridSize',
-        'displayName': 'Grid size',
-        'values': [6, 8],
-        'defaultValue': 6,
-      },
+      #{
+      #  'canonicalName': 'gridSize',
+      #  'displayName': 'Grid size',
+      #  'values': [6, 8],
+      #  'defaultValue': 6,
+      #},
       {
         'canonicalName': 'players:playerCount',
         'displayName': 'Player count',
@@ -72,51 +72,62 @@ class Sequencium(Game):
   @classmethod
   def getInitialGameState(cls, gameSettings=None):
     return {
-      'grid': _makeGrid(
-          gameSettings['gridSize'], len(gameSettings['players'])),
+      'grid': _makeGrid(6, len(gameSettings['players'])),
       'lastMove': {}, # row: 3, col: 3,
+      'turnSequence': [],
       'activePlayerIndex': None,
     }
  
   def nextPlayerTurn(self):
     playerIndex = self.gameState['activePlayerIndex']
+    numPlayers = len(self.gameSettings['players'])
+    grid = self.gameState['grid']
+    turnSequence = self.gameState['turnSequence']
+
     if playerIndex is None:
       Game.nextPlayerTurn(self)
       return
-    grid = self.gameState['grid']
-    if not self.playerHasAvailableMove(1 - playerIndex, grid):
-      return
-    if not self.playerHasAvailableMove(playerIndex, grid):
+    if len(self.gameState['turnSequence']) <= 1:
       Game.nextPlayerTurn(self)
       return
-    if not self.gameSettings or not self.gameSettings['doubleMoves']:
-      Game.nextPlayerTurn(self)
+
+    isGridFull = True
+    for row in grid:
+      for cell in row:
+        if not cell:
+          isGridFull = False
+    if isGridFull:
       return
-    numOccupiedSquares = 0
-    for r in range(len(grid)):
-      for c in range(len(grid[0])):
-        numOccupiedSquares += 1 if grid[r][c] else 0
-    if numOccupiedSquares % 2:
+
+    if self.gameSettings['doubleMoves'] and len(set(turnSequence[-2:])) > 1:
+      pass
+    else:
+      Game.nextPlayerTurn(self)
+
+    while not self.playerHasAvailableMove():
+      print('here')
       Game.nextPlayerTurn(self)
 
   def gameEndCondition(self):
     grid = self.gameState['grid']
-    scores = [0, 0]
-    for r in range(len(grid)):
-      for c in range(len(grid[0])):
-        sq = grid[r][c]
+    scores = [0] * len(self.gameSettings['players'])
+    for row in grid:
+      for sq in row:
         if sq is None:
           return None
         i = sq['playerIndex']
         scores[i] = max(scores[i], sq['value'])
     result = {'scores': scores}
-    if scores[0] == scores[1]:
+    winners = list(filter(lambda i: i[1] == max(scores), enumerate(scores)))
+    if len(winners) > 1:
       result['draw'] = True
     else:
-      result['win'] = 0 if scores[0] > scores[1] else 1
+      result['win'] = winners[0][0]
     return result
 
-  def playerHasAvailableMove(self, playerIndex, grid):
+  def playerHasAvailableMove(self):
+    playerIndex = self.gameState['activePlayerIndex']
+    grid = self.gameState['grid']
     for r in range(len(grid)):
       for c in range(len(grid[0])):
         if grid[r][c]:
@@ -153,6 +164,7 @@ class Sequencium(Game):
     newGameState['grid'][rowTo][colTo] = {
         'playerIndex': playerIndex, 'value': value, 'from': direction}
     newGameState['lastMove'] = {'row': rowTo, 'col': colTo}
+    newGameState['turnSequence'].append(playerIndex)
     self._gameState = newGameState
     self.checkGameEndCondition()
     self.nextPlayerTurn()
@@ -168,7 +180,6 @@ def _getDirection(rowFrom, colFrom, rowTo, colTo):
 
 
 def _makeGrid(gridSize, playerCount):
-  #grid = copy.deepcopy([[None] * gridSize] * gridSize)
   grid = [[None for i in range(gridSize)] for j in range(gridSize)]
   if playerCount == 2:
     playerCorners = ['NW', 'SE']

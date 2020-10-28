@@ -20,7 +20,7 @@ const SequenciumCanvas = props => {
   const numCols = grid[0].length;
   const validFrom = [...Array(numRows)].map(r => Array(numCols).fill(null));
   const validTo = [...Array(numRows)].map(r => Array(numCols).fill(null));
-  let maxScores = [0, 0];
+  let maxScores = props.gameSettings.players.map(() => 0);
 
   (() => { // Populate grid metadata (validFrom, validTo, maxScores)
     for (let row = 0; row < grid.length; row++) {
