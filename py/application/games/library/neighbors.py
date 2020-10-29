@@ -196,11 +196,10 @@ class Neighbors(Game):
 
   def calculateWinner(self, scores):
     result = {'scores': scores}
-    if scores[0] > scores[1]:
-      result['win'] = 0
-    elif scores[1] > scores[0]:
-      result['win'] = 1
-    else:
+    winners = list(filter(lambda i: i[1] == max(scores), enumerate(scores)))
+    if len(winners) > 1:
       result['draw'] = True
+    else:
+      result['win'] = winners[0][0]
     return result
 
