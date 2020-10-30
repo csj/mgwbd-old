@@ -24,7 +24,8 @@ const Grid = forwardRef((props, ref) => {
     let renderedValue = props.renderSquareValue ?
         props.renderSquareValue(squareData, i, j) : value;
     let renderedOverlay =
-        props.squareOverlay && props.squareOverlay(squareData);
+        props.renderSquareOverlay &&
+        props.renderSquareOverlay(squareData, i, j);
     let highlight = <div className='highlight' />;
     let touchTarget = (
         <div
@@ -77,7 +78,9 @@ const Grid = forwardRef((props, ref) => {
   return (
     <div className={`Grid ${props.className}`} ref={ref}>
       {renderUnderlay()}
-      {props.grid.map(renderRow)}
+      <div className='rows'>
+        {props.grid.map(renderRow)}
+      </div>
       {props.children}
     </div>
   );

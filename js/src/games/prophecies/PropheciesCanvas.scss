@@ -33,11 +33,7 @@
       }
 
       .value {
-        align-items: center;
-        display: flex;
-        font-family: $font_family_game_number;
         font-size: 48px;
-        justify-content: center;
       }
 
       .winner {
@@ -67,7 +63,8 @@
         text-align: center;
         background: white;
         border-radius: 4px;
-        z-index: 1;
+        z-index: 2000;
+        position: absolute;
 
         .option {
           display: inline-flex;

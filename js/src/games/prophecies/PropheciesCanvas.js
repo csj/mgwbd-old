@@ -36,12 +36,6 @@ const PropheciesCanvas = props => {
     return targetSquare && targetSquare[0] === row && targetSquare[1] === col;
   };
 
-  const isSquareLastMove = (row, col) => {
-    let lastMoves = gameState.lastMove;
-    return lastMoves &&
-        lastMoves.some(move => move.row === row && move.col === col);
-  };
-
   const rowWinners = (() => {
     let rowWinners = [];
     for (let i = 0; i < numRows; i++) {
@@ -110,6 +104,9 @@ const PropheciesCanvas = props => {
   };
 
   const renderNumberSelector = () => {
+    if (!targetSquare) {
+      return;
+    }
     let max = Math.max(numRows, numCols);
     if (gameSettings.xProphecies) {
       max--;
@@ -132,47 +129,44 @@ const PropheciesCanvas = props => {
     );
   };
 
-  const renderSquareValue = (value, player, row, col) => {
-    if (value === undefined) {
+  const renderSquareValue = squareData => {
+    let value = squareData && squareData.value;
+    if (!Number.isInteger(value)) {
       return null;
     }
-    if (value === 0) {
-      return 'X';
-    }
-    return value;
+    return value === 0 ? 'X' : value;
   };
 
-  const renderSquare = (squareData, i, j) => {
-    squareData = squareData || {};
-    let playerIndex = Number.isInteger(squareData.owner) ?
+  const getSquareStyle = squareData => {
+    let playerIndex = Number.isInteger(squareData && squareData.owner) ?
         squareData.owner : gameState.activePlayerIndex;
-    let player = gameSettings.players[playerIndex];
-    let playerStyle =
-        squareData.owner === null ? '' : PlayerHelper.getStyleClass(player);
-    let isLastMove = isSquareLastMove(i, j);
-    let isTouchable = props.canMove && squareData.owner === undefined;
+    return PlayerHelper.getStyleClass(gameSettings.players[playerIndex]);
+  };
+
+  const isHighlighted = (squareData, i, j) => {
+    let lastMoves = gameState.lastMove;
+    return lastMoves &&
+        lastMoves.some(move => move.row === i && move.col === j);
+  };
+
+  const isTouchable = squareData => {
+    return props.canMove && (squareData || {}).owner === undefined;
+  };
+
+  const onTouch = (data, i, j) => {
+    setTargetSquare(isSquareSelected(i, j) ? null : [i, j]);
+  };
+
+  const renderSquareOverlay = (squareData, i, j) => {
     let isRowWinner = rowWinners[i] && rowWinners[i] === squareData.value;
     let isColWinner = colWinners[j] && colWinners[j] === squareData.value;
-
-    let highlight = <div className='highlight' />;
-    let winner = <div className='winner' />;
-    let doubleWinner = <div className='doubleWinner' />;
-    let touchTarget = <div
-        className={`touchTarget ${isClick ? 'clickable ' : ''}`}
-        onTouchStart={() => setIsClick(false)}
-        onClick={() => setTargetSquare(isSquareSelected(i, j) ? null : [i, j])}
-        />;
-
+    let winner = <div className='winner overlay' />;
+    let doubleWinner = <div className='doubleWinner overlay' />;
     return (
-      <div className={`square ${playerStyle}`} key={`row${i}col${j}`}>
-        <div className='value'>
-          {renderSquareValue(squareData.value, player, i, j)}
-        </div>
-        {isLastMove ? highlight : null}
-        {isSquareSelected(i, j) ? renderNumberSelector() : null}
+      <div className='overlay'>
         {(isRowWinner || isColWinner) ? winner : null}
         {(isRowWinner && isColWinner) ? doubleWinner : null}
-        {isTouchable ? touchTarget : null}
+        {isSquareSelected(i, j) ? renderNumberSelector() : null}
       </div>
     );
   };
@@ -181,7 +175,13 @@ const PropheciesCanvas = props => {
     <div className='PropheciesCanvas'>
       <Grid
           className='grid'
-          grid={gameState.grid} />
+          grid={gameState.grid}
+          squareStyle={getSquareStyle}
+          isHighlighted={isHighlighted}
+          isTouchable={isTouchable}
+          onTouch={onTouch}
+          renderSquareValue={renderSquareValue}
+          renderSquareOverlay={renderSquareOverlay} />
     </div>
   );
 };
