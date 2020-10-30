@@ -55,12 +55,12 @@ class Sequencium(Game):
         'values': [True, False],
         'defaultValue': False,
       },
-      #{
-      #  'canonicalName': 'gridSize',
-      #  'displayName': 'Grid size',
-      #  'values': [6, 8],
-      #  'defaultValue': 6,
-      #},
+      {
+        'canonicalName': 'gridSize',
+        'displayName': 'Grid size',
+        'values': [6, 8],
+        'defaultValue': 6,
+      },
       {
         'canonicalName': 'players:playerCount',
         'displayName': 'Player count',
@@ -72,7 +72,7 @@ class Sequencium(Game):
   @classmethod
   def getInitialGameState(cls, gameSettings=None):
     return {
-      'grid': _makeGrid(6, len(gameSettings['players'])),
+      'grid': _makeGrid(gameSettings['gridSize'], len(gameSettings['players'])),
       'lastMove': {}, # row: 3, col: 3,
       'turnSequence': [],
       'activePlayerIndex': None,
