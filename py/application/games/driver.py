@@ -1,6 +1,7 @@
 from .constants import GamePhase
 from application import db
 from application.games import archive, gameMap
+from application.games.mechanics.bots.invoker import Invoker
 from application.models import ArchivedGameInstance, GameInstance
 from werkzeug.exceptions import BadRequest
 import random
@@ -107,7 +108,31 @@ def action(gameKey, clientCode, action):
   game = _fromGameInstance(gameInstance)
   game.action(action)
   gameInstance.gameState = game.gameState
-  if game.gameEndCondition():
+  if game.gameEndCondition():  # TODO move this logic into game.action
+    gameInstance.gamePhase = GamePhase.POST_GAME.value
+  db.session.commit()
+  return _toDict(gameInstance)
+
+
+def pokeBot(gameKey, playerIndex):
+  gameInstance = GameInstance.get(db.session, gameKey=gameKey)
+  if not gameInstance:
+    raise BadRequest('No such game instance.')
+  if gameInstance.gamePhase != GamePhase.PLAYING.value:
+    raise BadRequest('Game instance is not currently playing.')
+
+  game = _fromGameInstance(gameInstance)
+  if game.gameState.get('activePlayerIndex') != playerIndex:
+    # TODO also support simultaneous-move games
+    return # Not error-worthy, but do nothing
+
+  invoker = Invoker(
+      gameInstance.gameType,
+      game.gameSettings.get('players')[playerIndex].get('name'))
+  invoker.action(game, playerIndex)
+
+  gameInstance.gameState = game.gameState
+  if game.gameEndCondition():  # TODO move this logic into game.action
     gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
   return _toDict(gameInstance)

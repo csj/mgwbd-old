@@ -146,6 +146,12 @@ class GameManager {
         .then(this.onActionResponse.bind(this), this.onError);
   }
 
+  pokeBot(playerIndex) {
+    this.http.post('/gameplay/poke')
+        .send({gameKey: this.gameKey, playerIndex})
+        .then(this.onActionResponse.bind(this), this.onError);
+  }
+
   onNewGameResponse(rsp) {
     this.onActionResponse(rsp);
     this.claimUnownedPlayers();

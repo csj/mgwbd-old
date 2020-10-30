@@ -115,6 +115,12 @@ def gameplay_action():
       request.json['action'])
   return jsonify(result)
 
+@main_blueprint.route('/gameplay/poke', methods=['POST'])
+@cross_origin()
+def gameplay_poke():
+  result = driver.pokeBot(request.json['gameKey'], request.json['playerIndex'])
+  return jsonify(result)
+
 @main_blueprint.route('/admin/internal/environment')
 @cross_origin()
 @login_required
