@@ -78,6 +78,7 @@ import gamePieceDotE05 from 'images/game-piece-dot-E-05.png';
 import gamePieceDotE06 from 'images/game-piece-dot-E-06.png';
 import gamePieceDotE07 from 'images/game-piece-dot-E-07.png';
 import gamePieceDotE08 from 'images/game-piece-dot-E-08.png';
+import line01 from 'images/board/line-01.png';
 
 
 const _imageLibrary = {
@@ -136,6 +137,9 @@ const _imageLibrary = {
       gamePieceDotE05, gamePieceDotE06, gamePieceDotE07, gamePieceDotE08,
     ],
   },
+  'board': {
+    'line': [ line01, ],
+  },
 };
 
 
@@ -168,6 +172,10 @@ GamePieceHelper.getGamePiece = (style, type, hashMaterial) => {
   let candidates = _imageLibrary[style][type];
   let hash = _digest(_randSeed, hashMaterial) % candidates.length;
   return candidates[hash];
+};
+
+GamePieceHelper.getBoardPiece = (type, hashMaterial) => {
+  return GamePieceHelper.getGamePiece('board', type, hashMaterial);
 };
 
 GamePieceHelper.Type = { ASTERISK: 'asterisk', DOT: 'dot', };

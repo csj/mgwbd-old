@@ -1,4 +1,5 @@
 import './Grid.scss';
+import GamePieceHelper from 'games/GamePieceHelper';
 import React, {forwardRef, useState} from 'react';
 
 
@@ -34,7 +35,7 @@ const Grid = forwardRef((props, ref) => {
         <div className='overlay'>
           {overlay}
         </div>
-        {props.isTouchable && props.isTouchable(squareData, i, j) ? 
+        {props.isTouchable && props.isTouchable(squareData, i, j) ?
             touchTarget : null}
       </div>
     );
@@ -48,8 +49,37 @@ const Grid = forwardRef((props, ref) => {
     );
   };
 
+  const renderUnderlay = () => {
+    let numRows = props.grid.length;
+    let numCols = props.grid.length;
+    let line = GamePieceHelper.getBoardPiece('line', null);
+    return (
+      <div className='underlay'>
+        <div className='gridLines vertical'>
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+        </div>
+        <div className='gridLines horizontal'>
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          <div className='line' style={{backgroundImage: `url(${line})`}} />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={`Grid ${props.className}`} ref={ref}>
+      {renderUnderlay()}
       {props.grid.map(renderRow)}
       {props.children}
     </div>
