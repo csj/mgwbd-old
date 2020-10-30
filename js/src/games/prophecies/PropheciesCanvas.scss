@@ -7,8 +7,6 @@
   $_numberSelectorSizePx: 160px;
 
   .row {
-    display: flex;
-
     &:first-child .square .numberSelector {
       bottom: initial;
     }
@@ -23,19 +21,6 @@
       @include playerStyles('.numberSelector .option.valid', 'background', 'COLOR40');
       @include playerStyles('.winner', 'border', '4px solid COLOR');
       @include playerStyles('.doubleWinner', 'border', '4px solid COLOR');
-      @include playerStyles('.value', 'color');
-      @include playerStyles(
-          '.highlight', 'background',
-          'radial-gradient(COLOR70, #ffffff00 75%)');
-      @include playerStyles(
-          '.touchTarget.clickable:hover', 'background',
-          'radial-gradient(COLOR70, #ffffff00 75%)');
-
-      background: white;
-      border: 1px solid black;
-      flex: 1 1;
-      margin: 2px;
-      position: relative;
 
       &:first-child .numberSelector {
         left: 0;
@@ -45,12 +30,6 @@
         left: initial;
         right: 0;
         transform: translateX(0);
-      }
-
-      &>* {
-        height: 100%;
-        width: 100%;
-        position: absolute;
       }
 
       .value {
@@ -104,16 +83,6 @@
             cursor: pointer;
           }
         }
-      }
-
-      &:after {
-        content: '';
-        display: block;
-        padding-top: 100%;
-      }
-
-      .touchTarget {
-        cursor: pointer;
       }
     }
   }

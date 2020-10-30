@@ -53,13 +53,13 @@ const Grid = forwardRef((props, ref) => {
   };
 
   const getLineStyle = lineData => {
-    let url = GamePieceHelper.getBoardPiece('line', lineData);
+    let url = GamePieceHelper.getBoardPiece(`line${lineData[0]}`, lineData);
     return { backgroundImage: `url(${url})` };
   };
 
   const renderUnderlay = () => {
     let numRows = props.grid.length;
-    let numCols = props.grid.length;
+    let numCols = props.grid[0].length;
     return (
       <div className='underlay'>
         <div className='gridLines horizontal'>

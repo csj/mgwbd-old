@@ -1,4 +1,5 @@
 import './PropheciesCanvas.scss';
+import Grid from 'components/game/Grid';
 import PlayerHelper from 'players/PlayerHelper';
 import React, {useState} from 'react';
 
@@ -176,20 +177,11 @@ const PropheciesCanvas = props => {
     );
   };
 
-  const renderRow = (rowData, i) => {
-    return (
-      <div className='row' key={`row${i}`}>
-        {rowData.map((row, j) => renderSquare(row, i, j))}
-      </div>
-    );
-  };
-
-
   return (
     <div className='PropheciesCanvas'>
-      <div className='grid'>
-        {grid.map(renderRow)}
-      </div>
+      <Grid
+          className='grid'
+          grid={gameState.grid} />
     </div>
   );
 };

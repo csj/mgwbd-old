@@ -20,7 +20,12 @@ $_gridLineWidth: 10px;
       justify-content: space-between;
 
       &.vertical {
-        transform: rotate(90deg);
+        flex-direction: row;
+
+        .line {
+          height: 100%;
+          width: $_gridLineWidth;
+        }
       }
 
       .line {

@@ -78,26 +78,46 @@ import gamePieceDotE05 from 'images/game-piece-dot-E-05.png';
 import gamePieceDotE06 from 'images/game-piece-dot-E-06.png';
 import gamePieceDotE07 from 'images/game-piece-dot-E-07.png';
 import gamePieceDotE08 from 'images/game-piece-dot-E-08.png';
-import line01 from 'images/board/line-01.png';
-import line02 from 'images/board/line-02.png';
-import line03 from 'images/board/line-03.png';
-import line04 from 'images/board/line-04.png';
-import line05 from 'images/board/line-05.png';
-import line06 from 'images/board/line-06.png';
-import line07 from 'images/board/line-07.png';
-import line08 from 'images/board/line-08.png';
-import line09 from 'images/board/line-09.png';
-import line10 from 'images/board/line-10.png';
-import line11 from 'images/board/line-11.png';
-import line12 from 'images/board/line-12.png';
-import line13 from 'images/board/line-13.png';
-import line14 from 'images/board/line-14.png';
-import line15 from 'images/board/line-15.png';
-import line16 from 'images/board/line-16.png';
-import line17 from 'images/board/line-17.png';
-import line18 from 'images/board/line-18.png';
-import line19 from 'images/board/line-19.png';
-import line20 from 'images/board/line-20.png';
+import lineh01 from 'images/board/line-h-01.png';
+import lineh02 from 'images/board/line-h-02.png';
+import lineh03 from 'images/board/line-h-03.png';
+import lineh04 from 'images/board/line-h-04.png';
+import lineh05 from 'images/board/line-h-05.png';
+import lineh06 from 'images/board/line-h-06.png';
+import lineh07 from 'images/board/line-h-07.png';
+import lineh08 from 'images/board/line-h-08.png';
+import lineh09 from 'images/board/line-h-09.png';
+import lineh10 from 'images/board/line-h-10.png';
+import lineh11 from 'images/board/line-h-11.png';
+import lineh12 from 'images/board/line-h-12.png';
+import lineh13 from 'images/board/line-h-13.png';
+import lineh14 from 'images/board/line-h-14.png';
+import lineh15 from 'images/board/line-h-15.png';
+import lineh16 from 'images/board/line-h-16.png';
+import lineh17 from 'images/board/line-h-17.png';
+import lineh18 from 'images/board/line-h-18.png';
+import lineh19 from 'images/board/line-h-19.png';
+import lineh20 from 'images/board/line-h-20.png';
+import linev01 from 'images/board/line-v-01.png';
+import linev02 from 'images/board/line-v-02.png';
+import linev03 from 'images/board/line-v-03.png';
+import linev04 from 'images/board/line-v-04.png';
+import linev05 from 'images/board/line-v-05.png';
+import linev06 from 'images/board/line-v-06.png';
+import linev07 from 'images/board/line-v-07.png';
+import linev08 from 'images/board/line-v-08.png';
+import linev09 from 'images/board/line-v-09.png';
+import linev10 from 'images/board/line-v-10.png';
+import linev11 from 'images/board/line-v-11.png';
+import linev12 from 'images/board/line-v-12.png';
+import linev13 from 'images/board/line-v-13.png';
+import linev14 from 'images/board/line-v-14.png';
+import linev15 from 'images/board/line-v-15.png';
+import linev16 from 'images/board/line-v-16.png';
+import linev17 from 'images/board/line-v-17.png';
+import linev18 from 'images/board/line-v-18.png';
+import linev19 from 'images/board/line-v-19.png';
+import linev20 from 'images/board/line-v-20.png';
 
 
 const _imageLibrary = {
@@ -157,10 +177,15 @@ const _imageLibrary = {
     ],
   },
   'board': {
-    'line': [
-      line01, line02, line03, line04, line05, line06, line07, line08, line09,
-      line10, line11, line12, line13, line14, line15, line16, line17, line18,
-      line19, line20,
+    'lineh': [
+      lineh01, lineh02, lineh03, lineh04, lineh05, lineh06, lineh07, lineh08,
+      lineh09, lineh10, lineh11, lineh12, lineh13, lineh14, lineh15, lineh16,
+      lineh17, lineh18, lineh19, lineh20,
+    ],
+    'linev': [
+      linev01, linev02, linev03, linev04, linev05, linev06, linev07, linev08,
+      linev09, linev10, linev11, linev12, linev13, linev14, linev15, linev16,
+      linev17, linev18, linev19, linev20,
     ],
   },
 };
