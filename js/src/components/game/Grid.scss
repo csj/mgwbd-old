@@ -8,7 +8,6 @@
     display: flex;
 
     .square {
-      @include playerStyles('.winner', 'border', '4px solid COLOR');
       @include playerStyles('.value', 'color');
       @include playerStyles(
           '.highlight', 'background',
@@ -29,11 +28,15 @@
         position: absolute;
       }
 
-      .winner {
-        border-radius: 50%;
-        width: 80%;
-        height: 80%;
-        margin: 10%;
+      .overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       &:after {
@@ -44,6 +47,7 @@
 
       .touchTarget {
         cursor: pointer;
+        z-index: 1000;
       }
     }
   }

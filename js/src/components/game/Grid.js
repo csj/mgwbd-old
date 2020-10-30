@@ -7,7 +7,8 @@ import React, {forwardRef, useState} from 'react';
  *   className
  *   grid
  *   children
- *   getSquareStyle: function(squareData)
+ *   squareStyle: function(squareData) => string
+ *   squareOverlay: function(squareData) => <div />
  *   onTouch: function(squareData, rowIndex, colIndex)
  *   isHighlighted: function(squareData, rowIndex, colIndex)
  *   isTouchable: function(squareData, rowIndex, colIndex)
@@ -16,7 +17,8 @@ const Grid = forwardRef((props, ref) => {
   const [isClick, setIsClick] = useState(true);
 
   const renderSquare = (squareData, i, j) => {
-    let squareStyle = props.getSquareStyle && props.getSquareStyle(squareData);
+    let squareStyle = props.squareStyle && props.squareStyle(squareData);
+    let overlay = props.squareOverlay && props.squareOverlay(squareData);
     let highlight = <div className='highlight' />;
     let touchTarget = <div
         className={`touchTarget ${isClick ? 'clickable ' : ''}`}
@@ -28,6 +30,9 @@ const Grid = forwardRef((props, ref) => {
             highlight : null}
         <div className='value'>
           {squareData && squareData.value}
+        </div>
+        <div className='overlay'>
+          {overlay}
         </div>
         {props.isTouchable && props.isTouchable(squareData, i, j) ? 
             touchTarget : null}

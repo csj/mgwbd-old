@@ -5,15 +5,8 @@
 .SequenciumCanvas {
 
   .grid {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    flex-basis: 67%;
-    touch-action: none;
-    z-index: 1;
 
     &.gamePhase2 .square {
-      @include playerStyles('.touchable:hover', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
       @include playerStyles('.lastMove', 'background', 'radial-gradient(COLOR50, #ffffff00 75%)');
     }
 
@@ -24,92 +17,45 @@
       }
     }
 
-    .row {
-      display: flex;
+    .square {
+      @include playerStyles('.linkLine', 'background-color', 'COLOR');
 
-      .square {
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        flex: 1 1;
-        font-family: $font_family_game_number;
-        font-size: 32px;
-        margin: 2px;
-        position: relative;
-        user-select: none;
+      .linkLineHolder {
+        @include noAnimate;
+        transform: rotate(45deg);
+        visibility: hidden;
+        z-index: 1;
 
-        @include playerStyles('*', 'color');
-        @include playerStyles('.linkLine', 'background-color', 'COLOR');
-
-        &.squareOutline {
-          border: 1px solid black;
-        }
-
-        .touchable {
-          cursor: pointer;
-        }
-
-        &:after {
-          content: '';
-          display: block;
-          padding-top: 100%;
-        }
-
-        &.clickable {
-          cursor: pointer;
-        }
-
-        .squareOverlay {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        
-        .touchable {
-          z-index: 3;
-        }
-
-        .linkLineHolder {
+        .linkLine {
           @include noAnimate;
-          transform: rotate(45deg);
-          visibility: hidden;
-
-          .linkLine {
-            @include noAnimate;
-            position: relative;
-            width: 4px;
-            border-radius: 2px;
-            height: calc(60% + 6px);
-            bottom: calc(50% + 3px);
-          }
-
-          &.NE, &.SE, &.SW, &.NW {
-            .linkLine {
-              height: calc(85% + 6px);
-              bottom: calc(71% + 3px);
-            }
-          }
-
-          &.N, &.NE, &.E, &.SE, &.S, &.SW, &.W, &.NW {
-            visibility: visible;
-          }
-
-          &.N  { transform: rotate(  0deg); }
-          &.NE { transform: rotate( 45deg); }
-          &.E  { transform: rotate( 90deg); }
-          &.SE { transform: rotate(135deg); }
-          &.S  { transform: rotate(180deg); }
-          &.SW { transform: rotate(225deg); }
-          &.W  { transform: rotate(270deg); }
-          &.NW { transform: rotate(315deg); }
+          position: relative;
+          width: 4px;
+          border-radius: 2px;
+          height: calc(60% + 6px);
+          bottom: calc(50% + 3px);
         }
-      } /* .square */
-    } /* .row */
+
+        &.NE, &.SE, &.SW, &.NW {
+          .linkLine {
+            height: calc(85% + 6px);
+            bottom: calc(71% + 3px);
+          }
+        }
+
+        &.N, &.NE, &.E, &.SE, &.S, &.SW, &.W, &.NW {
+          visibility: visible;
+        }
+
+        &.N  { transform: rotate(  0deg); }
+        &.NE { transform: rotate( 45deg); }
+        &.E  { transform: rotate( 90deg); }
+        &.SE { transform: rotate(135deg); }
+        &.S  { transform: rotate(180deg); }
+        &.SW { transform: rotate(225deg); }
+        &.W  { transform: rotate(270deg); }
+        &.NW { transform: rotate(315deg); }
+      }
+    } /* .square */
   } /* .grid */
 } /* .SequenciumCanvas */
 

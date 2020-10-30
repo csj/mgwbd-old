@@ -15,11 +15,6 @@ import React, { useState } from 'react';
 const SequenciumCanvas = props => {
   const [moveFrom, setMoveFrom] = useState({}); // {i: 1, j: 1}
 
-  // refactor TODO:
-  //   show circles (maxScores) at the end
-  //   show connecting lines
-  //   allow drag-to-connect
-
   const activePlayerIndex = props.gameState.activePlayerIndex;
   const players = props.gameSettings.players;
   const activePlayer = players[activePlayerIndex];
@@ -89,19 +84,47 @@ const SequenciumCanvas = props => {
   };
 
   const getSquareStyle = data => {
+    return PlayerHelper.getStyleClass(
+        data ? players[data.playerIndex] : activePlayer);
+  };
+
+  const getSquareOverlay = data => {
+    let classes = [];
+    return (
+      <div className='overlay'>
+        {renderConnectingLine(data)}
+        {renderMaxScoreCircle(data)}
+      </div>
+    );
+  };
+
+  const renderConnectingLine = data => {
+    return (
+      <div className={`overlay linkLineHolder ${data && data.from}`}>
+        <div className='linkLine' />
+      </div>
+    );
+  };
+
+  const renderMaxScoreCircle = data => {
     if (!data) {
-      return PlayerHelper.getStyleClass(activePlayer);
+      return;
     }
-    return PlayerHelper.getStyleClass(players[data.playerIndex]);
+    let maxScore = maxScores[data.playerIndex];
+    return data.value === maxScore ?
+        <div className='overlay maxScore' /> : null;
   };
 
   const isSquareTouchable = (data, i, j) => {
-    return validFrom[i][j] || validTo[i][j];
+    return validTo[i][j];
   };
 
   const isHighlighted = (data, i, j) => {
     let lastMove = props.gameState.lastMove;
     return lastMove.row === i && lastMove.col === j;
+  };
+
+  const isCircled = (data, i, j) => {
   };
 
   const onSquareTouch = (data, i, j) => {
@@ -118,9 +141,10 @@ const SequenciumCanvas = props => {
       <div className='SequenciumCanvas'>
         <Grid className={`grid gamePhase${props.gamePhase}`}
             grid={grid}
-            getSquareStyle={getSquareStyle}
+            squareStyle={getSquareStyle}
             isTouchable={isSquareTouchable}
             isHighlighted={isHighlighted}
+            squareOverlay={getSquareOverlay}
             onTouch={onSquareTouch} />
       </div>
     );
