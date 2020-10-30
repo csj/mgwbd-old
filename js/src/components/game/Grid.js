@@ -49,29 +49,23 @@ const Grid = forwardRef((props, ref) => {
     );
   };
 
+  const getLineStyle = lineData => {
+    let url = GamePieceHelper.getBoardPiece('line', lineData);
+    return { backgroundImage: `url(${url})` };
+  };
+
   const renderUnderlay = () => {
     let numRows = props.grid.length;
     let numCols = props.grid.length;
-    let line = GamePieceHelper.getBoardPiece('line', null);
     return (
       <div className='underlay'>
-        <div className='gridLines vertical'>
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-        </div>
         <div className='gridLines horizontal'>
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
-          <div className='line' style={{backgroundImage: `url(${line})`}} />
+          {new Array(numRows + 1).fill().map((_, i) =>
+              <div className='line' style={getLineStyle(['h', i])} />)}
+        </div>
+        <div className='gridLines vertical'>
+          {new Array(numCols + 1).fill().map((_, i) =>
+              <div className='line' style={getLineStyle(['v', i])} />)}
         </div>
       </div>
     );

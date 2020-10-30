@@ -26,10 +26,10 @@ $_gridLineWidth: 10px;
       .line {
         height: $_gridLineWidth;
         width: 100%;
-        background-size: contain;
+        background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
-        opacity: 0.8;
+        opacity: 0.75;
       }
 
     }
@@ -47,7 +47,6 @@ $_gridLineWidth: 10px;
           '.touchTarget.clickable:hover', 'background',
           'radial-gradient(COLOR70, #ffffff00 75%)');
 
-      border: 1px solid black; /* TODO remove this */
       flex: 1 1;
       margin: 2px;
       position: relative;

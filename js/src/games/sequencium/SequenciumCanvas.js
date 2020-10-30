@@ -1,5 +1,4 @@
 import './SequenciumCanvas.scss';
-import grid66 from 'images/grid-6-6.png';
 import Grid from 'components/game/Grid';
 import PlayerHelper from 'players/PlayerHelper';
 import React, { useState } from 'react';
@@ -89,7 +88,6 @@ const SequenciumCanvas = props => {
   };
 
   const getSquareOverlay = data => {
-    let classes = [];
     return (
       <div className='overlay'>
         {renderConnectingLine(data)}
@@ -124,9 +122,6 @@ const SequenciumCanvas = props => {
     return lastMove.row === i && lastMove.col === j;
   };
 
-  const isCircled = (data, i, j) => {
-  };
-
   const onSquareTouch = (data, i, j) => {
     if (data) {
       setMoveFrom({i, j});
@@ -136,7 +131,6 @@ const SequenciumCanvas = props => {
   };
 
   const render = () => {
-    let gridBgUrl = grid66;
     return (
       <div className='SequenciumCanvas'>
         <Grid className={`grid gamePhase${props.gamePhase}`}
