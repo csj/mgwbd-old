@@ -1,6 +1,7 @@
 import './NeighborsCanvas.scss';
 import Die from 'components/game/Die';
 import GamePhase from 'games/GamePhase';
+import Grid from 'components/game/Grid';
 import PlayerHelper from 'players/PlayerHelper';
 import React, {useEffect, useState} from 'react';
 
@@ -17,47 +18,6 @@ import React, {useEffect, useState} from 'react';
  * },
  */
 
-
-
-// TODO move to its own file
-const Grid = props => {
-  const [isClick, setIsClick] = useState(true);
-
-  const renderSquare = (squareData, i, j) => {
-    let playerStyle = PlayerHelper.getStyleClass(props.player);
-    let highlight = <div className='highlight' />;
-    let touchTarget = <div
-        className={`touchTarget ${isClick ? 'clickable ' : ''}`}
-        onTouchStart={() => setIsClick(false)}
-        onClick={() => props.onTouch(squareData, i, j)} />;
-    return (
-      <div className={`square ${playerStyle}`} key={`row${i}col${j}`}>
-        {props.isHighlighted && props.isHighlighted(squareData, i, j) ?
-            highlight : null}
-        <div className='value'>
-          {squareData && squareData.value}
-        </div>
-        {props.isTouchable && props.isTouchable(squareData) ? 
-            touchTarget : null}
-      </div>
-    );
-  };
-
-  const renderRow = (rowData, i) => {
-    return (
-      <div className='row' key={`row${i}`}>
-        {rowData.map((row, j) => renderSquare(row, i, j))}
-      </div>
-    );
-  };
-
-  return (
-    <div className={`Grid ${props.className}`}>
-      {props.grid.map(renderRow)}
-      {props.children}
-    </div>
-  );
-};
 
 const NeighborsCanvas = props => {
   const gamePhase = props.gamePhase;
@@ -191,6 +151,9 @@ const NeighborsCanvas = props => {
   };
 
   const renderGrid = (player, playerIndex) => {
+    // TODO:
+    //   add an extra hashparam for grid, so that the lines aren't all same
+    //   add color to the grid, perhaps via a class passed in, shadow, etc
     return (
       <div 
           key={playerIndex}
