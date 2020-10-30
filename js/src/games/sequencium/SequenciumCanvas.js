@@ -87,7 +87,7 @@ const SequenciumCanvas = props => {
         data ? players[data.playerIndex] : activePlayer);
   };
 
-  const getSquareOverlay = data => {
+  const renderSquareOverlay = data => {
     return (
       <div className='overlay'>
         {renderConnectingLine(data)}
@@ -138,7 +138,7 @@ const SequenciumCanvas = props => {
             squareStyle={getSquareStyle}
             isTouchable={isSquareTouchable}
             isHighlighted={isHighlighted}
-            squareOverlay={getSquareOverlay}
+            renderSquareOverlay={renderSquareOverlay}
             onTouch={onSquareTouch} />
       </div>
     );

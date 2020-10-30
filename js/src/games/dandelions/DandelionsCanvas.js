@@ -1,7 +1,8 @@
 import './DandelionsCanvas.scss';
-import GamePieceHelper from 'games/GamePieceHelper';
+import GamePiece from 'components/game/GamePiece';
+import Grid from 'components/game/Grid';
 import PlayerHelper from 'players/PlayerHelper';
-import React from 'react';
+import React, {useState} from 'react';
 import dandelionsCompass from './images/dandelions-compass.png';
 import { SquareStates, AllDirections } from './Constants.js';
 
@@ -19,89 +20,52 @@ const Move = Object.freeze({
  *   gamePhase: Object
  *   canMove: boolean, Whether this client may make a move now.
  */
-class DandelionsCanvas extends React.Component {
+const DandelionsCanvas = props => {
 
-  constructor() {
-    super();
-    this.state = {
-      hover: {}, // { grid: { row: 1, col: 1} } or { compass: 'N' }
-    };
-  }
+  // { grid: { row: 1, col: 1} } or { compass: 'N' }
+  const [hover, setHover] = useState({});
 
-  onChooseMove(move) {
-    this.props.onChooseMove(move);
-  }
+  const gameState = props.gameState;
+  const dandelionPlayer = props.gameSettings.players[0];
+  const windPlayer = props.gameSettings.players[1];
 
-  getSquareImg(squareState, row, col) {
-    let style = this.props.gameSettings.players[0].style;
-    let type;
-    switch (squareState) {
-      case SquareStates.SEED:
-        type = 'dot';
-        break;
-      case SquareStates.FLWR:
-        type = 'asterisk';
-        break;
-      default:
-        return;
-    }
-    return GamePieceHelper.getGamePiece(style, type, [row, col]);
-  }
-
-  getCompassImg(direction) {
-    let style = this.props.gameSettings.players[1].style;
-    return GamePieceHelper.getGamePiece(style, 'dot', direction);
-  }
-
-  renderGridSquare(data, rowIndex, colIndex) {
-    let highlight = false;
-    let isClickable =
-        this.props.canMove &&
-        this.props.gameState.activePlayerIndex === 0 &&
-        data !== SquareStates.FLWR;
-    if (this.props.gameState.lastMove &&
-        this.props.gameState.lastMove.grid[rowIndex][colIndex] != null) {
-      data = this.props.gameState.lastMove.grid[rowIndex][colIndex];
-      highlight = true;
-    }
-    if (isClickable &&
-        this.state.hover.grid &&
-        this.state.hover.grid.row === rowIndex &&
-        this.state.hover.grid.col === colIndex) {
-      data = SquareStates.FLWR;
-      highlight = true;
-    }
-    let url = this.getSquareImg(data, rowIndex, colIndex);
-    let selection = {row: rowIndex, col: colIndex};
-    let touchTarget = <div className='clickable'
-        onMouseOver={() => this.setState({hover: {grid: selection}})}
-        onMouseOut={() => this.setState({hover: {}})}
-        onClick={() => 
-            isClickable &&
-            this.onChooseMove(Move.grid(rowIndex, colIndex))} />;
-
+  const isSquareTouchable = data => {
     return (
-      <div className='square' key={`r${rowIndex}c${colIndex}`}>
-        {highlight ? <div className='highlight' /> : null}
-        <div className='image' style={{backgroundImage: `url(${url})`}} />
-        {isClickable ? touchTarget : null}
-      </div>
+      props.canMove &&
+      gameState.activePlayerIndex === 0 &&
+      data !== SquareStates.FLWR
     );
-  }
+  };
 
-  renderGridRow(row, rowIndex) {
+  const isHighlighted = (data, i, j) => {
     return (
-      <div className='row' key={rowIndex}>
-        {row.map(
-            (data, colIndex) =>
-                this.renderGridSquare(data, rowIndex, colIndex))}
-      </div>
+      gameState.lastMove &&
+      gameState.lastMove.grid &&
+      gameState.lastMove.grid[i][j] != null
     );
-  }
+  };
 
-  renderCompassPoint(keyPrefix, direction, isHighlighted) {
-    let url = this.getCompassImg(direction);
-    let point = <div className='compassPoint' style={{backgroundImage: `url(${url})`}} />;
+  const onSquareTouch = (data, i, j) => {
+    props.onChooseMove(Move.grid(i, j));
+  };
+
+  const renderSquareValue = (data, i, j) => {
+    if (data) {
+      let pieceType = data === SquareStates.FLWR ? 'asterisk' : 'dot';
+      return (
+        <GamePiece
+            type={pieceType} player={dandelionPlayer} hashMaterial={[i, j]} />
+      );
+    }
+    return null;
+  };
+
+  const renderCompassPoint = (keyPrefix, direction, isHighlighted) => {
+    let point = (
+      <GamePiece
+          className='compassPoint' type='dot' player={windPlayer}
+          hashMaterial={direction} />
+    );
     let highlight = <div className='compassPoint highlight' />;
 
     return (
@@ -111,12 +75,12 @@ class DandelionsCanvas extends React.Component {
         {isHighlighted ? highlight : point}
       </div>
     );
-  }
+  };
 
-  renderCompassTouchTarget(direction) {
-    if (this.props.gameState.compass.directions.indexOf(direction) >= 0 ||
-        this.props.gameState.activePlayerIndex !== 1 ||
-        !this.props.canMove) {
+  const renderCompassTouchTarget = direction => {
+    if (gameState.compass.directions.indexOf(direction) >= 0 ||
+        gameState.activePlayerIndex !== 1 ||
+        !props.canMove) {
       return null;
     }
 
@@ -126,14 +90,14 @@ class DandelionsCanvas extends React.Component {
           className={`directionHolderInner dir${direction}`}>
         <div
             className='touchTarget'
-            onMouseOver={() => this.setState({hover: {compass: direction}})}
-            onMouseOut={() => this.setState({hover: {}})}
-            onClick={() => this.onChooseMove(Move.compass(direction))} />
+            onMouseOver={() => setHover({compass: direction})}
+            onMouseOut={() => setHover({})}
+            onClick={() => props.onChooseMove(Move.compass(direction))} />
       </div>
     );
-  }
+  };
 
-  renderCompass(gameState) {
+  const renderCompass = gameState => {
     let directions = gameState.compass.directions;
     let highlightLastTurn = null;
     let highlightHover = null;
@@ -141,31 +105,28 @@ class DandelionsCanvas extends React.Component {
       let compass = gameState.lastMove.compass;
       let direction = compass.directions.length && compass.directions[0];
       if (direction) {
-        highlightLastTurn = this.renderCompassPoint('last', direction, true);
+        highlightLastTurn = renderCompassPoint('last', direction, true);
       }
     }
-    if (this.state.hover.compass && this.props.canMove) {
-      highlightHover = this.renderCompassPoint(
-          'hover', this.state.hover.compass, true);
+    if (hover.compass && props.canMove) {
+      highlightHover = renderCompassPoint('hover', hover.compass, true);
     }
-    let windPlayerStyleClass =
-        PlayerHelper.getStyleClass(this.props.gameSettings.players[1]);
+    let windPlayerStyleClass = PlayerHelper.getStyleClass(windPlayer);
     return (
       <div className={`compass ${windPlayerStyleClass}`}>
         <div className='compassOverlay'
             style={{backgroundImage: `url(${dandelionsCompass})`}} />
         <div className='compassOverlay directionHolder'>
-          {directions.map(d => this.renderCompassPoint('used', d, false))}
+          {directions.map(d => renderCompassPoint('used', d, false))}
         </div>
         <div className='compassOverlay directionHolder'>
           {highlightLastTurn}
           {highlightHover}
-          {AllDirections.map(
-              d => this.renderCompassTouchTarget(d))}
+          {AllDirections.map(d => renderCompassTouchTarget(d))}
         </div>
       </div>
     )
-  }
+  };
 
   /**
    * props:
@@ -174,18 +135,23 @@ class DandelionsCanvas extends React.Component {
    *   gamePhase: Enum
    *   canMove: boolean
    */
-  render() {
-    let dandelionPlayerStyleClass =
-        PlayerHelper.getStyleClass(this.props.gameSettings.players[0]);
+  const render = () => {
+    let dandelionPlayerStyleClass = PlayerHelper.getStyleClass(dandelionPlayer);
     return (
       <div className='DandelionsCanvas'>
-        {this.renderCompass(this.props.gameState)}
-        <div className={`grid ${dandelionPlayerStyleClass}`}>
-          {this.props.gameState.grid.map(this.renderGridRow, this)}
-        </div>
+        {renderCompass(gameState)}
+        <Grid className='grid'
+            grid={gameState.grid}
+            squareStyle={() => dandelionPlayerStyleClass}
+            renderSquareValue={renderSquareValue}
+            isTouchable={isSquareTouchable}
+            isHighlighted={isHighlighted}
+            onTouch={onSquareTouch} />
       </div>
     );
-  }
+  };
+
+  return render();
 }
 
 

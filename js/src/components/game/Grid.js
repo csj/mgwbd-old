@@ -9,7 +9,8 @@ import React, {forwardRef, useState} from 'react';
  *   grid
  *   children
  *   squareStyle: function(squareData) => string
- *   squareOverlay: function(squareData) => <div />
+ *   renderSquareValue: function(squareData) => <div />
+ *   renderSquareOverlay: function(squareData) => <div />
  *   onTouch: function(squareData, rowIndex, colIndex)
  *   isHighlighted: function(squareData, rowIndex, colIndex)
  *   isTouchable: function(squareData, rowIndex, colIndex)
@@ -19,22 +20,24 @@ const Grid = forwardRef((props, ref) => {
 
   const renderSquare = (squareData, i, j) => {
     let squareStyle = props.squareStyle && props.squareStyle(squareData);
-    let overlay = props.squareOverlay && props.squareOverlay(squareData);
+    let value = squareData && squareData.value;
+    let renderedValue = props.renderSquareValue ?
+        props.renderSquareValue(squareData, i, j) : value;
+    let renderedOverlay =
+        props.squareOverlay && props.squareOverlay(squareData);
     let highlight = <div className='highlight' />;
-    let touchTarget = <div
-        className={`touchTarget ${isClick ? 'clickable ' : ''}`}
-        onTouchStart={() => setIsClick(false)}
-        onClick={() => props.onTouch(squareData, i, j)} />;
+    let touchTarget = (
+        <div
+            className={`touchTarget ${isClick ? 'clickable ' : ''}`}
+            onTouchStart={() => setIsClick(false)}
+            onClick={() => props.onTouch(squareData, i, j)} />
+    );
     return (
       <div className={`square ${squareStyle}`} key={`row${i}col${j}`}>
         {props.isHighlighted && props.isHighlighted(squareData, i, j) ?
             highlight : null}
-        <div className='value'>
-          {squareData && squareData.value}
-        </div>
-        <div className='overlay'>
-          {overlay}
-        </div>
+        <div className='value'>{renderedValue}</div>
+        <div className='overlay'>{renderedOverlay}</div>
         {props.isTouchable && props.isTouchable(squareData, i, j) ?
             touchTarget : null}
       </div>
@@ -61,11 +64,11 @@ const Grid = forwardRef((props, ref) => {
       <div className='underlay'>
         <div className='gridLines horizontal'>
           {new Array(numRows + 1).fill().map((_, i) =>
-              <div className='line' style={getLineStyle(['h', i])} />)}
+              <div key={i} className='line' style={getLineStyle(['h', i])} />)}
         </div>
         <div className='gridLines vertical'>
           {new Array(numCols + 1).fill().map((_, i) =>
-              <div className='line' style={getLineStyle(['v', i])} />)}
+              <div key={i} className='line' style={getLineStyle(['v', i])} />)}
         </div>
       </div>
     );

@@ -86,45 +86,6 @@
 
   .grid {
     flex-basis: 67%;
-    z-index: 1;
-
-    transition-duration: 0s;
-    @include playerStyles('.highlight', 'background', 'radial-gradient(COLOR80, #ffffff00 75%)');
-
-    .row {
-      display: flex;
-
-      .square {
-
-        background: white;
-        border: 1px solid black;
-        flex: 1 1;
-        margin: 2px;
-        position: relative;
-
-        &>* {
-          height: 100%;
-          width: 100%;
-          position: absolute;
-        }
-
-        &:after {
-          content: '';
-          display: block;
-          padding-top: 100%;
-        }
-
-        .image {
-          background-size: initial;
-          background-repeat: no-repeat;
-          background-position: center;
-        }
-
-        .clickable {
-          cursor: pointer;
-        }
-      }
-    }
   }
 }
 
