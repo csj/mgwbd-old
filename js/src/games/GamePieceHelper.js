@@ -79,6 +79,25 @@ import gamePieceDotE06 from 'images/game-piece-dot-E-06.png';
 import gamePieceDotE07 from 'images/game-piece-dot-E-07.png';
 import gamePieceDotE08 from 'images/game-piece-dot-E-08.png';
 import line01 from 'images/board/line-01.png';
+import line02 from 'images/board/line-02.png';
+import line03 from 'images/board/line-03.png';
+import line04 from 'images/board/line-04.png';
+import line05 from 'images/board/line-05.png';
+import line06 from 'images/board/line-06.png';
+import line07 from 'images/board/line-07.png';
+import line08 from 'images/board/line-08.png';
+import line09 from 'images/board/line-09.png';
+import line10 from 'images/board/line-10.png';
+import line11 from 'images/board/line-11.png';
+import line12 from 'images/board/line-12.png';
+import line13 from 'images/board/line-13.png';
+import line14 from 'images/board/line-14.png';
+import line15 from 'images/board/line-15.png';
+import line16 from 'images/board/line-16.png';
+import line17 from 'images/board/line-17.png';
+import line18 from 'images/board/line-18.png';
+import line19 from 'images/board/line-19.png';
+import line20 from 'images/board/line-20.png';
 
 
 const _imageLibrary = {
@@ -138,7 +157,11 @@ const _imageLibrary = {
     ],
   },
   'board': {
-    'line': [ line01, ],
+    'line': [
+      line01, line02, line03, line04, line05, line06, line07, line08, line09,
+      line10, line11, line12, line13, line14, line15, line16, line17, line18,
+      line19, line20,
+    ],
   },
 };
 
