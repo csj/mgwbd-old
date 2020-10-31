@@ -1,5 +1,6 @@
 @import 'styles/common.scss';
 @import 'styles/players.scss';
+@import 'components/game/GridExport.scss';
 
 
 .NeighborsCanvas {
@@ -7,7 +8,6 @@
   display: flex;
 
   .playerTab {
-
     height: 48px;
     width: 48px;
     padding: 2px;
@@ -44,9 +44,9 @@
 
   .gridContainer {
     @include playerStyles('.circle', 'border', '4px solid COLOR');
-    @include playerStyles('.square', 'border', '1px solid COLOR');
-    @include playerStyles(
-        '.highlight', 'background', 'radial-gradient(COLOR70, #ffffff00 75%)');
+    @include playerStyles('.grid', 'border', '1px solid COLOR');
+    @include playerStyles('.grid', 'box-shadow', 'inset 0 0 8px COLOR');
+
 
     opacity: 1;
 
@@ -68,66 +68,21 @@
     }
   }
 
+  .circles {
+    padding: 5px;
+    position: absolute;
+    top: $Grid_lineWidth / 2;
+    bottom: $Grid_lineWidth / 2;
+    left: $Grid_lineWidth / 2;
+    right: $Grid_lineWidth / 2;
+  }
+
   .circle {
     border-radius: 50%;
     position: absolute;
     top: 0;
     left: 0;
   }
-
-  .row {
-    display: flex;
-
-
-    .square {
-      @include playerStyles('.winner', 'border', '4px solid COLOR');
-      @include playerStyles('.value', 'color');
-      @include playerStyles(
-          '.highlight', 'background',
-          'radial-gradient(COLOR70, #ffffff00 75%)');
-      @include playerStyles(
-          '.touchTarget.clickable:hover', 'background',
-          'radial-gradient(COLOR70, #ffffff00 75%)');
-
-      background: white;
-      border: 1px solid black;
-      flex: 1 1;
-      margin: 2px;
-      position: relative;
-
-      &>* {
-        height: 100%;
-        width: 100%;
-        position: absolute;
-      }
-
-      .value {
-        align-items: center;
-        display: flex;
-        font-family: $font_family_game_number;
-        font-size: 42px;
-        justify-content: center;
-      }
-
-      .winner {
-        border-radius: 50%;
-        width: 80%;
-        height: 80%;
-        margin: 10%;
-      }
-
-      &:after {
-        content: '';
-        display: block;
-        padding-top: 100%;
-      }
-
-      .touchTarget {
-        cursor: pointer;
-      }
-    }
-  }
-
 } /* .NeighborsCanvas */
 
 

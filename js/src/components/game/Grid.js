@@ -14,6 +14,7 @@ import React, {forwardRef, useState} from 'react';
  *   onTouch: function(squareData, rowIndex, colIndex)
  *   isHighlighted: function(squareData, rowIndex, colIndex)
  *   isTouchable: function(squareData, rowIndex, colIndex)
+ *   hashMaterial: array
  */
 const Grid = forwardRef((props, ref) => {
   const [isClick, setIsClick] = useState(true);
@@ -54,7 +55,8 @@ const Grid = forwardRef((props, ref) => {
   };
 
   const getLineStyle = lineData => {
-    let url = GamePieceHelper.getBoardPiece(`line${lineData[0]}`, lineData);
+    let url = GamePieceHelper.getBoardPiece(
+        `line${lineData[0]}`, [props.hashMaterial, lineData]);
     return { backgroundImage: `url(${url})` };
   };
 

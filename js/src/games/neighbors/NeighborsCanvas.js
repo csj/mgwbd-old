@@ -151,9 +151,6 @@ const NeighborsCanvas = props => {
   };
 
   const renderGrid = (player, playerIndex) => {
-    // TODO:
-    //   add an extra hashparam for grid, so that the lines aren't all same
-    //   add color to the grid, perhaps via a class passed in, shadow, etc
     return (
       <div 
           key={playerIndex}
@@ -166,13 +163,16 @@ const NeighborsCanvas = props => {
         <Grid
             className='grid'
             grid={gameState.grids[playerIndex]}
-            player={player}
+            squareStyle={() => PlayerHelper.getStyleClass(player)}
             isTouchable={data => isSquareTouchable(playerIndex, data)}
             isHighlighted={
                 (data, i, j) => isSquareHighlighted(playerIndex, data, i, j)}
             onTouch={(data, i, j) => onSquareTouch(playerIndex, data, i, j)}
+            hashMaterial={[playerIndex]}
             >
-          {circlesData[playerIndex].map(renderCircle)}
+          <div className='circles'>
+            {circlesData[playerIndex].map(renderCircle)}
+          </div>
         </Grid>
       </div>
     );
@@ -204,8 +204,7 @@ const NeighborsCanvas = props => {
               sides={10}
               value={gameState.die.value}
               rolled={gamePhase !== GamePhase.PLAYING || gameState.die.rolled}
-              onTouch={rollDie}
-              />
+              onTouch={rollDie} />
         </div>
       </div>
       <div className='grids p-grid'>

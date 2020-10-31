@@ -1,8 +1,6 @@
 @import 'styles/common.scss';
 @import 'styles/players.scss';
-
-
-$_gridLineWidth: 10px;
+@import 'components/game/GridExport.scss';
 
 
 .Grid {
@@ -22,22 +20,22 @@ $_gridLineWidth: 10px;
 
       &.vertical {
         flex-direction: row;
-        top: $_gridLineWidth / 2;
-        bottom: $_gridLineWidth / 2;
+        top: $Grid_lineWidth / 2;
+        bottom: $Grid_lineWidth / 2;
 
         .line {
           height: 100%;
-          width: $_gridLineWidth;
+          width: $Grid_lineWidth;
         }
       }
 
       &.horizontal {
         flex-direction: column;
-        left: $_gridLineWidth / 2;
-        right: $_gridLineWidth / 2;
+        left: $Grid_lineWidth / 2;
+        right: $Grid_lineWidth / 2;
 
         .line {
-          height: $_gridLineWidth;
+          height: $Grid_lineWidth;
           width: 100%;
         }
       }
@@ -53,7 +51,7 @@ $_gridLineWidth: 10px;
   }
 
   .rows {
-    padding: $_gridLineWidth / 2;
+    padding: $Grid_lineWidth / 2;
   }
 
   .row {
