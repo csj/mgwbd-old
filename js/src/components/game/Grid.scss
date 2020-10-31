@@ -12,15 +12,18 @@ $_gridLineWidth: 10px;
 
     .gridLines {
       @include noAnimate();
-      width: 100%;
-      height: 100%;
       position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: flex;
-      flex-direction: column;
       justify-content: space-between;
 
       &.vertical {
         flex-direction: row;
+        top: $_gridLineWidth / 2;
+        bottom: $_gridLineWidth / 2;
 
         .line {
           height: 100%;
@@ -28,9 +31,18 @@ $_gridLineWidth: 10px;
         }
       }
 
+      &.horizontal {
+        flex-direction: column;
+        left: $_gridLineWidth / 2;
+        right: $_gridLineWidth / 2;
+
+        .line {
+          height: $_gridLineWidth;
+          width: 100%;
+        }
+      }
+
       .line {
-        height: $_gridLineWidth;
-        width: 100%;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -38,6 +50,10 @@ $_gridLineWidth: 10px;
       }
 
     }
+  }
+
+  .rows {
+    padding: $_gridLineWidth / 2;
   }
 
   .row {
