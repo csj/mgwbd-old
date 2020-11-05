@@ -66,17 +66,13 @@ const GamePlay = props => {
   };
 
   const renderGameMenuButtons = () => {
-    // TODO remove this button, it's just for experimentation
-    let botButton = <Button label='Bot' onClick={() => {
-      gameManager.pokeBot(gameState.activePlayerIndex);
-    }} />;
     let startGameButton = <Button label='Start Game' onClick={onStartGame} />;
     let quitGameButton = <Button label='Quit Game' onClick={onEndGame} />;
     if (gamePhase === GamePhase.PRE_GAME) {
       return <div>{startGameButton}</div>;
     }
     if (gamePhase === GamePhase.PLAYING) {
-      return <div>{quitGameButton}{botButton}</div>;
+      return <div>{quitGameButton}</div>;
     }
     if (gamePhase === GamePhase.POST_GAME) {
       return <div>{startGameButton}</div>;

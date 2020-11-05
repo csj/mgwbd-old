@@ -74,6 +74,9 @@ def start(gameKey, gameSettings):
   gameInstance.gamePhase = game.gamePhase
   gameInstance.gameState = game.gameState
   db.session.commit()
+
+  _checkBotAction(gameInstance, game)
+
   return _toDict(gameInstance)
 
 
@@ -88,7 +91,14 @@ def poll(gameKey, lastSeenMillis):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
     raise BadRequest('No such game instance.')
-  game = gameMap.get(gameInstance.gameType)()
+  game = _fromGameInstance(gameInstance)
+
+  if Invoker.receive(gameKey, gameInstance.gameType, game):
+    gameInstance.gameState = game.gameState
+    if game.gameEndCondition():  # TODO move this logic into game.action
+      gameInstance.gamePhase = GamePhase.POST_GAME.value
+    db.session.commit()
+
   modifiedMillis = _modifiedMillis(gameInstance)
   if modifiedMillis == lastSeenMillis:
     return {}
@@ -111,31 +121,14 @@ def action(gameKey, clientCode, action):
   if game.gameEndCondition():  # TODO move this logic into game.action
     gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
+
+  _checkBotAction(gameInstance, game)
+
   return _toDict(gameInstance)
 
 
 def pokeBot(gameKey, playerIndex):
-  gameInstance = GameInstance.get(db.session, gameKey=gameKey)
-  if not gameInstance:
-    raise BadRequest('No such game instance.')
-  if gameInstance.gamePhase != GamePhase.PLAYING.value:
-    raise BadRequest('Game instance is not currently playing.')
-
-  game = _fromGameInstance(gameInstance)
-  if game.gameState.get('activePlayerIndex') != playerIndex:
-    # TODO also support simultaneous-move games
-    return # Not error-worthy, but do nothing
-
-  invoker = Invoker(
-      gameInstance.gameType,
-      game.gameSettings.get('players')[playerIndex].get('name'))
-  invoker.action(game, playerIndex)
-
-  gameInstance.gameState = game.gameState
-  if game.gameEndCondition():  # TODO move this logic into game.action
-    gameInstance.gamePhase = GamePhase.POST_GAME.value
-  db.session.commit()
-  return _toDict(gameInstance)
+  return {}
 
 
 def _fromGameInstance(gameInstance):
@@ -179,4 +172,13 @@ def _toDict(gameInstance, extraKeys=None):
   result['lastSeenMillis'] = _modifiedMillis(gameInstance)
   result.update(extraKeys or {})
   return result
+
+
+def _checkBotAction(gameInstance, game):
+  nextPlayerIndex = game.gameState.get('activePlayerIndex')
+  if Invoker.isGameAwaitingBotAction(game, nextPlayerIndex):
+    invoker = Invoker(
+        gameInstance.gameType,
+        game.gameSettings.get('players')[nextPlayerIndex].get('owner'))
+    invoker.put(gameInstance.gameKey, nextPlayerIndex)
 
