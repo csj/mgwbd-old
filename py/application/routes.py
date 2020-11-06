@@ -1,4 +1,3 @@
-import boto3
 import os
 from flask import Blueprint, jsonify, redirect, render_template, request
 from flask_cors import cross_origin
@@ -7,12 +6,6 @@ from werkzeug.exceptions import BadRequest
 from application.games import driver
 from application import cron
 from application import oauth
-
-
-# TODO just testing to see if these will load.
-_lambdaClient = boto3.client('lambda', region_name='us-west-1')
-_sqsResource = boto3.resource('sqs', region_name='us-west-1')
-#_queue = _sqsResource.get_queue_by_name(QueueName=BOT_SQS_ARN.split(':')[-1])
 
 
 MAIN_GROUP = 'main'

@@ -157,7 +157,7 @@ class GameManager {
       let players = this.gameSettings.players || [];
       players.forEach(
         player => {
-          if (!player.owner) {
+          if (!player.owner && player.playerType === 'human') {
             PlayerHelper.claimPlayer(player);
             playersModified = true;
           }

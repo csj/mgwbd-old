@@ -1,6 +1,7 @@
 from .constants import GamePhase
 from application import db
 from application.games import archive, gameMap
+from application.games.mechanics.bots.invoker import Invoker
 from application.models import ArchivedGameInstance, GameInstance
 from werkzeug.exceptions import BadRequest
 import random
@@ -73,6 +74,9 @@ def start(gameKey, gameSettings):
   gameInstance.gamePhase = game.gamePhase
   gameInstance.gameState = game.gameState
   db.session.commit()
+
+  _checkBotAction(gameInstance, game)
+
   return _toDict(gameInstance)
 
 
@@ -87,7 +91,14 @@ def poll(gameKey, lastSeenMillis):
   gameInstance = GameInstance.get(db.session, gameKey=gameKey)
   if not gameInstance:
     raise BadRequest('No such game instance.')
-  game = gameMap.get(gameInstance.gameType)()
+  game = _fromGameInstance(gameInstance)
+
+  if Invoker.receive(gameKey, gameInstance.gameType, game):
+    gameInstance.gameState = game.gameState
+    if game.gameEndCondition():  # TODO move this logic into game.action
+      gameInstance.gamePhase = GamePhase.POST_GAME.value
+    db.session.commit()
+
   modifiedMillis = _modifiedMillis(gameInstance)
   if modifiedMillis == lastSeenMillis:
     return {}
@@ -107,9 +118,12 @@ def action(gameKey, clientCode, action):
   game = _fromGameInstance(gameInstance)
   game.action(action)
   gameInstance.gameState = game.gameState
-  if game.gameEndCondition():
+  if game.gameEndCondition():  # TODO move this logic into game.action
     gameInstance.gamePhase = GamePhase.POST_GAME.value
   db.session.commit()
+
+  _checkBotAction(gameInstance, game)
+
   return _toDict(gameInstance)
 
 
@@ -154,4 +168,13 @@ def _toDict(gameInstance, extraKeys=None):
   result['lastSeenMillis'] = _modifiedMillis(gameInstance)
   result.update(extraKeys or {})
   return result
+
+
+def _checkBotAction(gameInstance, game):
+  nextPlayerIndex = game.gameState.get('activePlayerIndex')
+  if Invoker.isGameAwaitingBotAction(game, nextPlayerIndex):
+    invoker = Invoker(
+        gameInstance.gameType,
+        game.gameSettings.get('players')[nextPlayerIndex].get('owner'))
+    invoker.put(gameInstance.gameKey, nextPlayerIndex)
 
