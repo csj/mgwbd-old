@@ -39,9 +39,6 @@ class Game():
     self._gamePhase = GamePhase.PLAYING.value
     self.nextPlayerTurn()
 
-  def canPlayerAct(self, playerIndex):
-    return self.gameState['activePlayerIndex'] == playerIndex
-
   def nextPlayerTurn(self):
     # By default, assumes two players alternating
     if 'gameEnd' in self._gameState and self._gameState['gameEnd']:

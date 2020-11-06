@@ -1,4 +1,4 @@
-#import boto3
+import boto3
 import os
 from flask import Blueprint, jsonify, redirect, render_template, request
 from flask_cors import cross_origin
@@ -7,6 +7,12 @@ from werkzeug.exceptions import BadRequest
 from application.games import driver
 from application import cron
 from application import oauth
+
+
+# TODO just testing to see if these will load.
+_lambdaClient = boto3.client('lambda')
+_sqsResource = boto3.resource('sqs')
+#_queue = _sqsResource.get_queue_by_name(QueueName=BOT_SQS_ARN.split(':')[-1])
 
 
 MAIN_GROUP = 'main'
@@ -113,12 +119,6 @@ def gameplay_action():
   result = driver.action(
       request.json['gameKey'], request.json['clientCode'],
       request.json['action'])
-  return jsonify(result)
-
-@main_blueprint.route('/gameplay/poke', methods=['POST'])
-@cross_origin()
-def gameplay_poke():
-  result = driver.pokeBot(request.json['gameKey'], request.json['playerIndex'])
   return jsonify(result)
 
 @main_blueprint.route('/admin/internal/environment')

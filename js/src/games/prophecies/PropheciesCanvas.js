@@ -24,6 +24,7 @@ const PropheciesCanvas = props => {
   const numRows = grid.length;
   const numCols = grid[0].length;
   const [targetSquare, setTargetSquare] = useState(null);
+  const [isClick, setIsClick] = useState(true);
 
   const onAction = value => {
     let [row, col] = targetSquare;

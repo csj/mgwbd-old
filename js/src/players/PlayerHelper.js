@@ -61,11 +61,9 @@ PlayerHelper.getAvatar = (playerOrStyle, flavor=AvatarType.DEFAULT) => {
 PlayerHelper.AvatarType = AvatarType;
 
 PlayerHelper.getType = player => {
+  // We only support human players for now.
   if (player.owner === PlayerHelper.clientCode) {
     return 'This Device';
-  }
-  if (player.playerType === 'bot') {
-    return 'Bot';
   }
   if (!player.owner) {
     return 'Open Seat';
