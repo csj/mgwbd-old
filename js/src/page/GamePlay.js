@@ -43,6 +43,7 @@ const GamePlay = props => {
         .filter(i => i.canonicalName.startsWith('players:'));
     return (
       <PlayerSettingsDialog
+          gameType={game && game.getCanonicalName()}
           settings={gameSettings}
           settingsConfig={filteredSettingsConfig}
           readOnly={gamePhase === GamePhase.PLAYING}

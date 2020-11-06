@@ -5,6 +5,7 @@ import InfoBubble from 'components/chrome/InfoBubble';
 import LabelValue from 'components/chrome/LabelValue';
 import PlayerHelper from 'players/PlayerHelper';
 import React, {useEffect, useState} from 'react';
+import useXhr from 'components/http/useXhr';
 import {Accordion, AccordionTab} from 'primereact/accordion';
 import {Button} from 'primereact/button';
 import {InputText} from 'primereact/inputtext';
@@ -20,10 +21,12 @@ const playerWaiting = <InfoBubble
 
 const defaultNewPlayer = {
     'playerType': 'human', 'owner': null, 'name': 'Player 1', 'style': 'A'};
+const defaultPlayerName = i => `Player ${i + 1}`;
    
 
 /**
  * props:
+ *   gameType
  *   players
  *   allowedPlayerCounts
  *   onCommit(players)
@@ -32,6 +35,8 @@ const defaultNewPlayer = {
 const PlayerConfig = props => {
   const [editPlayerNum, setEditPlayerNum] = useState(null);
   const [editedName, setEditedName] = useState(null);
+  const botList = useXhr(
+      [], '/gameplay/settings/botlist', {gameType: props.gameType});
   let avatarPanelRef = null;
   let gameManager = new GameManager.Factory().create();
 
@@ -67,7 +72,7 @@ const PlayerConfig = props => {
     }
     for (let i = props.players.length; i < n; i++) {
       let style = availableStyles.shift() || defaultNewPlayer.style;
-      let name = `Player ${i + 1}`;
+      let name = defaultPlayerName(i);
       let player = {...defaultNewPlayer, name, style};
       PlayerHelper.claimPlayer(player);
       newPlayers.push(player);
@@ -90,12 +95,23 @@ const PlayerConfig = props => {
   };
 
   const onCommitToggleType = () => {
-    // if i don't own this player, own it
-    // if i do own this player, set it to null
+    // Three-way toggle path: This Device, Other Device, Bot
+
+    let isBotAllowed = botList.length > 0;
     let player = props.players[editPlayerNum];
-    PlayerHelper.isOwnedByMe(player) ?
-        PlayerHelper.unclaimPlayer(player) :
-        PlayerHelper.claimPlayer(player);
+
+    if (PlayerHelper.isOwnedByMe(player)) {
+      PlayerHelper.unclaimPlayer(player);
+    } else if (PlayerHelper.isUnowned(player) && !isBotAllowed) {
+      PlayerHelper.claimPlayer(player);
+      player.name = defaultPlayerName(editPlayerNum);
+    } else if (PlayerHelper.isUnowned(player) && isBotAllowed) {
+      PlayerHelper.setAsBot(player, botList[0]);
+    } else if (PlayerHelper.isBot(player)) {
+      PlayerHelper.claimPlayer(player);
+      player.name = defaultPlayerName(editPlayerNum);
+    }
+    setEditedName(player.name);
     props.onCommit && props.onCommit(props.players);
   };
 
@@ -115,17 +131,26 @@ const PlayerConfig = props => {
     );
   };
 
+  const renderName = (player, isEditable) => {
+    let content = <div>{player.name}</div>;
+    if (isEditable && PlayerHelper.isBot(player)) {
+      content = <div>(bot list){player.name}</div>; // TODO
+    } else if (isEditable) {
+      content = <InputText
+          value={editedName} onChange={e => setEditedName(e.target.value)} />
+    }
+    return (
+      <div className={`playerName ${PlayerHelper.getStyleClass(player)}`}>
+        {content}
+      </div>
+    );
+  };
+
   const renderEditablePlayer = (player, index) => {
     let avatarJsx = (
       <div
           className='avatar' style={avatarFor(player)}
           onClick={e => avatarPanelRef.toggle(e)} />
-    );
-    let nameJsx = (
-      <div className={`playerName ${PlayerHelper.getStyleClass(player)}`}>
-        <InputText
-            value={editedName} onChange={e => setEditedName(e.target.value)} />
-      </div>
     );
     let typeJsx = (
       <div className='type'>
@@ -134,20 +159,16 @@ const PlayerConfig = props => {
             onClick={() => onCommitToggleType()} />
       </div>
     );
-    return [avatarJsx, nameJsx, typeJsx];
+    return [avatarJsx, typeJsx];
   };
 
   const renderPlayer = (player, index) => {
     let editable = editPlayerNum === index;
     let avatarJsx = <div className='avatar' style={avatarFor(player)} />;
-    let nameJsx = (
-      <div className={`playerName ${PlayerHelper.getStyleClass(player)}`}>
-        <div>{player.name}</div>
-      </div>
-    );
+    let nameJsx = renderName(player, editable);
     let typeJsx = <div className='type'>{PlayerHelper.getType(player)}</div>;
     if (editable) {
-      [avatarJsx, nameJsx, typeJsx] = renderEditablePlayer(player, index);
+      [avatarJsx, typeJsx] = renderEditablePlayer(player, index);
     }
 
     return (

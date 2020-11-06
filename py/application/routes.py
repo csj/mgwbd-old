@@ -6,6 +6,7 @@ from werkzeug.exceptions import BadRequest
 from application.games import driver
 from application import cron
 from application import oauth
+from application.games.mechanics.bots import registry
 
 
 MAIN_GROUP = 'main'
@@ -78,6 +79,11 @@ def gameplay_setsettings():
   result = driver.setSettings(
       request.json['gameKey'], request.json['gameSettings'])
   return jsonify(result)
+
+@main_blueprint.route('/gameplay/settings/botlist')
+@cross_origin()
+def gameplay_settings_botlist():
+  return jsonify(registry.getList(request.args.get('gameType')))
 
 @main_blueprint.route('/gameplay/setphase', methods=['POST'])
 @cross_origin()

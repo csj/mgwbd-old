@@ -74,11 +74,18 @@ PlayerHelper.getType = player => {
 };
 
 
-PlayerHelper.clientCode = randomString();
-PlayerHelper.claimPlayer = player => player.owner = PlayerHelper.clientCode;
-PlayerHelper.unclaimPlayer = player => player.owner = null;
+const clientCode = randomString();
+const _oa = (player, ...mods) =>
+    Object.assign(player, {playerType: 'human'}, ...mods);
+
+
+PlayerHelper.clientCode = clientCode;
+PlayerHelper.claimPlayer = player => _oa(player, {owner: clientCode});
+PlayerHelper.unclaimPlayer = player => _oa(player, {owner: null});
+PlayerHelper.setAsBot = (player, bot) => _oa(player, {playerType: 'bot'}, bot);
 PlayerHelper.isOwnedByMe = player => player.owner === PlayerHelper.clientCode;
 PlayerHelper.isUnowned = player => player.owner === null;
+PlayerHelper.isBot = player => player.playerType === 'bot';
 
 
 export default PlayerHelper;

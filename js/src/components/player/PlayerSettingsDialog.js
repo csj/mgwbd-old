@@ -6,6 +6,7 @@ import React from 'react';
 
 /**
  * props:
+ *   gameType
  *   settings
  *   settingsConfig
  *   onSettingsChange
@@ -35,6 +36,7 @@ const PlayerSettingsDialog = props => {
       <PlayerConfig
           players={settings.players || []}
           allowedPlayerCounts={getAllowedPlayerCounts()}
+          gameType={props.gameType}
           readOnly={props.readOnly}
           onCommit={onCommit}
           />;

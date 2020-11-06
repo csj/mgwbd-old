@@ -93,7 +93,8 @@ def poll(gameKey, lastSeenMillis):
     raise BadRequest('No such game instance.')
   game = _fromGameInstance(gameInstance)
 
-  if Invoker.receive(gameKey, gameInstance.gameType, game):
+  invoker = Invoker(gameInstance.gameType, gameKey)
+  if invoker.receive(game):
     gameInstance.gameState = game.gameState
     if game.gameEndCondition():  # TODO move this logic into game.action
       gameInstance.gamePhase = GamePhase.POST_GAME.value
@@ -171,10 +172,6 @@ def _toDict(gameInstance, extraKeys=None):
 
 
 def _checkBotAction(gameInstance, game):
-  nextPlayerIndex = game.gameState.get('activePlayerIndex')
-  if Invoker.isGameAwaitingBotAction(game, nextPlayerIndex):
-    invoker = Invoker(
-        gameInstance.gameType,
-        game.gameSettings.get('players')[nextPlayerIndex].get('owner'))
-    invoker.put(gameInstance.gameKey, nextPlayerIndex)
+  invoker = Invoker(gameInstance.gameType, gameInstance.gameKey)
+  invoker.putIf(game)
 

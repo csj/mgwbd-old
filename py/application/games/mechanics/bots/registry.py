@@ -12,13 +12,18 @@ _REGISTRY = {
 
 
 def getList(gameName):
-  return _REGISTRY.get(gameName, [])
+  entries = _REGISTRY.get(gameName, [])
+  return [_sanitize(entry) for entry in entries]
 
 
 def getEntry(gameName, botOwner):
   return next(
       filter(
           lambda i: i['owner'] == botOwner,
-          getList(gameName)),
+          _REGISTRY.get(gameName, [])),
       None)
+
+
+def _sanitize(entry):
+  return {k: v for k, v in entry.items() if k in ['name', 'owner']}
 

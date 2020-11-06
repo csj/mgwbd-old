@@ -13,6 +13,7 @@
 
   @include desktop {
     max-height: 80%;
+    min-width: 600px;
   }
 } /* .PlayerSettingsDialog-dialogElement */
 

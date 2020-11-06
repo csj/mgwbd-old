@@ -40,7 +40,9 @@ class Game():
     self.nextPlayerTurn()
 
   def canPlayerAct(self, playerIndex):
-    return self.gameState['activePlayerIndex'] == playerIndex
+    return (
+        self.gameState['activePlayerIndex'] == playerIndex and
+        self.gamePhase == GamePhase.PLAYING.value)
 
   def nextPlayerTurn(self):
     # By default, assumes two players alternating
