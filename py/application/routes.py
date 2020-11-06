@@ -10,8 +10,8 @@ from application import oauth
 
 
 # TODO just testing to see if these will load.
-_lambdaClient = boto3.client('lambda')
-_sqsResource = boto3.resource('sqs')
+_lambdaClient = boto3.client('lambda', region_name='us-west-1')
+_sqsResource = boto3.resource('sqs', region_name='us-west-1')
 #_queue = _sqsResource.get_queue_by_name(QueueName=BOT_SQS_ARN.split(':')[-1])
 
 
