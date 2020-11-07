@@ -8,6 +8,7 @@ import React, {useEffect, useState} from 'react';
 import useXhr from 'components/http/useXhr';
 import {Accordion, AccordionTab} from 'primereact/accordion';
 import {Button} from 'primereact/button';
+import {Dropdown} from 'primereact/dropdown';
 import {InputText} from 'primereact/inputtext';
 import {OverlayPanel} from 'primereact/overlaypanel';
 
@@ -35,6 +36,7 @@ const defaultPlayerName = i => `Player ${i + 1}`;
 const PlayerConfig = props => {
   const [editPlayerNum, setEditPlayerNum] = useState(null);
   const [editedName, setEditedName] = useState(null);
+  const [editedOwner, setEditedOwner] = useState(null);
   const botList = useXhr(
       [], '/gameplay/settings/botlist', {gameType: props.gameType});
   let avatarPanelRef = null;
@@ -81,6 +83,15 @@ const PlayerConfig = props => {
     props.onCommit && props.onCommit(newPlayers);
   };
 
+  const onCommitBotType = botType => {
+    let botData = botList.find(el => el.owner === botType);
+    let player = props.players[editPlayerNum];
+    PlayerHelper.setAsBot(player, botData);
+    setEditedName(player.name);
+    setEditedOwner(player.owner);
+    props.onCommit && props.onCommit(props.players);
+  };
+
   const onCommitStyle = style => {
     props.players[editPlayerNum].style = style;
     props.onCommit && props.onCommit(props.players);
@@ -112,6 +123,7 @@ const PlayerConfig = props => {
       player.name = defaultPlayerName(editPlayerNum);
     }
     setEditedName(player.name);
+    setEditedOwner(player.owner);
     props.onCommit && props.onCommit(props.players);
   };
 
@@ -134,10 +146,15 @@ const PlayerConfig = props => {
   const renderName = (player, isEditable) => {
     let content = <div>{player.name}</div>;
     if (isEditable && PlayerHelper.isBot(player)) {
-      content = <div>(bot list){player.name}</div>; // TODO
+      content = <Dropdown
+          optionLabel='name'
+          optionValue='owner'
+          value={editedOwner}
+          options={botList}
+          onChange={e => onCommitBotType(e.value)} />;
     } else if (isEditable) {
       content = <InputText
-          value={editedName} onChange={e => setEditedName(e.target.value)} />
+          value={editedName} onChange={e => setEditedName(e.target.value)} />;
     }
     return (
       <div className={`playerName ${PlayerHelper.getStyleClass(player)}`}>
@@ -192,6 +209,7 @@ const PlayerConfig = props => {
                 let val = editable ? null : index;
                 setEditPlayerNum(val);
                 setEditedName(val !== null ? props.players[val].name : null);
+                setEditedOwner(val !== null ? props.players[val].owner : null);
               }} />
           {avatarJsx}
           <div className='spacer'>
