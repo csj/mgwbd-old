@@ -37,6 +37,8 @@ const PlayerConfig = props => {
   const [editPlayerNum, setEditPlayerNum] = useState(null);
   const [editedName, setEditedName] = useState(null);
   const [editedOwner, setEditedOwner] = useState(null);
+  const editPlayer = editPlayerNum !== null ?
+      props.players[editPlayerNum] : null;
   const botList = useXhr(
       [], '/gameplay/settings/botlist', {gameType: props.gameType});
   let avatarPanelRef = null;
@@ -127,18 +129,20 @@ const PlayerConfig = props => {
     props.onCommit && props.onCommit(props.players);
   };
 
-  const avatarFor = (playerOrStyle) => {
-    let img = PlayerHelper.getAvatar(playerOrStyle);
+  const avatarFor = player => {
+    let img = PlayerHelper.getAvatar(player);
     return { backgroundImage: `url(${img})` };
   };
 
   const renderAvatarSelector = () => {
     let styles = PlayerHelper.getAllStyles();
+    let playerType = editPlayer ? editPlayer.playerType : null;
     return (
       <OverlayPanel ref={el => avatarPanelRef = el}>
-        {styles.map(s => <div
-            className='avatar avatarChoice' key={s} style={avatarFor(s)}
-            onClick={() => onCommitStyle(s)} /> )}
+        {styles.map(style => <div
+            className='avatar avatarChoice' key={style}
+            style={avatarFor({style, playerType})}
+            onClick={() => onCommitStyle(style)} /> )}
       </OverlayPanel>
     );
   };

@@ -46,10 +46,13 @@ const Icons = props => {
   const renderPlayerIcons = () => {
     return (
       <Card childrenPadded header='Player avatars'>
-        {'ABCDE'.split('').map(i =>
-          <div key={i}>
-            <img src={PlayerHelper.getAvatar(i)} alt='avatar' />
-            <img src={PlayerHelper.getAvatar(i, 1)} alt='avatar' />
+        {'ABCDE'.split('').map(style =>
+          <div key={style}>
+            <img src={PlayerHelper.getAvatar({style})} alt='avatar' />
+            <img src={PlayerHelper.getAvatar({style}, 1)} alt='avatar' />
+            <img
+                src={PlayerHelper.getAvatar({style, playerType: 'bot'})}
+                alt='avatar' />
           </div>
         )}
       </Card>
