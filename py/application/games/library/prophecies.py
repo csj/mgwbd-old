@@ -18,13 +18,6 @@ Example actions:
 class Prophecies(Game):
 
   @classmethod
-  def getDefaultPlayerConfig(cls):
-    return [
-      {'playerType': 'human', 'owner': None, 'name': 'Player 1', 'style': 'A'},
-      {'playerType': 'bot', 'owner': 'prophecies-random-bot', 'name': 'Random Bot', 'style': 'E'},
-    ]
-
-  @classmethod
   def getSettingsConfig(cls):
     return [
       {
