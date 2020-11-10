@@ -6,7 +6,7 @@ import os
 
 BOT_SQS_ARN = os.environ.get('BOT_SQS_ARN', None)
 _boto3Region = 'us-west-1'
-_defaultDelaySeconds = 1
+_defaultDelaySeconds = 0
 
 _lambdaClient = boto3.client('lambda', region_name=_boto3Region)
 _sqsResource = boto3.resource('sqs', region_name=_boto3Region)
