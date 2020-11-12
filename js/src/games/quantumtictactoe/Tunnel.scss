@@ -1,0 +1,69 @@
+@import 'styles/common.scss';
+@import 'styles/players.scss';
+
+
+$_particleSizePx: 58px;
+$_resolvingColor: #dddddd;
+
+
+.Tunnel {
+  @include playerStyles('.lineInner', 'border', '2px solid COLOR');
+  @include playerStyles('.particle', 'color');
+  @include playerStyles('.particle.highlight', 'border', '4px dashed COLOR');
+
+  pointer-events: none;
+
+  &.resolving {
+    @include playerStyles('.particle3', 'color', 'COLOR');
+
+    .particle {
+      color: $_resolvingColor;
+      &.highlight {
+        border: 4px dashed $_resolvingColor;
+      }
+    }
+
+    .lineInner {
+      border: 2px solid $_resolvingColor;
+    }
+
+    .particle3 {
+      visibility: visible;
+      z-index: 1;
+    }
+  }
+
+  .particle {
+    position: absolute;
+    line-height: 0;
+    font-size: $_particleSizePx - 12px;
+    width: $_particleSizePx;
+    height: $_particleSizePx;
+    text-align: center;
+
+    &.highlight {
+      position: absolute;
+      border-radius: 50%;
+    }
+  }
+
+  .particle3 {
+    visibility: hidden;
+  }
+
+  .line {
+    position: absolute;
+    transform-origin: top left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0ms;
+
+    .lineInner {
+      margin: 20px 0;
+      flex-grow: 1;
+      position: relative;
+    }
+  }
+}

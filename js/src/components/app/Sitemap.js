@@ -35,6 +35,7 @@ const NAV_LINKS = Object.freeze([
       makeGamePage('sequencium'),
       makeGamePage('prophecies'),
       makeGamePage('neighbors'),
+      makeGamePage('quantumtictactoe'),
     ],
   },
   {

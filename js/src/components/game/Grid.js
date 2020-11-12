@@ -6,6 +6,7 @@ import React, {forwardRef, useState} from 'react';
 /**
  * props:
  *   className
+ *   lineClassName
  *   grid
  *   children
  *   squareStyle: function(squareData) => string
@@ -63,15 +64,20 @@ const Grid = forwardRef((props, ref) => {
   const renderUnderlay = () => {
     let numRows = props.grid.length;
     let numCols = props.grid[0].length;
+    let lineClassName = `line ${props.lineClassName}`;
     return (
       <div className='underlay'>
         <div className='gridLines horizontal'>
           {new Array(numRows + 1).fill().map((_, i) =>
-              <div key={i} className='line' style={getLineStyle(['h', i])} />)}
+              <div
+                  key={i} className={lineClassName}
+                  style={getLineStyle(['h', i])} />)}
         </div>
         <div className='gridLines vertical'>
           {new Array(numCols + 1).fill().map((_, i) =>
-              <div key={i} className='line' style={getLineStyle(['v', i])} />)}
+              <div
+                  key={i} className={lineClassName}
+                  style={getLineStyle(['v', i])} />)}
         </div>
       </div>
     );

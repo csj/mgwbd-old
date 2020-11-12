@@ -1,14 +1,16 @@
 from .library.dandelions import Dandelions
 from .library.neighbors import Neighbors
 from .library.prophecies import Prophecies
+from .library.quantumtictactoe import QuantumTicTacToe
 from .library.sequencium import Sequencium
 
 
 _GAME_MAP = {
   'dandelions': Dandelions,
   'neighbors': Neighbors,
-  'sequencium': Sequencium,
   'prophecies': Prophecies,
+  'quantumtictactoe': QuantumTicTacToe,
+  'sequencium': Sequencium,
 }
 
 

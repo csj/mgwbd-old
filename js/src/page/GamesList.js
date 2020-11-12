@@ -33,6 +33,12 @@ const GAMES = [
     tagline: 'A numerical make-your-own sundae bar.',
     image: neighborsPreviewImg,
   },
+  {
+    name: 'Quantum Tic-Tac-Toe',
+    path: '/games/quantumtictactoe',
+    tagline: '?!?',
+    image: null,
+  },
 ];
 
 

@@ -1,0 +1,89 @@
+import './QuantumTicTacToeCanvas.scss';
+import Tunnel from './Tunnel';
+import Grid from 'components/game/Grid';
+import PlayerHelper from 'players/PlayerHelper';
+import React, {useState} from 'react';
+
+
+const symbols = ['X', 'O'];
+
+
+const QuantumTicTacToeCanvas = props => {
+  const gameState = props.gameState;
+  const gameSettings = props.gameSettings;
+  const players = gameSettings.players;
+  const gridRef = React.createRef();
+  const squares = gameState.squares;
+  const tunnels = gameState.tunnels;
+  const tunnelRefs = tunnels.map(t => [React.createRef(), React.createRef()]);
+
+  const onAction = value => {
+  };
+
+  const renderTunnelEndpoint = (squareIndex, tunnelIndex) => {
+    let key = `${tunnelIndex}-${squareIndex}`;
+    let tunnel = tunnels[tunnelIndex];
+    let tunnelRefPair = tunnelRefs[tunnelIndex];
+    let tunnelRef = tunnelRefPair[tunnel.squares.indexOf(squareIndex)];
+    return <div key={key} className='tunnelEndpoint' ref={tunnelRef} />;
+  };
+
+  const renderTunnel = (tunnel, i) => {
+    return (
+      <Tunnel
+          key={i}
+          containerRef={gridRef}
+          endpointRefs={tunnelRefs[i]}
+          playerStyle={PlayerHelper.getStyleClass[players[tunnel.owner]]}
+          resolvePct={null}
+          symbol={symbols[tunnel.owner]}
+          highlight={false} />
+    );
+            
+  };
+
+  const renderSquareValue = (data, i, j) => {
+    // Square data types:
+    //   {status: 'occupied', owner: 1}, # owner is 0 or 1
+    //   {status: 'available', tunnels: []}, # list of tunnel indices
+    if (data.status === 'occupied') {
+      return (
+        <div className='squareValue'>{symbols[data.owner]}</div>
+      );
+    }
+    let squareIndex = 3 * i + j;
+    return (
+      <div className='squareValue'>
+        {data.tunnels.map(i => renderTunnelEndpoint(squareIndex, i))}
+      </div>
+    );
+  };
+
+  return (
+    <div className='QuantumTicTacToeCanvas'>
+      <Grid
+          ref={gridRef}
+          className='grid'
+          lineClassName='gridLine'
+          grid={[squares.slice(0, 3), squares.slice(3, 6), squares.slice(6, 9)]}
+          renderSquareValue={renderSquareValue}
+          >
+        {tunnels.map(renderTunnel)}
+      </Grid>
+ {/*
+ *   children
+ *   squareStyle: function(squareData) => string
+ *   renderSquareValue: function(squareData) => <div />
+ *   renderSquareOverlay: function(squareData) => <div />
+ *   onTouch: function(squareData, rowIndex, colIndex)
+ *   isHighlighted: function(squareData, rowIndex, colIndex)
+ *   isTouchable: function(squareData, rowIndex, colIndex)
+ *   hashMaterial: array
+ *   */}
+ 
+    </div>
+  );
+};
+
+
+export default QuantumTicTacToeCanvas;

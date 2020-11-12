@@ -1,0 +1,48 @@
+@import 'styles/common.scss';
+
+
+.Slider {
+  height: 24px;
+  border: 4px solid $color_primary;
+  width: 200px;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  @include shadow();
+
+  .background,
+  .foreground {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+  }
+
+  .background {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &>* {
+      margin: 8px;
+    }
+  }
+
+  .foreground {
+    display: flex;
+  }
+
+  .indicator {
+    height: 48px;
+    width: 48px;
+    border: 2px solid $color_primary;
+    border-radius: 50%;
+    background: $color_secondary;
+    position: relative;
+    margin: -24px;
+    @include shadow();
+  }
+
+} /* .Slider */
+
