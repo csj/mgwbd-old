@@ -297,20 +297,22 @@ const QuantumTicTacToeCanvas = props => {
 
   return (
     <div className='QuantumTicTacToeCanvas'>
-      <Grid
-          ref={setGridRef}
-          className='grid'
-          lineClassName='gridLine'
-          grid={[squares.slice(0, 3), squares.slice(3, 6), squares.slice(6, 9)]}
-          renderSquareValue={renderSquareValue}
-          squareStyle={getSquareStyle}
-          isHighlighted={isSquareHighlighted}
-          isTouchable={isSquareTouchable}
-          onTouch={onSquareTouch}>
-        {tunnels.map(renderTunnel)}
-        {selectedSquare !== null ? renderSelection() : null}
-        {renderWinPatterns()}
-      </Grid>
+      <div className='gridContainer'>
+        <Grid
+            ref={setGridRef}
+            className='grid'
+            lineClassName='gridLine'
+            grid={[squares.slice(0, 3), squares.slice(3, 6), squares.slice(6, 9)]}
+            renderSquareValue={renderSquareValue}
+            squareStyle={getSquareStyle}
+            isHighlighted={isSquareHighlighted}
+            isTouchable={isSquareTouchable}
+            onTouch={onSquareTouch}>
+          {tunnels.map(renderTunnel)}
+          {selectedSquare !== null ? renderSelection() : null}
+          {renderWinPatterns()}
+        </Grid>
+      </div>
       <div className='controls'>
         {selectedSquare !== null ? renderCancelButton() : null}
         {gameState.cycle ? renderSlider() : null}

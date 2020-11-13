@@ -1,5 +1,6 @@
 import React from 'react';
 
+// TODO Add QuantumTicTacToe instructions
 
 const instructionCards = [
   {

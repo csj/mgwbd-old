@@ -79,6 +79,8 @@ const Tunnel = props => {
     <div className={`
             Tunnel ${props.className}
             ${props.resolvePct !== null ? 'resolving' : null}
+            ${(particle1Style === null || particle2Style === null) ?
+                'hidden' : null}
         `}>
       <div
           className={`particle value ${props.highlight ? 'highlight' : null}`}
