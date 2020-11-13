@@ -17,8 +17,13 @@
 
   .gridContainer {
     position: relative;
-    flex-basis: 85%;
-    width: 85%;
+    flex-basis: 70%;
+    width: 90%;
+
+    @include desktop {
+      flex-basis: 85%;
+      width: 85%;
+    }
   }
 
   .squareValue {
@@ -44,19 +49,33 @@
   }
 
   .controls {
-    flex-basis: 15%;
+    flex-basis: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @include desktop {
+      flex-basis: 15%;
+    }
   }
 
   .sliderContainer {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 
     .slider {
-      margin-right: 16px;
+      margin-bottom: 32px;
+
+      @include desktop {
+        margin-bottom: 0;
+        margin-right: 16px;
+      }
+    }
+
+    @include desktop {
+      flex-direction: row;
     }
   }
 

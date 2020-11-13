@@ -4,8 +4,9 @@ import GameLookup from 'page/internal/GameLookup';
 import GamePlay from 'page/GamePlay';
 import GameTypeMap from 'games/GameTypeMap';
 import GamesList from 'page/GamesList';
-import JoinGame from 'page/JoinGame';
 import Icons from 'page/internal/Icons';
+import JoinGame from 'page/JoinGame';
+import Test from 'page/internal/Test';
 
 
 const makeGamePage = canonicalName => {
@@ -67,6 +68,12 @@ const NAV_LINKS = Object.freeze([
         label: 'Game Lookup',
         path: '/_i/gamelookup',
         component: GameLookup,
+      },
+      {
+        label: 'Test Page',
+        path: '/_i/testpage',
+        component: Test,
+        showIf: _ => false,
       },
     ],
   },

@@ -1,6 +1,6 @@
 import './Grid.scss';
 import GamePieceHelper from 'games/GamePieceHelper';
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useLayoutEffect, useState} from 'react';
 
 
 /**
@@ -19,6 +19,30 @@ import React, {forwardRef, useState} from 'react';
  */
 const Grid = forwardRef((props, ref) => {
   const [isClick, setIsClick] = useState(true);
+  const [gridWidthPct, setGridWidthPct] = useState(100);
+
+  if (!ref) {
+    ref = React.createRef();
+  }
+
+  useLayoutEffect(() => {
+    const calcGridWidthPct = () => {
+      if (ref.current) {
+        let gridBox = ref.current.getBoundingClientRect();
+        let containerHeight = ref.current.parentElement.clientHeight;
+        let containerWidth = ref.current.parentElement.clientWidth;
+        let heightRatio = gridBox.height / containerHeight;
+        let widthRatio = gridBox.width / containerWidth;
+        let bestSize = Math.min(
+            100 / Math.max(heightRatio, widthRatio, 1), 100);
+        setGridWidthPct(pct => pct * bestSize / 100);
+      }
+    };
+
+    window.addEventListener('resize', calcGridWidthPct);
+    calcGridWidthPct();
+    return () => window.removeEventListener('resize', calcGridWidthPct);
+  }, [ref]);
 
   const renderSquare = (squareData, i, j) => {
     let squareStyle = props.squareStyle && props.squareStyle(squareData);
@@ -84,7 +108,9 @@ const Grid = forwardRef((props, ref) => {
   };
 
   return (
-    <div className={`Grid ${props.className}`} ref={ref}>
+    <div
+        className={`Grid ${props.className}`} ref={ref}
+        style={{width: `${gridWidthPct}%`}}>
       {renderUnderlay()}
       <div className='rows'>
         {props.grid.map(renderRow)}
