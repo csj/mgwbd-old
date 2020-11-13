@@ -20,10 +20,6 @@ const Tunnel = props => {
   const [particle1Style, setParticle1Style] = useState(null);
   const [particle2Style, setParticle2Style] = useState(null);
   const [particle3Style, setParticle3Style] = useState(null);
-  console.log('renderTunnel');
-  console.log(props.containerBoundingClientRect);
-  console.log(props.boundingClientRects[0]);
-  console.log(props.boundingClientRects[1]);
 
   useEffect(() => {
     if (!props.boundingClientRects ||
@@ -36,7 +32,6 @@ const Tunnel = props => {
       setParticle2Style(null);
       return;
     }
-    console.log(props.boundingClientRects);
     let relRect = props.containerBoundingClientRect;
     let fromRect = props.boundingClientRects[0];
     let toRect = props.boundingClientRects[1];

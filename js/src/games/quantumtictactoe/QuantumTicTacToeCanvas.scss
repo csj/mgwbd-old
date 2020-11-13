@@ -4,6 +4,12 @@
 
 .QuantumTicTacToeCanvas {
 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+
   .gridLine:first-child,
   .gridLine:last-child {
     visibility: hidden;
@@ -11,6 +17,8 @@
 
   .grid {
     position: relative;
+    flex-basis: 85%;
+    width: 85%;
   }
 
   .squareValue {
@@ -25,6 +33,23 @@
   .tunnelEndpoint {
     width: 30%;
     height: 30%;
+  }
+
+  .controls {
+    flex-basis: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .sliderContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .slider {
+      margin-right: 16px;
+    }
   }
 
 } /* .QuantumTicTacToeCanvas */

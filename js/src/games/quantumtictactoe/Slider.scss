@@ -4,11 +4,12 @@
 .Slider {
   height: 24px;
   border: 4px solid $color_primary;
-  width: 200px;
+  width: 300px;
   border-radius: 8px;
   cursor: pointer;
   position: relative;
   @include shadow();
+  @include noAnimate();
 
   .background,
   .foreground {
@@ -23,9 +24,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: 0ms;
 
     &>* {
       margin: 8px;
+      transition: 0ms;
     }
   }
 
