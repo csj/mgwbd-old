@@ -189,5 +189,27 @@ class QuantumTicTacToe(Game):
     return False
 
   def gameEndCondition(self):
+    squares = self.gameState.get('squares')
+    triads = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]]
+    winners = set()
+    for triad in triads:
+      winners.add(self.isVictory(squares[i] for i in triad))
+    winners.remove(None)
+    if len(winners) == 1:
+      return {'win': winners.pop()}
+    if len(winners) == 2:
+      return {'draw': True}
+    numOwnedSquares = sum(1 if 'owner' in square else 0 for square in squares)
+    if numOwnedSquares >= 8:
+      return {'draw': True}
     return None
+
+  def isVictory(self, squares):
+    owners = set([s.get('owner') for s in squares])
+    return None if len(owners) > 1 else owners.pop()
+
+
+
 

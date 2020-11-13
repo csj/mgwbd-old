@@ -9,7 +9,7 @@ let particleSizePx = 64;
  * props:
  *   containerBoundingClientRect
  *   boundingClientRects - a 2-element array
- *   playerStyle
+ *   className
  *   resolvePct
  *   symbol
  *   highlight
@@ -45,7 +45,8 @@ const Tunnel = props => {
     let lineLeft = fromX - relRect.left - 2;
     let lineTop = fromY - relRect.top - 2;
     let lineLength = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
-    let lineAngle = dY ? -Math.atan(dX / dY) + mirror : -Math.PI / 2;
+    let lineAngle = dY ?
+        -Math.atan(dX / dY) + mirror : Math.sign(dX) * Math.PI / 2;
     setLineStyle({
       top: lineTop, left: lineLeft, height: lineLength,
       transform: `rotate(${lineAngle}rad)`,
@@ -76,7 +77,7 @@ const Tunnel = props => {
 
   return (
     <div className={`
-            Tunnel ${props.playerStyle}
+            Tunnel ${props.className}
             ${props.resolvePct !== null ? 'resolving' : null}
         `}>
       <div

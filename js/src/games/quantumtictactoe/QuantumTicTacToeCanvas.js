@@ -9,6 +9,19 @@ import {Button} from 'primereact/button';
 
 
 const symbols = ['X', 'O'];
+const winPatterns = [
+  {'dir': 'row', 'index': 0, 'squares': [0, 1, 2]},
+  {'dir': 'row', 'index': 1, 'squares': [3, 4, 5]},
+  {'dir': 'row', 'index': 2, 'squares': [6, 7, 8]},
+  {'dir': 'col', 'index': 0, 'squares': [0, 3, 6]},
+  {'dir': 'col', 'index': 1, 'squares': [1, 4, 7]},
+  {'dir': 'col', 'index': 2, 'squares': [2, 5, 8]},
+  {'dir': 'diag', 'index': 0, 'squares': [0, 4, 8]},
+  {'dir': 'diag', 'index': 1, 'squares': [2, 4, 6]},
+];
+
+
+// TODO display the tunnel endpoints in a nice way
 
 
 const QuantumTicTacToeCanvas = props => {
@@ -18,14 +31,16 @@ const QuantumTicTacToeCanvas = props => {
   const players = gameSettings.players;
   const squares = gameState.squares;
   const tunnels = gameState.tunnels;
-  const [gridRef, setGridRef] = useState(null);
   const tunnelEndpointRects = tunnels.map(t => [null, null]);
+  const [gridRef, setGridRef] = useState(null);
+  const [selectionRef, setSelectionRef] = useState(null);
   const [sliderValue, setSliderValue] = useState(50);
   const [cyclePrimaryTunnels, setCyclePrimaryTunnels] = useState({});  // tunnelIndex: 1 or 0
   const [cycleSecondaryTunnels, setCycleSecondaryTunnels] = useState({});  // tunnelIndex: 1 or 0
   const [selectedSquare, setSelectedSquare] = useState(null);
+  const [wins, setWins] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => {  // Calculate cycles.
     let squareSet = new Set(gameState.cycle || []);
     if (squareSet.size > 0) {
       let tunnelMap = {};
@@ -58,7 +73,7 @@ const QuantumTicTacToeCanvas = props => {
     }
   }, [gamePhase, gameState.cycle, tunnels]);
 
-  useEffect(() => {
+  useEffect(() => {  // Calculate secondary tunnels affected by cycles.
     let cycleAndSecondarySquares = {};
     let addedTunnels = {};
 
@@ -89,6 +104,16 @@ const QuantumTicTacToeCanvas = props => {
     }
   }, [tunnels, cyclePrimaryTunnels, cycleSecondaryTunnels]);
 
+  useEffect(() => {  // Calculate 3-in-a-row.
+    let validWinPatterns = winPatterns.map(pattern => {
+      let winner = squares.filter((s, i) => pattern.squares.indexOf(i) >= 0)
+          .map(s => s.owner)
+          .reduce((o, el) => el === o ? el : NaN);
+      return isNaN(winner) ? null : {...pattern, winner};
+    }).filter(w => w);
+    setWins(validWinPatterns);
+  }, [squares]);
+
   const onSquareTouch = (value, i, j) => {
     let squareIndex = 3 * i + j;
     if (selectedSquare === null) {
@@ -101,9 +126,6 @@ const QuantumTicTacToeCanvas = props => {
     }
     onAction({tunnel: {squares: [selectedSquare, squareIndex]}});
     setSelectedSquare(null);
-    // TODO show visual for selected square
-    // TODO show visual for 'last move' tunnel
-    // TODO detect endgame and display it
   };
 
   const onAction = value => {
@@ -128,7 +150,6 @@ const QuantumTicTacToeCanvas = props => {
     let value = direction === 1 ? sliderValue : 100 - sliderValue;
 
     if (tunnelIndex in cycleSecondaryTunnels) {
-    // TODO bug here
       value = direction === 1 ?
           Math.max(value, 100 - value, 67) :
           Math.min(value, 100 - value, 33);
@@ -162,10 +183,26 @@ const QuantumTicTacToeCanvas = props => {
           containerBoundingClientRect={
               gridRef && gridRef.getBoundingClientRect()}
           boundingClientRects={tunnelEndpointRects[i]}
-          playerStyle={PlayerHelper.getStyleClass(players[tunnel.owner])}
+          className={PlayerHelper.getStyleClass(players[tunnel.owner])}
           resolvePct={getResolvePct(i)}
           symbol={symbols[tunnel.owner]}
           highlight={isTunnelHighlighted(i)} />
+    );
+  };
+
+  const renderSelection = () => {
+    let clientRect = selectionRef && selectionRef.getBoundingClientRect();
+    let className = `
+        selection
+        ${PlayerHelper.getStyleClass(players[gameState.activePlayerIndex])}`;
+    return (
+      <Tunnel
+          containerBoundingClientRect={gridRef && gridRef.getBoundingClientRect()}
+          boundingClientRects={[clientRect, clientRect]}
+          className={className}
+          symbol={symbols[gameState.activePlayerIndex]}
+          resolvePct={null}
+          highlight={true} />
     );
   };
 
@@ -184,13 +221,15 @@ const QuantumTicTacToeCanvas = props => {
     //   {status: 'available', tunnels: []}, # list of tunnel indices
     if (data.status === 'occupied') {
       return (
-        <div className='squareValue'>{symbols[data.owner]}</div>
+        <div className='squareValue occupied'>{symbols[data.owner]}</div>
       );
     }
     let squareIndex = 3 * i + j;
     return (
       <div className='squareValue'>
         {data.tunnels.map(i => renderTunnelEndpoint(i, squareIndex))}
+        {selectedSquare === squareIndex ?
+            <div ref={setSelectionRef} /> : null}
       </div>
     );
   };
@@ -234,6 +273,21 @@ const QuantumTicTacToeCanvas = props => {
     gameState.lastMove.squares.indexOf(i * 3 + j) >= 0
   );
 
+  const renderWinPatterns = () => (
+    <div className='winPatterns'>
+      {wins.map((pattern, i) => {
+        let className =
+            PlayerHelper.getStyleClass(gameSettings.players[pattern.winner]);
+        return (
+          <div
+              key={i} className={`circleHolder ${className}`}>
+            <div className={`circle ${pattern.dir}-${pattern.index}`} />
+          </div>
+        );
+      })}
+    </div>
+  );
+
   const isTunnelHighlighted = tunnelIndex => (
       gameState.lastMove && gameState.lastMove.tunnel === tunnelIndex);
 
@@ -252,9 +306,10 @@ const QuantumTicTacToeCanvas = props => {
           squareStyle={getSquareStyle}
           isHighlighted={isSquareHighlighted}
           isTouchable={isSquareTouchable}
-          onTouch={onSquareTouch}
-          >
+          onTouch={onSquareTouch}>
         {tunnels.map(renderTunnel)}
+        {selectedSquare !== null ? renderSelection() : null}
+        {renderWinPatterns()}
       </Grid>
       <div className='controls'>
         {selectedSquare !== null ? renderCancelButton() : null}
