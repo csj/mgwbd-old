@@ -1,7 +1,6 @@
 
-const ConfigDevelopment = {
-  serverEndpoint: 'http://localhost:5000',
-  withCredentials: true,
+const ConfigProduction = {
+  serverEndpoint: '',
   clientFlagConfig: [
     {
       'canonicalName': 'showWipGames',
@@ -10,12 +9,14 @@ const ConfigDevelopment = {
       'defaultValue': false,
     },
   ],
-};
-
-
-const ConfigProduction = {
-  serverEndpoint: '',
 }
+
+
+const ConfigDevelopment = {
+  ...ConfigProduction,
+  serverEndpoint: 'http://localhost:5000',
+  withCredentials: true,
+};
 
 
 const Config = {
