@@ -1,5 +1,6 @@
 import AccountPage from 'page/AccountPage';
 import Environment from 'page/internal/Environment';
+import AccountService from 'services/AccountService';
 import GameLookup from 'page/internal/GameLookup';
 import GamePlay from 'page/GamePlay';
 import GameTypeMap from 'games/GameTypeMap';
@@ -40,14 +41,14 @@ const NAV_LINKS = Object.freeze([
     ],
   },
   {
-    label: 'Blog',
-    path: 'https://mathwithbaddrawings.com',
-  },
-  {
     label: 'Account',
     path: '/account',
     component: AccountPage,
-    showIf: _ => false,
+    showIf: _ => new AccountService.Factory().create().isLoggedIn(),
+  },
+  {
+    label: 'Blog',
+    path: 'https://mathwithbaddrawings.com',
   },
   {
     label: 'Internal',

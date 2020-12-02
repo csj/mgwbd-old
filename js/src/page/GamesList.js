@@ -1,5 +1,6 @@
 import './GamesList.scss';
 import Card from 'components/chrome/Card';
+import FlagService from 'services/FlagService';
 import React from 'react';
 import dandelionsPreviewImg from 'images/dandelions-preview.png';
 import neighborsPreviewImg from 'images/neighbors-preview.png';
@@ -38,12 +39,17 @@ const GAMES = [
     path: '/games/quantumtictactoe',
     tagline: '?!?',
     image: null,
+    underDevelopment: true,
   },
 ];
 
 
-class GamesList extends React.Component {
-  renderGameCard(game) {
+const GamesList = _ => {
+  const flagService = new FlagService.Factory().create();
+  const renderGameCard = game => {
+    if (game.underDevelopment && !flagService.get('showWipGames')) {
+      return;
+    }
     return (
       <div className='p-col-12 p-md-6 p-lg-4' key={game.name}>
         <NavLink to={game.path} className='gameCardWrapper'>
@@ -56,20 +62,18 @@ class GamesList extends React.Component {
     );
   }
 
-  render() {
-    return (
-      <div className='GamesList page'>
-        <div className='subtitle'>
-          Games List
-        </div>
-        <div className='section'>
-          <div className='p-grid'>
-            {GAMES.map(this.renderGameCard)}
-          </div>
+  return (
+    <div className='GamesList page'>
+      <div className='subtitle'>
+        Games List
+      </div>
+      <div className='section'>
+        <div className='p-grid'>
+          {GAMES.map(renderGameCard)}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 

@@ -2,6 +2,14 @@
 const ConfigDevelopment = {
   serverEndpoint: 'http://localhost:5000',
   withCredentials: true,
+  clientFlagConfig: [
+    {
+      'canonicalName': 'showWipGames',
+      'displayName': 'Show games still under development',
+      'values': [true, false],
+      'defaultValue': false,
+    },
+  ],
 };
 
 
