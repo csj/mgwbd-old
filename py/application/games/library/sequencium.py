@@ -58,7 +58,7 @@ class Sequencium(Game):
       {
         'canonicalName': 'gridSize',
         'displayName': 'Grid size',
-        'values': [6, 8],
+        'values': [6, 8, 10],
         'defaultValue': 6,
       },
       {
