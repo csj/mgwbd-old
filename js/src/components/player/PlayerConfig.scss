@@ -5,8 +5,7 @@
 .PlayerConfig {
   &.readOnly {
     .moveUp,
-    .moveDown,
-    .edit {
+    .moveDown {
       display: none;
     }
 

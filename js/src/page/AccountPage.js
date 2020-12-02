@@ -22,9 +22,6 @@ const AccountPage = props => {
   const flagService = new FlagService.Factory().create();
 
   const userInfo = useListenable(accountService.accountInfo);
-  useEffect(() => {
-    accountService.refreshAccountInfo();
-  }, [accountService]);
 
   const login = async () => {
     let rsp = await http.get(paths.LOGIN);

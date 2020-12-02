@@ -188,8 +188,12 @@ const PlayerConfig = props => {
     let avatarJsx = <div className='avatar' style={avatarFor(player)} />;
     let nameJsx = renderName(player, editable);
     let typeJsx = <div className='type'>{PlayerHelper.getType(player)}</div>;
+    let editPlayerBubbleText = 'Edit name, avatar, or player type';
     if (editable) {
       [avatarJsx, typeJsx] = renderEditablePlayer(player, index);
+    }
+    if (props.readOnly) {
+      editPlayerBubbleText = 'End the current game to edit players';
     }
 
     return (
@@ -207,9 +211,12 @@ const PlayerConfig = props => {
               className='moveDown' icon='pi-angle-down' text='Move player down'
               onClick={() => onSwap(index, index + 1)} />
           <InfoBubble
-              text='Edit name, avatar, or player type' icon='pi-user-edit'
+              text={editPlayerBubbleText} icon='pi-user-edit'
               className='edit'
               onClick={() => {
+                if (props.readOnly) {
+                  return;
+                }
                 let val = editable ? null : index;
                 setEditPlayerNum(val);
                 setEditedName(val !== null ? props.players[val].name : null);
@@ -287,6 +294,11 @@ const PlayerConfig = props => {
       }>
         <p>It’s easy to play with a distant friend! Just follow these steps.</p>
         <ol>
+          {props.readOnly ?
+              <li>
+                Select <em>Quit Game</em> to end the current game, and return
+                to this window.
+              </li> : null}
           <li>Tap the <em>Edit Player</em> button.</li>
           <li>Tap <em>This Device</em> to relinquish a seat.</li>
           <li>Copy the <em>Game Link</em> and share with a friend.</li>

@@ -4,10 +4,14 @@ import { Button } from 'primereact/button';
 import { NavLink } from 'react-router-dom';
 import { Sidebar } from 'primereact/sidebar';
 import { withRouter } from 'react-router';
+import AccountService from 'services/AccountService';
+import useListenable from 'services/listen/useListenable';
 
 
 const Topnav = props => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const accountService = new AccountService.Factory().create();
+  useListenable(accountService.accountInfo);
 
   const renderLink = (label, path, className) => {
     if (!path) {

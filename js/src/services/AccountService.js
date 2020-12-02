@@ -14,6 +14,7 @@ class AccountService {
     this.http = new Http.Factory().create();
     this.http.responseInterceptor(this.intercept.bind(this));
     this.accountInfo = new Listenable({});
+    this.refreshAccountInfo();
   }
 
   intercept(rsp) {
