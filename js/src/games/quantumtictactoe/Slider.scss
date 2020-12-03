@@ -11,6 +11,11 @@
   @include shadow();
   @include noAnimate();
 
+  &.readOnly {
+    cursor: initial;
+    filter: saturate(0);
+  }
+
   .background,
   .foreground {
     left: 0;

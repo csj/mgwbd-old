@@ -14,18 +14,24 @@ const Slider = props => {
   const ref = createRef();
 
   useEffect(() => { // Snap tolerance.
+    if (isDragging) {
+      return;
+    }
     if (value < props.snapTolerance) {
       setValue(0);
     } else if (value > 100 - props.snapTolerance) {
       setValue(100);
     }
-  }, [value, props.snapTolerance]);
+  }, [value, isDragging, props.snapTolerance]);
 
   useEffect(() => { // onChange callback.
     props.onChange(value);
   });
 
   const onDrag = evt => {
+    if (props.readOnly) {
+      return;
+    }
     let rect = ref.current.getBoundingClientRect();
     let x = evt.clientX;
     if (evt.touches) {
@@ -35,7 +41,9 @@ const Slider = props => {
   };
 
   return (
-    <div className={`Slider ${props.className}`}>
+    <div
+        className={`
+            Slider ${props.className} ${props.readOnly ? 'readOnly' : ''}`}>
       <div className='background'>
         <i className='pi pi-arrow-left' />
         <i className='pi pi-arrow-right' />

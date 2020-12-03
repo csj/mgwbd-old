@@ -39,7 +39,7 @@ const GAMES = [
     path: '/games/quantumtictactoe',
     tagline: '?!?',
     image: null,
-    underDevelopment: true,
+    isWorkInProgress: true,
   },
 ];
 
@@ -47,7 +47,7 @@ const GAMES = [
 const GamesList = _ => {
   const flagService = new FlagService.Factory().create();
   const renderGameCard = game => {
-    if (game.underDevelopment && !flagService.get('showWipGames')) {
+    if (game.isWorkInProgress && !flagService.get('showWipGames')) {
       return;
     }
     return (

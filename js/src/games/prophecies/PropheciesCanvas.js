@@ -137,6 +137,9 @@ const PropheciesCanvas = props => {
   };
 
   const getSquareStyle = squareData => {
+    if (squareData && squareData.owner === null) {
+      return null;
+    }
     let playerIndex = Number.isInteger(squareData && squareData.owner) ?
         squareData.owner : gameState.activePlayerIndex;
     return PlayerHelper.getStyleClass(gameSettings.players[playerIndex]);

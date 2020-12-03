@@ -4,7 +4,7 @@ import FlagService from 'services/FlagService';
 import GameSettingsDialog from 'components/game/GameSettingsDialog';
 import Http from 'components/http/Http';
 import LabelValue from 'components/chrome/LabelValue';
-import React, {useEffect} from 'react';
+import React from 'react';
 import useListenable from 'services/listen/useListenable';
 import {Button} from 'primereact/button';
 

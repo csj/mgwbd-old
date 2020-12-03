@@ -254,7 +254,8 @@ const QuantumTicTacToeCanvas = props => {
       <div className='sliderContainer'>
         <Slider
             snapTolerance={20} className='slider'
-            onChange={setSliderValue} />
+            onChange={setSliderValue}
+            readOnly={!isActivePlayerLocal()} />
         <Button
             label='Commit' icon='pi pi-check' disabled={isDisabled}
             onClick={onResolve} />
@@ -288,12 +289,18 @@ const QuantumTicTacToeCanvas = props => {
     </div>
   );
 
+  const isActivePlayerLocal = () => {
+    let player = players[gameState.activePlayerIndex];
+    return PlayerHelper.isOwnedByMe(player);
+  };
+
   const isTunnelHighlighted = tunnelIndex => (
       gameState.lastMove && gameState.lastMove.tunnel === tunnelIndex);
 
   const isSquareTouchable = squareData => (
       gamePhase === GamePhase.PLAYING &&
-      !gameState.cycle && squareData.status !== 'occupied');
+      !gameState.cycle && squareData.status !== 'occupied' &&
+      isActivePlayerLocal());
 
   return (
     <div className='QuantumTicTacToeCanvas'>
