@@ -1,6 +1,6 @@
 import './Grid.scss';
 import GamePieceHelper from 'games/GamePieceHelper';
-import React, {forwardRef, useLayoutEffect, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useLayoutEffect, useState} from 'react';
 
 
 /**
@@ -20,29 +20,21 @@ import React, {forwardRef, useLayoutEffect, useState} from 'react';
 const Grid = forwardRef((props, ref) => {
   const [isClick, setIsClick] = useState(true);
   const [gridWidthPct, setGridWidthPct] = useState(100);
+  const [gridRef, setGridRef] = useState(ref);
 
-  if (!ref) {
-    ref = React.createRef();
-  }
+  useEffect(() => {
+    if (!gridRef) {
+      setGridRef(React.createRef());
+    }
+  }, [gridRef]);
 
-  useLayoutEffect(() => {
-    const calcGridWidthPct = () => {
-      if (ref.current) {
-        let gridBox = ref.current.getBoundingClientRect();
-        let containerHeight = ref.current.parentElement.clientHeight;
-        let containerWidth = ref.current.parentElement.clientWidth;
-        let heightRatio = gridBox.height / containerHeight;
-        let widthRatio = gridBox.width / containerWidth;
-        let bestSize = Math.min(
-            100 / Math.max(heightRatio, widthRatio, 1), 100);
-        setGridWidthPct(pct => pct * bestSize / 100);
-      }
-    };
-
-    window.addEventListener('resize', calcGridWidthPct);
-    calcGridWidthPct();
-    return () => window.removeEventListener('resize', calcGridWidthPct);
-  }, [ref]);
+  const onWrapperRefChange = useCallback(node => {
+    //const calcGridWidthPct = () => {
+    //  console.log('calcGridWidthPct');
+    //};
+    //const resizeObserver = new ResizeObserver(calcGridWidthPct);
+    //node && resizeObserver.observe(node);
+  }, []);
 
   const renderSquare = (squareData, i, j) => {
     let squareStyle = props.squareStyle && props.squareStyle(squareData);
@@ -107,15 +99,21 @@ const Grid = forwardRef((props, ref) => {
     );
   };
 
+  // TODO this css & resizing logic should be updated, but quick fix to unbreak prod for now.
   return (
     <div
-        className={`Grid ${props.className}`} ref={ref}
-        style={{width: `${gridWidthPct}%`}}>
-      {renderUnderlay()}
-      <div className='rows'>
-        {props.grid.map(renderRow)}
+        className={`GridWrapper`}
+        ref={onWrapperRefChange}
+        style={{height: '100%', width: '100%'}}>
+      <div
+          className={`Grid ${props.className}`} ref={gridRef}
+          style={{width: `${gridWidthPct}%`}}>
+        {renderUnderlay()}
+        <div className='rows'>
+          {props.grid.map(renderRow)}
+        </div>
+        {props.children}
       </div>
-      {props.children}
     </div>
   );
 });
