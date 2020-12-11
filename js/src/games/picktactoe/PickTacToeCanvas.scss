@@ -1,0 +1,13 @@
+@import 'styles/common.scss';
+@import 'styles/players.scss';
+
+
+.PickTacToeCanvas {
+
+  .gridLine:first-child,
+  .gridLine:last-child {
+    visibility: hidden;
+  }
+} /* .PickTacToeCanvas */
+
+

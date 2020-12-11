@@ -140,13 +140,15 @@ const DandelionsCanvas = props => {
     return (
       <div className='DandelionsCanvas'>
         {renderCompass(gameState)}
-        <Grid className='grid'
-            grid={gameState.grid}
-            squareStyle={() => dandelionPlayerStyleClass}
-            renderSquareValue={renderSquareValue}
-            isTouchable={isSquareTouchable}
-            isHighlighted={isHighlighted}
-            onTouch={onSquareTouch} />
+        <div className='grid'>
+          <Grid
+              grid={gameState.grid}
+              squareStyle={() => dandelionPlayerStyleClass}
+              renderSquareValue={renderSquareValue}
+              isTouchable={isSquareTouchable}
+              isHighlighted={isHighlighted}
+              onTouch={onSquareTouch} />
+        </div>
       </div>
     );
   };
