@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $VIRTUAL_ENV ]; then
-  echo "Run \`source env/bin/activate\` first."
+  echo "Run \`source py/env/bin/activate\` first."
   exit
 fi
 
