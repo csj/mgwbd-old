@@ -10,8 +10,7 @@ _defaultDelaySeconds = 0
 
 
 if not BOT_SQS_ARN:
-  print('BOT_SQS_ARN environment variable is not set.')
-  raise ValueError('error')
+  raise ValueError('BOT_SQS_ARN environment variable is not set.')
 
 
 _lambdaClient = boto3.client('lambda', region_name=_boto3Region)

@@ -21,8 +21,9 @@ const GamePlay = props => {
   const gameSettings = gameManager.getGameSettings();
   const gameSettingsConfig = gameManager.getGameSettingsConfig() || [];
   const [, forceUpdate] = useState({});
+  const [showGameSettings, setShowGameSettings] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { // Sets a new game on page load.
     gameManager.setChangeHandler(() => forceUpdate({}));
     let joinGameKey = props.location.state && props.location.state.join;
     if (!joinGameKey) {
@@ -31,6 +32,16 @@ const GamePlay = props => {
     }
     return () => gameManager.setChangeHandler(() => null);
   }, [gameManager, props.game, props.location.state]);
+
+
+  useEffect(() => { // Sets showGameSettings.
+    let hasSettings = Object.keys(gameSettingsConfig)
+        .map(key => gameSettingsConfig[key])
+        .map(configItem => configItem.canonicalName)
+        .filter(canonicalName => !canonicalName.match(':'))
+        .length > 0;
+    setShowGameSettings(hasSettings);
+  }, [gameSettingsConfig]);
 
   const onStartGame = () => gameManager.startGame();
   const onEndGame = () => gameManager.setGamePhase(GamePhase.POST_GAME);
@@ -52,7 +63,7 @@ const GamePlay = props => {
   };
 
   const renderGameSettings = gameManager => {
-    if (Object.keys(gameSettingsConfig).length) {
+    if (showGameSettings) {
       let gamePhase = gameManager.getGamePhase();
       let gameSettings = gameManager.getGameSettings();
       return (
