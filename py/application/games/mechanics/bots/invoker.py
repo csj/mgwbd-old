@@ -8,6 +8,12 @@ BOT_SQS_ARN = os.environ.get('BOT_SQS_ARN', None)
 _boto3Region = 'us-west-1'
 _defaultDelaySeconds = 0
 
+
+if not BOT_SQS_ARN:
+  print('BOT_SQS_ARN environment variable is not set.')
+  raise ValueError('error')
+
+
 _lambdaClient = boto3.client('lambda', region_name=_boto3Region)
 _sqsResource = boto3.resource('sqs', region_name=_boto3Region)
 _queue = _sqsResource.get_queue_by_name(QueueName=BOT_SQS_ARN.split(':')[-1])
