@@ -11,8 +11,8 @@ const paths = {
 
 class AccountService {
   constructor() {
-    this.http = new Http.Factory().create();
-    this.http.responseInterceptor(this.intercept.bind(this));
+    // this.http = new Http.Factory().create();
+    // this.http.responseInterceptor(this.intercept.bind(this));
     this.accountInfo = new Listenable({});
     this.refreshAccountInfo();
   }
@@ -30,7 +30,8 @@ class AccountService {
   }
 
   async refreshAccountInfo() {
-    await this.http.get(paths.ACCOUNT_INFO);
+    // await this.http.get(paths.ACCOUNT_INFO);
+    this.accountInfo.value = { email: 'a@b.c' }
   }
 }
 
