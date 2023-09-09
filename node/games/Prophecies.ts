@@ -1,3 +1,5 @@
+import {Game} from '../stuff/Game'
+
 export interface PropheciesSettings {
     numRows: number
     numCols: number
@@ -6,39 +8,28 @@ export interface PropheciesSettings {
     players: any[]
 }
 
-export class Game {
-    gameState: any = null
-    gamePhase: number = 0
-    gameSettings: any = null
-
-    defaultPlayerConfig() {
-        return [
-            {'playerType': 'human', 'owner': null, 'name': 'Player 1', 'style': 'A'},
-            {'playerType': 'human', 'owner': null, 'name': 'Player 2', 'style': 'B'},
-        ]
-    }
-
-    action(action: any) { }
-
-    checkGameEndCondition() {
-        this.gameState.gameEnd = this.gameEndCondition()
-        if (!!this.gameState.gameEnd) {
-            this.gamePhase = 3 // GAME-OVER
-        }
-    }
-
-    gameEndCondition(): any {
-        return null
-    }
+export interface PropheciesGameState {
+    grid: (PropheciesCell | null)[][]
+    activePlayerIndex: number | null
+    lastMove?: { row: number, col: number }[]
+    gameEnd?: { win: number, scores: number[] } | { draw: true, scores: number[] }
 }
+
 
 interface PropheciesCell {
     owner: number | null
     value: number
 }
 
-export class Prophecies extends Game {
-    getSettingsConfig() {
+interface PropheciesAction {
+    owner: number
+    row: number
+    col: number
+    value: number
+}
+
+export class Prophecies extends Game<PropheciesGameState, PropheciesAction, PropheciesSettings> {
+    settingsConfig() {
         return [
             {
                 'canonicalName': 'numRows',
@@ -66,9 +57,12 @@ export class Prophecies extends Game {
                 'displayName': 'Player count',
                 'values': [2, 3, 4],
                 'defaultValue': 2,
+                'description': '',
             },
         ]
     }
+
+    override canonicalName = "prophecies"
 
     initialGameState(settings: PropheciesSettings) {
         const numRows = settings.numRows
@@ -80,48 +74,23 @@ export class Prophecies extends Game {
         }
     }
 
-    start() {
-        this.gamePhase = 2 // IN-PROGRESS
-        this.nextPlayerTurn()
-    }
-
-    nextPlayerTurn() {
-        // By default, assumes two players alternating
-        if (this.gameState.gameEnd) {
-            this.gameState.activePlayerIndex = null
-        } else if (this.gameState.activePlayerIndex === null) {
-            this.gameState.activePlayerIndex = 0
-        } else {
-            const numPlayers = this.gameSettings.players.length
-            this.gameState.activePlayerIndex = (this.gameState.activePlayerIndex + 1) % numPlayers
-        }
-    }
-
-    override action(action: any) {
+    override action(action: PropheciesAction) {
         const grid = this.gameState.grid
         const playerIndex = action.owner
-        const row = action.row as number
-        const col = action.col as number
+        const row = action.row
+        const col = action.col
         const value = action.value
 
-        console.log('Playing action: ', action)
-        console.log('Current game state: ', this.gameState)
-
         if (this.gameState.activePlayerIndex === null) return false
-        console.log(2)
         if (playerIndex !== this.gameState.activePlayerIndex) return false
-        console.log(3)
         if (grid[row][col] !== null) return false
-        console.log(4)
         if (!this.isValidValue(grid, row, col, value)) return false
-        console.log(5)
 
         const newGameState = JSON.parse(JSON.stringify(this.gameState))
         newGameState.grid[row][col] = { owner: playerIndex, value }
         const autoXs = this.fillAutoXs(newGameState.grid)
         newGameState.lastMove = [{ row, col }, ...autoXs]
         this.gameState = newGameState
-        console.log(this.gameState)
         this.checkGameEndCondition()
         this.nextPlayerTurn()
         return true
@@ -163,7 +132,7 @@ export class Prophecies extends Game {
         return true
     }
 
-    calculateScores(grid: (PropheciesCell | null)[][], matchCondition: (v: number) => boolean = (v) => v > 0) {
+    private calculateScores(grid: (PropheciesCell | null)[][], matchCondition: (v: number) => boolean = (v) => v > 0) {
         const rowWinners = Array(grid.length).fill(0)
         const colWinners = Array(grid[0].length).fill(0)
         const playerScores = Array(this.gameSettings.players.length).fill(0)
@@ -214,19 +183,6 @@ export class Prophecies extends Game {
         }
     }
 
-    /*
-  def gameEndCondition(self):
-    grid = self.gameState['grid']
-    for row in range(len(grid)):
-      for col in range(len(grid[0])):
-        if not grid[row][col]:
-          return None
-    if self.gameSettings and self.gameSettings['xProphecies']:
-      scores = self.calculateScores(grid, matchCondition=(lambda v: not v))
-    else:
-      scores = self.calculateScores(grid)
-    return self.calculateWinner(scores)
-     */
     override gameEndCondition() {
         const grid = this.gameState.grid
         for (let row = 0; row < grid.length; row++) {
