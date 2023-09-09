@@ -11,6 +11,6 @@
   "main": "build/app.js",
   "scripts": {
     "build": "tsoa spec-and-routes && tsc",
-    "start": "npm run build && node build/app.js"
+    "start-server": "npm run build && node build/app.js"
   }
 }

@@ -1,7 +1,7 @@
 export interface SettingsConfig {
   canonicalName: string
   displayName: string
-  description: string
+  description?: string
   values: any[]
   defaultValue: any
 }

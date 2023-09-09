@@ -14,9 +14,21 @@ export abstract class Game<TGameState extends BaseGameState, TGameAction, TGameS
     gameSettings: TGameSettings | null = null,
     gamePhase: number = 0
   ) {
-    this.gameSettings = gameSettings || this.buildDefaultSettings()
-    this.gameState = gameState || this.initialGameState(this.gameSettings)
-    this.gamePhase = gamePhase
+
+    if (gameState && gameSettings) {
+      this.gameSettings = gameSettings
+      this.gameState = gameState
+      this.gamePhase = gamePhase
+      return
+    }
+
+    const playerConfig = this.defaultPlayerConfig()
+    const settings = this.buildDefaultSettings()
+    settings.players = playerConfig
+
+    this.gameState = this.initialGameState(settings)
+    this.gameSettings = settings
+    return
   }
 
   defaultPlayerConfig() {
@@ -34,8 +46,8 @@ export abstract class Game<TGameState extends BaseGameState, TGameAction, TGameS
     return settings
   }
 
-  abstract action(action: TGameAction): void;
-  abstract canonicalName: string;
+  abstract action(action: TGameAction): boolean
+  abstract canonicalName: string
 
   checkGameEndCondition() {
     const gameEnd = this.gameEndCondition()
