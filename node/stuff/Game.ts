@@ -12,7 +12,7 @@ export abstract class Game<TGameState extends BaseGameState, TGameAction, TGameS
   constructor(
     gameState: TGameState | null = null,
     gameSettings: TGameSettings | null = null,
-    gamePhase: number = 0
+    gamePhase: number = 1  // PRE-GAME
   ) {
 
     if (gameState && gameSettings) {

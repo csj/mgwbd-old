@@ -11,7 +11,27 @@ interface GameBlob {
   gameState: any
 }
 
-let currentGame: UnknownGame | null = null
+let currentGames: {[key: string]: UnknownGame} = {}
+const _GAME_KEY_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
+const _GAME_KEY_LEN = 8
+
+function generateGameKey(): string {
+  return Array(_GAME_KEY_LEN)
+    .fill(0)
+    .map(() => _GAME_KEY_CHARS[Math.floor(Math.random() * _GAME_KEY_CHARS.length)])
+    .join('')
+}
+
+function toBlob(game: UnknownGame): GameBlob {
+  return {
+    gameType: game.canonicalName,
+    gameSettingsConfig: game.settingsConfig(),
+    gameSettings: game.gameSettings,
+    gamePhase: game.gamePhase,
+    gameState: game.gameState,
+    gameKey: ''
+  }
+}
 
 @Route('gameplay')
 export class GameController extends Controller {
@@ -27,24 +47,29 @@ export class GameController extends Controller {
     // @ts-ignore: we are actually instantiating concrete classes
     const game = new gameRegistry[requestBody.gameType]()
 
-    currentGame = game
-    const gameKey = 'ABDAD'
+    const gameKey = generateGameKey()
+    currentGames[gameKey] = game
 
     return {
+      ...toBlob(game),
       gameKey,
-      gameSettingsConfig: game.settingsConfig(),
-      gameType: requestBody.gameType,
-      gameSettings: game.settings,
-      gamePhase: 1, // PRE-GAME
-      gameState: game.gameState
     }
+  }
+
+  private findGame(gameKey: string): UnknownGame {
+    const currentGame = currentGames[gameKey]
+    if (!currentGame) {
+      throw new Error(`Game with key ${gameKey} not found`)
+    }
+    return currentGame
   }
 
   @Post('setsettings')
   public async setSettings(
     @Body() requestBody: { gameKey: string, gameSettings: any }
-  ): Promise<any> {
-    currentGame!.gameSettings = requestBody.gameSettings
+  ): Promise<void> {
+    const currentGame = this.findGame(requestBody.gameKey)
+    currentGame.gameSettings = requestBody.gameSettings
   }
 
   @Post('start')
@@ -52,19 +77,17 @@ export class GameController extends Controller {
     @Body() requestBody: { gameKey: string, gameSettings: any }
   ): Promise<GameBlob> {
     const {gameKey, gameSettings} = requestBody
+    const game = this.findGame(gameKey)
+
     if (gameSettings) {
-      currentGame!.gameSettings = requestBody.gameSettings
-      currentGame!.gameState = currentGame!.initialGameState(requestBody.gameSettings)
+      game.gameSettings = requestBody.gameSettings
+      game.gameState = game.initialGameState(requestBody.gameSettings)
     }
-    currentGame!.start()
+    game.start()
 
     return {
-      gameKey: gameKey,
-      gameSettingsConfig: currentGame!.settingsConfig(),
-      gameType: currentGame!.canonicalName,
-      gameSettings: currentGame!.gameSettings,
-      gamePhase: currentGame!.gamePhase,
-      gameState: currentGame!.gameState
+      ...toBlob(game),
+      gameKey,
     }
   }
 
@@ -73,15 +96,12 @@ export class GameController extends Controller {
     @Body() requestBody: { gameKey: string, clientCode: string, action: any }
   ): Promise<GameBlob> {
     // TODO: Validate clientCode
-    currentGame!.action(requestBody.action)
+    const game = this.findGame(requestBody.gameKey)
+    game.action(requestBody.action)
 
     return {
+      ...toBlob(game),
       gameKey: requestBody.gameKey,
-      gameSettingsConfig: currentGame!.settingsConfig(),
-      gameType: currentGame!.canonicalName,
-      gameSettings: currentGame!.gameSettings,
-      gamePhase: currentGame!.gamePhase,
-      gameState: currentGame!.gameState
     }
   }
 }
